@@ -3,7 +3,7 @@
 /**
  * Responsible for logging functionalities with specified fields.
  *
- * @package updateautomate
+ * @package updatronix
  */
 
 if (!defined('ABSPATH')) {
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Create, read, and delete update logs.
  */
-final class UpdateAutomate_Logger {
+final class Updatronix_Logger {
     /**
      * Insert a log entry.
      *
@@ -43,28 +43,28 @@ final class UpdateAutomate_Logger {
         string $performed_as = 'manual',
         string $update_context = ''
     ): int|false {
-        if (!UpdateAutomate_Database::table_exists()) {
+        if (!Updatronix_Database::table_exists()) {
             return false;
         }
 
-        $log_type = UpdateAutomate_Security::sanitize_log_type($log_type);
-        $action_type = UpdateAutomate_Security::sanitize_action_type($action_type);
-        $item_name = UpdateAutomate_Security::sanitize_string($item_name, 255);
-        $item_slug = UpdateAutomate_Security::sanitize_string($item_slug, 255);
-        $version_before = UpdateAutomate_Security::sanitize_version($version_before);
-        $version_after = UpdateAutomate_Security::sanitize_version($version_after);
-        $status = UpdateAutomate_Security::sanitize_status($status);
-        $message = UpdateAutomate_Security::sanitize_message($message);
-        $trace = UpdateAutomate_Security::sanitize_trace($trace);
-        $performed_as = UpdateAutomate_Security::sanitize_performed_as($performed_as);
-        $update_context = UpdateAutomate_Security::sanitize_update_context($update_context);
+        $log_type = Updatronix_Security::sanitize_log_type($log_type);
+        $action_type = Updatronix_Security::sanitize_action_type($action_type);
+        $item_name = Updatronix_Security::sanitize_string($item_name, 255);
+        $item_slug = Updatronix_Security::sanitize_string($item_slug, 255);
+        $version_before = Updatronix_Security::sanitize_version($version_before);
+        $version_after = Updatronix_Security::sanitize_version($version_after);
+        $status = Updatronix_Security::sanitize_status($status);
+        $message = Updatronix_Security::sanitize_message($message);
+        $trace = Updatronix_Security::sanitize_trace($trace);
+        $performed_as = Updatronix_Security::sanitize_performed_as($performed_as);
+        $update_context = Updatronix_Security::sanitize_update_context($update_context);
 
         $site_id = (int) get_current_blog_id();
         $user_id = (int) get_current_user_id();
         $performed_by = $user_id > 0 ? 'user' : 'system';
 
         global $wpdb;
-        $table = UpdateAutomate_Database::get_table_name();
+        $table = Updatronix_Database::get_table_name();
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; $wpdb->insert is the correct API, prepared internally.
         $result = $wpdb->insert(
@@ -107,7 +107,7 @@ final class UpdateAutomate_Logger {
             'update_context' => $update_context,
             'created_at' => current_time('mysql'),
         ];
-        do_action('updateautomate_after_log', $log_id, $data);
+        do_action('updatronix_after_log', $log_id, $data);
 
         return $log_id;
     }
@@ -129,17 +129,17 @@ final class UpdateAutomate_Logger {
         $log_type = $args['log_type'] ?? null;
         if ($log_type !== null && $log_type !== '') {
             $where[] = 'log_type = %s';
-            $values[] = UpdateAutomate_Security::sanitize_log_type((string) $log_type);
+            $values[] = Updatronix_Security::sanitize_log_type((string) $log_type);
         }
         $status = $args['status'] ?? null;
         if ($status !== null && $status !== '') {
             $where[] = 'status = %s';
-            $values[] = UpdateAutomate_Security::sanitize_status((string) $status);
+            $values[] = Updatronix_Security::sanitize_status((string) $status);
         }
         $performed_as = $args['performed_as'] ?? null;
         if ($performed_as !== null && $performed_as !== '') {
             $where[] = 'performed_as = %s';
-            $values[] = UpdateAutomate_Security::sanitize_performed_as((string) $performed_as);
+            $values[] = Updatronix_Security::sanitize_performed_as((string) $performed_as);
         }
 
         return ['where_sql' => implode(' AND ', $where), 'values' => $values];
@@ -152,12 +152,12 @@ final class UpdateAutomate_Logger {
      * @return array<int, object> Array of log row objects.
      */
     public static function get_logs(array $args = []): array {
-        if (!UpdateAutomate_Database::table_exists()) {
+        if (!Updatronix_Database::table_exists()) {
             return [];
         }
 
         global $wpdb;
-        $table = UpdateAutomate_Database::get_table_name();
+        $table = Updatronix_Database::get_table_name();
 
         $defaults = [
             'site_id' => null,
@@ -200,12 +200,12 @@ final class UpdateAutomate_Logger {
      * @return int
      */
     public static function get_logs_count(array $args = []): int {
-        if (!UpdateAutomate_Database::table_exists()) {
+        if (!Updatronix_Database::table_exists()) {
             return 0;
         }
 
         global $wpdb;
-        $table = UpdateAutomate_Database::get_table_name();
+        $table = Updatronix_Database::get_table_name();
 
         $built = self::build_logs_where($args);
         $values = array_merge([$table], $built['values']);
@@ -228,12 +228,12 @@ final class UpdateAutomate_Logger {
      * @return bool
      */
     public static function delete_log(int $id): bool {
-        if (!UpdateAutomate_Database::table_exists()) {
+        if (!Updatronix_Database::table_exists()) {
             return false;
         }
 
         global $wpdb;
-        $table = UpdateAutomate_Database::get_table_name();
+        $table = Updatronix_Database::get_table_name();
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; $wpdb->delete is the correct API, prepared.
         $result = $wpdb->delete($table, ['id' => $id], ['%d']);
@@ -248,12 +248,12 @@ final class UpdateAutomate_Logger {
      * @return int Number of rows deleted.
      */
     public static function delete_older_than(int $days): int {
-        if (!UpdateAutomate_Database::table_exists() || $days < 1) {
+        if (!Updatronix_Database::table_exists() || $days < 1) {
             return 0;
         }
 
         global $wpdb;
-        $table = UpdateAutomate_Database::get_table_name();
+        $table = Updatronix_Database::get_table_name();
         $date = gmdate('Y-m-d H:i:s', strtotime("-{$days} days"));
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; table and date via prepare(); no WP API for bulk delete by date.

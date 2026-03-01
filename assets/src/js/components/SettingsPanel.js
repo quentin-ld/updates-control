@@ -17,14 +17,14 @@ import {
 import { __ } from '@wordpress/i18n';
 
 const NOTIFY_TYPES = [
-	{ key: 'core', label: __('Core updates', 'update-automate') },
-	{ key: 'plugin', label: __('Plugin updates', 'update-automate') },
-	{ key: 'theme', label: __('Theme updates', 'update-automate') },
-	{ key: 'translation', label: __('Translation updates', 'update-automate') },
-	{ key: 'error', label: __('Update errors', 'update-automate') },
+	{ key: 'core', label: __('Core updates', 'updatronix') },
+	{ key: 'plugin', label: __('Plugin updates', 'updatronix') },
+	{ key: 'theme', label: __('Theme updates', 'updatronix') },
+	{ key: 'translation', label: __('Translation updates', 'updatronix') },
+	{ key: 'error', label: __('Update errors', 'updatronix') },
 	{
 		key: 'technical',
-		label: __('Technical issues (recovery mode)', 'update-automate'),
+		label: __('Technical issues (recovery mode)', 'updatronix'),
 	},
 ];
 
@@ -52,26 +52,26 @@ export const SettingsPanel = memo(function SettingsPanel({
 	};
 
 	return (
-		<div className="updateautomate-settings-form">
-			<h2 className="updateautomate-panel-title">
-				{__('Settings', 'update-automate')}
+		<div className="updatronix-settings-form">
+			<h2 className="updatronix-panel-title">
+				{__('Settings', 'updatronix')}
 			</h2>
 			<Text variant="muted">
 				{__(
 					'Set up logging, choose how long to keep records, and manage email notifications.',
-					'update-automate'
+					'updatronix'
 				)}
 			</Text>
-			<div className="updateautomate-settings-section">
-				<h3 className="updateautomate-settings-section-title">
-					{__('Logging', 'update-automate')}
+			<div className="updatronix-settings-section">
+				<h3 className="updatronix-settings-section-title">
+					{__('Logging', 'updatronix')}
 				</h3>
 				<ToggleControl
 					__nextHasNoMarginBottom
-					label={__('Update logging', 'update-automate')}
+					label={__('Update logging', 'updatronix')}
 					help={__(
 						'Keep a record of all core, plugin, theme, and translation updates.',
-						'update-automate'
+						'updatronix'
 					)}
 					checked={settings.logging_enabled}
 					onChange={(value) =>
@@ -83,14 +83,14 @@ export const SettingsPanel = memo(function SettingsPanel({
 				/>
 				<fieldset
 					disabled={!settings.logging_enabled}
-					className="updateautomate-settings-fieldset"
+					className="updatronix-settings-fieldset"
 				>
 					<NumberControl
 						__next40pxDefaultSize
-						label={__('Keep logs for (days)', 'update-automate')}
+						label={__('Keep logs for (days)', 'updatronix')}
 						help={__(
 							'Logs older than this number of days are automatically removed once a day.',
-							'update-automate'
+							'updatronix'
 						)}
 						min={1}
 						max={365}
@@ -107,16 +107,16 @@ export const SettingsPanel = memo(function SettingsPanel({
 					/>
 				</fieldset>
 			</div>
-			<div className="updateautomate-settings-section">
-				<h3 className="updateautomate-settings-section-title">
-					{__('Update notifications', 'update-automate')}
+			<div className="updatronix-settings-section">
+				<h3 className="updatronix-settings-section-title">
+					{__('Update notifications', 'updatronix')}
 				</h3>
 				<ToggleControl
 					__nextHasNoMarginBottom
-					label={__('Manage update notifications', 'update-automate')}
+					label={__('Manage update notifications', 'updatronix')}
 					help={__(
 						'When on, WordPress built-in update emails are sent to the address you choose below. Use the checkboxes to pick which types of updates you want to hear about.',
-						'update-automate'
+						'updatronix'
 					)}
 					checked={settings.notify_enabled}
 					onChange={(value) =>
@@ -128,15 +128,15 @@ export const SettingsPanel = memo(function SettingsPanel({
 				/>
 				<fieldset
 					disabled={!settings.notify_enabled}
-					className="updateautomate-settings-fieldset"
+					className="updatronix-settings-fieldset"
 				>
 					<TextControl
 						__nextHasNoMarginBottom
 						__next40pxDefaultSize
-						label={__('Send notifications to', 'update-automate')}
+						label={__('Send notifications to', 'updatronix')}
 						help={__(
 							'Update emails will go to this address instead of the default admin email.',
-							'update-automate'
+							'updatronix'
 						)}
 						type="email"
 						value={settings.notify_emails}
@@ -146,16 +146,16 @@ export const SettingsPanel = memo(function SettingsPanel({
 								notify_emails: value || '',
 							}))
 						}
-						placeholder={__('admin@example.com', 'update-automate')}
+						placeholder={__('admin@example.com', 'updatronix')}
 					/>
-					<div className="updateautomate-settings-checkboxes">
-						<p className="updateautomate-settings-label">
-							{__('Notification types', 'update-automate')}
+					<div className="updatronix-settings-checkboxes">
+						<p className="updatronix-settings-label">
+							{__('Notification types', 'updatronix')}
 						</p>
-						<p className="updateautomate-settings-help">
+						<p className="updatronix-settings-help">
 							{__(
 								'Check the types of updates you want to receive emails about. Unchecked types will not send emails.',
-								'update-automate'
+								'updatronix'
 							)}
 						</p>
 						{NOTIFY_TYPES.map(({ key, label }) => (
@@ -179,8 +179,8 @@ export const SettingsPanel = memo(function SettingsPanel({
 				disabled={saving}
 			>
 				{saving
-					? __('Saving…', 'update-automate')
-					: __('Save settings', 'update-automate')}
+					? __('Saving…', 'updatronix')
+					: __('Save settings', 'updatronix')}
 			</Button>
 		</div>
 	);

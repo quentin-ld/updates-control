@@ -16,8 +16,7 @@ export function usePluginSettings() {
 
 	const initial = useMemo(() => {
 		const opts =
-			typeof window !== 'undefined' &&
-			window.updateautomateSettings?.options;
+			typeof window !== 'undefined' && window.updatronixSettings?.options;
 		const allowedNotifyOn = [
 			'core',
 			'plugin',
@@ -63,7 +62,7 @@ export function usePluginSettings() {
 				notify_on: settings.notifyOn,
 			};
 			const response = await apiFetch({
-				path: 'updateautomate/v1/settings',
+				path: 'updatronix/v1/settings',
 				method: 'PUT',
 				data: payload,
 			});
@@ -72,13 +71,13 @@ export function usePluginSettings() {
 					response.options;
 				setSettings({ ...rest, notifyOn: notifyOnFromApi });
 				createSuccessNotice(
-					__('Settings saved successfully.', 'update-automate')
+					__('Settings saved successfully.', 'updatronix')
 				);
 			} else {
 				createWarningNotice(
 					__(
 						'Your settings were saved, but the server did not return the updated values. Refresh the page to confirm.',
-						'update-automate'
+						'updatronix'
 					)
 				);
 			}
@@ -87,7 +86,7 @@ export function usePluginSettings() {
 				e?.message ||
 				__(
 					'Your settings could not be saved. Check your connection and try again.',
-					'update-automate'
+					'updatronix'
 				);
 			createErrorNotice(message);
 		} finally {

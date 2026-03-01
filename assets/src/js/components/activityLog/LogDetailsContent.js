@@ -13,12 +13,12 @@ export function LogDetailsContent({ log }) {
 		return null;
 	}
 	return (
-		<div className="updateautomate-notes-content updateautomate-notes-modal">
+		<div className="updatronix-notes-content updatronix-notes-modal">
 			{log.message && (
-				<div className="updateautomate-notes-section">
-					<h4>{__('Message', 'update-automate')}</h4>
+				<div className="updatronix-notes-section">
+					<h4>{__('Message', 'updatronix')}</h4>
 					<pre
-						className="updateautomate-notes-text"
+						className="updatronix-notes-text"
 						style={{
 							whiteSpace: 'pre-wrap',
 							wordBreak: 'break-word',
@@ -29,12 +29,12 @@ export function LogDetailsContent({ log }) {
 				</div>
 			)}
 			{log.trace && (
-				<details className="updateautomate-notes-section">
-					<summary className="updateautomate-notes-toggle">
-						{__('Advanced details', 'update-automate')}
+				<details className="updatronix-notes-section">
+					<summary className="updatronix-notes-toggle">
+						{__('Advanced details', 'updatronix')}
 					</summary>
 					<pre
-						className="updateautomate-notes-trace"
+						className="updatronix-notes-trace"
 						style={{
 							whiteSpace: 'pre-wrap',
 							wordBreak: 'break-all',
@@ -49,7 +49,7 @@ export function LogDetailsContent({ log }) {
 				<p>
 					{__(
 						'No details available for this log entry.',
-						'update-automate'
+						'updatronix'
 					)}
 				</p>
 			)}

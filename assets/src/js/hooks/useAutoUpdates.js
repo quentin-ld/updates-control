@@ -4,7 +4,7 @@ import { store as noticesStore } from '@wordpress/notices';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
-const API_BASE = 'updateautomate/v1/auto-updates';
+const API_BASE = 'updatronix/v1/auto-updates';
 
 /**
  * Hook to read and mutate native WordPress auto-update settings via REST.
@@ -32,7 +32,7 @@ export function useAutoUpdates() {
 				e?.message ||
 					__(
 						'Your auto-update settings could not be loaded. Try refreshing the page.',
-						'update-automate'
+						'updatronix'
 					)
 			);
 		} finally {
@@ -55,14 +55,14 @@ export function useAutoUpdates() {
 				});
 				setData(response);
 				createSuccessNotice(
-					__('Core auto-update setting saved.', 'update-automate')
+					__('Core auto-update setting saved.', 'updatronix')
 				);
 			} catch (e) {
 				createErrorNotice(
 					e?.message ||
 						__(
 							'The core auto-update setting could not be saved. Check your connection and try again.',
-							'update-automate'
+							'updatronix'
 						)
 				);
 			} finally {
@@ -87,7 +87,7 @@ export function useAutoUpdates() {
 					e?.message ||
 						__(
 							'The plugin auto-update setting could not be changed. Try again.',
-							'update-automate'
+							'updatronix'
 						)
 				);
 			} finally {
@@ -112,7 +112,7 @@ export function useAutoUpdates() {
 					e?.message ||
 						__(
 							'The theme auto-update setting could not be changed. Try again.',
-							'update-automate'
+							'updatronix'
 						)
 				);
 			} finally {
@@ -133,17 +133,14 @@ export function useAutoUpdates() {
 				});
 				setData(response);
 				createSuccessNotice(
-					__(
-						'Translation auto-update setting saved.',
-						'update-automate'
-					)
+					__('Translation auto-update setting saved.', 'updatronix')
 				);
 			} catch (e) {
 				createErrorNotice(
 					e?.message ||
 						__(
 							'The translation auto-update setting could not be changed. Try again.',
-							'update-automate'
+							'updatronix'
 						)
 				);
 			} finally {
@@ -167,7 +164,7 @@ export function useAutoUpdates() {
 					e?.message ||
 						__(
 							'The notice could not be dismissed. Try again.',
-							'update-automate'
+							'updatronix'
 						)
 				);
 			}

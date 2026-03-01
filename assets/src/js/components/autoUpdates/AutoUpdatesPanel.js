@@ -39,27 +39,25 @@ export function AutoUpdatesPanel() {
 	if (loading || !data) {
 		return (
 			<div
-				className="updateautomate-autoupdates-loading"
+				className="updatronix-autoupdates-loading"
 				aria-live="polite"
 				role="status"
 			>
 				<Spinner />
-				<span>
-					{__('Loading auto-update settings…', 'update-automate')}
-				</span>
+				<span>{__('Loading auto-update settings…', 'updatronix')}</span>
 			</div>
 		);
 	}
 
 	return (
-		<div className="updateautomate-autoupdates-panel">
-			<h2 className="updateautomate-panel-title">
-				{__('Auto-updates', 'update-automate')}
+		<div className="updatronix-autoupdates-panel">
+			<h2 className="updatronix-panel-title">
+				{__('Auto-updates', 'updatronix')}
 			</h2>
 			<Text variant="muted">
 				{__(
 					'Choose which parts of your site update automatically: core, plugins, themes, and translations.',
-					'update-automate'
+					'updatronix'
 				)}
 			</Text>
 			<ConstantNotices
@@ -81,9 +79,9 @@ export function AutoUpdatesPanel() {
 				items={data.themes}
 				itemIdKey="stylesheet"
 				icon={brushIcon}
-				sectionTitle={__('Themes', 'update-automate')}
-				itemLabel={__('Theme', 'update-automate')}
-				searchLabel={__('Search themes', 'update-automate')}
+				sectionTitle={__('Themes', 'updatronix')}
+				itemLabel={__('Theme', 'updatronix')}
+				searchLabel={__('Search themes', 'updatronix')}
 				uriKey="theme_uri"
 				constants={data.constants}
 				sections={['themes']}
@@ -95,9 +93,9 @@ export function AutoUpdatesPanel() {
 				items={data.plugins}
 				itemIdKey="file"
 				icon={pluginsIcon}
-				sectionTitle={__('Plugins', 'update-automate')}
-				itemLabel={__('Plugin', 'update-automate')}
-				searchLabel={__('Search plugins', 'update-automate')}
+				sectionTitle={__('Plugins', 'updatronix')}
+				itemLabel={__('Plugin', 'updatronix')}
+				searchLabel={__('Search plugins', 'updatronix')}
 				uriKey="plugin_uri"
 				constants={data.constants}
 				sections={['plugins']}

@@ -37,10 +37,10 @@ export function TranslationsSection({
 	const locked = isSectionLocked(constants, 'translations');
 
 	return (
-		<div className="updateautomate-autoupdates-section">
-			<h3 className="updateautomate-autoupdates-section-title">
+		<div className="updatronix-autoupdates-section">
+			<h3 className="updatronix-autoupdates-section-title">
 				<Icon icon={languageIcon} size={24} />
-				{__('Translations', 'update-automate')}
+				{__('Translations', 'updatronix')}
 			</h3>
 			<ConstantNotices
 				constants={constants}
@@ -49,10 +49,10 @@ export function TranslationsSection({
 			/>
 			<ToggleControl
 				__nextHasNoMarginBottom
-				label={__('Automatic translation updates', 'update-automate')}
+				label={__('Automatic translation updates', 'updatronix')}
 				help={__(
 					'WordPress updates translations automatically by default. Turn this off to stop automatic translation downloads.',
-					'update-automate'
+					'updatronix'
 				)}
 				checked={translations.auto_update}
 				onChange={(checked) => toggleTranslation(checked)}

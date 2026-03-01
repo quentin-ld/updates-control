@@ -7,7 +7,7 @@
  * (core, plugin, theme) are sent to the configured recipient instead of admin_email.
  * No custom emails are sent; only WordPress core email behaviour is redirected.
  *
- * @package updateautomate
+ * @package updatronix
  */
 
 if (!defined('ABSPATH')) {
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Redirect native WordPress update emails to the plugin's recipient.
  */
-final class UpdateAutomate_Notifications {
+final class Updatronix_Notifications {
     /**
      * Register filters for native WordPress update notification emails.
      *
@@ -41,7 +41,7 @@ final class UpdateAutomate_Notifications {
      * @return bool
      */
     private static function should_redirect(): bool {
-        $s = updateautomate_get_settings();
+        $s = updatronix_get_settings();
         if (!$s['notify_enabled']) {
             return false;
         }
@@ -59,7 +59,7 @@ final class UpdateAutomate_Notifications {
      * @return string|array<string>
      */
     private static function get_recipient(): string|array {
-        $emails = updateautomate_get_settings()['notify_emails'];
+        $emails = updatronix_get_settings()['notify_emails'];
         $recipients = array_values(array_filter(array_map('sanitize_email', explode(',', $emails))));
         if ($recipients === []) {
             return '';
@@ -74,7 +74,7 @@ final class UpdateAutomate_Notifications {
      * @return array<string>
      */
     private static function get_notify_on(): array {
-        return updateautomate_get_settings()['notify_on'];
+        return updatronix_get_settings()['notify_on'];
     }
 
     /**
@@ -116,7 +116,7 @@ final class UpdateAutomate_Notifications {
      * @return bool
      */
     public static function filter_core_send_email(bool $send, string $type, mixed $core_update, mixed $result): bool {
-        if (!updateautomate_get_settings()['notify_enabled']) {
+        if (!updatronix_get_settings()['notify_enabled']) {
             return $send;
         }
 
@@ -139,7 +139,7 @@ final class UpdateAutomate_Notifications {
      * @return bool
      */
     public static function filter_send_core_update_notification_email(bool $notify, mixed $item): bool {
-        if (!updateautomate_get_settings()['notify_enabled']) {
+        if (!updatronix_get_settings()['notify_enabled']) {
             return $notify;
         }
 
@@ -175,7 +175,7 @@ final class UpdateAutomate_Notifications {
      * @return bool
      */
     public static function filter_plugin_send_email(bool $enabled, array $update_results): bool {
-        if (!updateautomate_get_settings()['notify_enabled']) {
+        if (!updatronix_get_settings()['notify_enabled']) {
             return $enabled;
         }
 
@@ -198,7 +198,7 @@ final class UpdateAutomate_Notifications {
      * @return bool
      */
     public static function filter_theme_send_email(bool $enabled, array $update_results): bool {
-        if (!updateautomate_get_settings()['notify_enabled']) {
+        if (!updatronix_get_settings()['notify_enabled']) {
             return $enabled;
         }
 

@@ -6,14 +6,14 @@
  * Reads/writes only native WP options and site options — no parallel option structure.
  * Translation preference is stored inside the plugin's existing JSON settings.
  *
- * @package updateautomate
+ * @package updatronix
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-final class UpdateAutomate_AutoUpdates {
+final class Updatronix_AutoUpdates {
     /**
      * Register the translation auto-update filter.
      *
@@ -29,7 +29,7 @@ final class UpdateAutomate_AutoUpdates {
      * @return void
      */
     public static function apply_translation_setting(): void {
-        $settings = updateautomate_get_settings();
+        $settings = updatronix_get_settings();
         if ($settings['auto_update_translations'] === false) {
             add_filter('auto_update_translation', '__return_false', 20);
         }
@@ -43,7 +43,7 @@ final class UpdateAutomate_AutoUpdates {
     public static function get_data(): array {
         return [
             'constants' => self::get_constants(),
-            'dismissed_constants' => updateautomate_get_settings()['dismissed_constants'],
+            'dismissed_constants' => updatronix_get_settings()['dismissed_constants'],
             'core' => self::get_core_config(),
             'plugins' => self::get_plugins_data(),
             'themes' => self::get_themes_data(),
@@ -266,7 +266,7 @@ final class UpdateAutomate_AutoUpdates {
      * @return array{auto_update: bool}
      */
     public static function get_translations_config(): array {
-        $settings = updateautomate_get_settings();
+        $settings = updatronix_get_settings();
 
         return ['auto_update' => $settings['auto_update_translations']];
     }
@@ -369,7 +369,7 @@ final class UpdateAutomate_AutoUpdates {
      * @return bool
      */
     public static function dismiss_constant(string $constant_name): bool {
-        $settings = updateautomate_get_settings();
+        $settings = updatronix_get_settings();
         $dismissed = $settings['dismissed_constants'];
         if (!in_array($constant_name, $dismissed, true)) {
             $dismissed[] = $constant_name;
@@ -377,7 +377,7 @@ final class UpdateAutomate_AutoUpdates {
         $settings['dismissed_constants'] = $dismissed;
         $json = wp_json_encode($settings);
         if ($json !== false) {
-            update_option(UPDATEAUTOMATE_OPTION_SETTINGS, $json);
+            update_option(UPDATRONIX_OPTION_SETTINGS, $json);
         }
 
         return true;
@@ -390,11 +390,11 @@ final class UpdateAutomate_AutoUpdates {
      * @return bool
      */
     public static function set_translations(bool $enable): bool {
-        $settings = updateautomate_get_settings();
+        $settings = updatronix_get_settings();
         $settings['auto_update_translations'] = $enable;
         $json = wp_json_encode($settings);
         if ($json !== false) {
-            update_option(UPDATEAUTOMATE_OPTION_SETTINGS, $json);
+            update_option(UPDATRONIX_OPTION_SETTINGS, $json);
         }
 
         return true;

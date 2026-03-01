@@ -3,7 +3,7 @@
 /**
  * Provides admin interface for viewing logs and configuring settings.
  *
- * @package updateautomate
+ * @package updatronix
  */
 
 if (!defined('ABSPATH')) {
@@ -13,13 +13,13 @@ if (!defined('ABSPATH')) {
 /**
  * REST API and settings for logs and options.
  */
-final class UpdateAutomate_Settings {
+final class Updatronix_Settings {
     /**
      * REST namespace.
      *
      * @var string
      */
-    public const REST_NAMESPACE = 'updateautomate/v1';
+    public const REST_NAMESPACE = 'updatronix/v1';
 
     /**
      * Register REST routes and settings.
@@ -178,7 +178,7 @@ final class UpdateAutomate_Settings {
      * @return WP_REST_Response
      */
     public static function rest_get_settings(\WP_REST_Request $request): WP_REST_Response {
-        $options = updateautomate_get_settings();
+        $options = updatronix_get_settings();
 
         return new WP_REST_Response(['options' => $options], 200);
     }
@@ -190,7 +190,7 @@ final class UpdateAutomate_Settings {
      * @return bool
      */
     public static function rest_can_manage_logs(\WP_REST_Request $request): bool {
-        return UpdateAutomate_Security::user_can_manage_logs();
+        return Updatronix_Security::user_can_manage_logs();
     }
 
     /**
@@ -219,8 +219,8 @@ final class UpdateAutomate_Settings {
             $args['performed_as'] = $request->get_param('performed_as');
         }
 
-        $logs = UpdateAutomate_Logger::get_logs($args);
-        $total = UpdateAutomate_Logger::get_logs_count($args);
+        $logs = Updatronix_Logger::get_logs($args);
+        $total = Updatronix_Logger::get_logs_count($args);
 
         $user_ids = array_unique(array_filter(array_map(
             static fn (object $log): int => (int) ($log->user_id ?? 0),
@@ -249,22 +249,22 @@ final class UpdateAutomate_Settings {
         $performed_by = $log->performed_by ?? 'system';
 
         if ($performed_by === 'system' || $user_id <= 0) {
-            $log->performed_by_display = __('System', 'update-automate');
+            $log->performed_by_display = __('System', 'updatronix');
             $log->user_edit_link = '';
         } else {
             $user = get_userdata($user_id);
             /* translators: %d: WordPress user ID when display name is not available */
-            $log->performed_by_display = $user ? $user->display_name : sprintf(__('User #%d', 'update-automate'), $user_id);
+            $log->performed_by_display = $user ? $user->display_name : sprintf(__('User #%d', 'updatronix'), $user_id);
             $log->user_edit_link = get_edit_user_link($user_id) ?: '';
         }
 
         $performed_as = $log->performed_as ?? 'manual';
         if ($performed_as === 'automatic') {
-            $log->action_display = __('Automatic', 'update-automate');
+            $log->action_display = __('Automatic', 'updatronix');
         } elseif ($performed_as === 'upload') {
-            $log->action_display = __('File upload', 'update-automate');
+            $log->action_display = __('File upload', 'updatronix');
         } else {
-            $log->action_display = __('Manual', 'update-automate');
+            $log->action_display = __('Manual', 'updatronix');
         }
 
         return $log;
@@ -278,10 +278,10 @@ final class UpdateAutomate_Settings {
      */
     public static function rest_delete_log(\WP_REST_Request $request): WP_REST_Response {
         $id = (int) $request->get_param('id');
-        $deleted = UpdateAutomate_Logger::delete_log($id);
+        $deleted = Updatronix_Logger::delete_log($id);
 
         if (!$deleted) {
-            return new WP_REST_Response(['message' => __('The log entry could not be deleted. Try again or check your database connection.', 'update-automate')], 500);
+            return new WP_REST_Response(['message' => __('The log entry could not be deleted. Try again or check your database connection.', 'updatronix')], 500);
         }
 
         return new WP_REST_Response(['deleted' => true], 200);
@@ -294,8 +294,8 @@ final class UpdateAutomate_Settings {
      * @return WP_REST_Response
      */
     public static function rest_cleanup_logs(\WP_REST_Request $request): WP_REST_Response {
-        $settings = updateautomate_get_settings();
-        $deleted = UpdateAutomate_Logger::delete_older_than($settings['retention_days']);
+        $settings = updatronix_get_settings();
+        $deleted = Updatronix_Logger::delete_older_than($settings['retention_days']);
 
         return new WP_REST_Response(['deleted' => $deleted], 200);
     }
@@ -307,12 +307,12 @@ final class UpdateAutomate_Settings {
      * @return WP_REST_Response
      */
     public static function rest_update_settings(\WP_REST_Request $request): WP_REST_Response {
-        $current = updateautomate_get_settings();
+        $current = updatronix_get_settings();
         $next = [
             'logging_enabled' => $request->has_param('logging_enabled') ? (bool) $request->get_param('logging_enabled') : $current['logging_enabled'],
             'retention_days' => $request->has_param('retention_days') ? max(1, min(365, (int) $request->get_param('retention_days'))) : $current['retention_days'],
             'notify_enabled' => $request->has_param('notify_enabled') ? (bool) $request->get_param('notify_enabled') : $current['notify_enabled'],
-            'notify_emails' => $request->has_param('notify_emails') ? updateautomate_sanitize_emails($request->get_param('notify_emails')) : $current['notify_emails'],
+            'notify_emails' => $request->has_param('notify_emails') ? updatronix_sanitize_emails($request->get_param('notify_emails')) : $current['notify_emails'],
             'notify_on' => $request->has_param('notify_on') && is_array($request->get_param('notify_on'))
                 ? array_values(array_intersect(array_filter($request->get_param('notify_on'), 'is_string'), ['core', 'plugin', 'theme', 'translation', 'error', 'technical']))
                 : $current['notify_on'],
@@ -321,10 +321,10 @@ final class UpdateAutomate_Settings {
         ];
         $json = wp_json_encode($next);
         if ($json !== false) {
-            update_option(UPDATEAUTOMATE_OPTION_SETTINGS, $json);
+            update_option(UPDATRONIX_OPTION_SETTINGS, $json);
         }
 
-        return new WP_REST_Response(['options' => updateautomate_get_settings()], 200);
+        return new WP_REST_Response(['options' => updatronix_get_settings()], 200);
     }
 
     /**
@@ -334,7 +334,7 @@ final class UpdateAutomate_Settings {
      * @return WP_REST_Response
      */
     public static function rest_get_auto_updates(\WP_REST_Request $request): WP_REST_Response {
-        return new WP_REST_Response(UpdateAutomate_AutoUpdates::get_data(), 200);
+        return new WP_REST_Response(Updatronix_AutoUpdates::get_data(), 200);
     }
 
     /**
@@ -345,15 +345,15 @@ final class UpdateAutomate_Settings {
      */
     public static function rest_set_core_mode(\WP_REST_Request $request): WP_REST_Response {
         $mode = sanitize_key($request->get_param('mode'));
-        $ok = UpdateAutomate_AutoUpdates::set_core_mode($mode);
+        $ok = Updatronix_AutoUpdates::set_core_mode($mode);
 
         if (!$ok) {
             return new WP_REST_Response([
-                'message' => __('The core auto-update setting is controlled by a constant in your wp-config.php file and cannot be changed here.', 'update-automate'),
+                'message' => __('The core auto-update setting is controlled by a constant in your wp-config.php file and cannot be changed here.', 'updatronix'),
             ], 403);
         }
 
-        return new WP_REST_Response(UpdateAutomate_AutoUpdates::get_data(), 200);
+        return new WP_REST_Response(Updatronix_AutoUpdates::get_data(), 200);
     }
 
     /**
@@ -365,15 +365,15 @@ final class UpdateAutomate_Settings {
     public static function rest_toggle_plugin(\WP_REST_Request $request): WP_REST_Response {
         $plugin = sanitize_text_field($request->get_param('plugin'));
         $enable = (bool) $request->get_param('enable');
-        $ok = UpdateAutomate_AutoUpdates::toggle_plugin($plugin, $enable);
+        $ok = Updatronix_AutoUpdates::toggle_plugin($plugin, $enable);
 
         if (!$ok) {
             return new WP_REST_Response([
-                'message' => __('This plugin was not found on your site. It may have been removed.', 'update-automate'),
+                'message' => __('This plugin was not found on your site. It may have been removed.', 'updatronix'),
             ], 404);
         }
 
-        return new WP_REST_Response(UpdateAutomate_AutoUpdates::get_data(), 200);
+        return new WP_REST_Response(Updatronix_AutoUpdates::get_data(), 200);
     }
 
     /**
@@ -385,15 +385,15 @@ final class UpdateAutomate_Settings {
     public static function rest_toggle_theme(\WP_REST_Request $request): WP_REST_Response {
         $stylesheet = sanitize_text_field($request->get_param('stylesheet'));
         $enable = (bool) $request->get_param('enable');
-        $ok = UpdateAutomate_AutoUpdates::toggle_theme($stylesheet, $enable);
+        $ok = Updatronix_AutoUpdates::toggle_theme($stylesheet, $enable);
 
         if (!$ok) {
             return new WP_REST_Response([
-                'message' => __('This theme was not found on your site. It may have been removed.', 'update-automate'),
+                'message' => __('This theme was not found on your site. It may have been removed.', 'updatronix'),
             ], 404);
         }
 
-        return new WP_REST_Response(UpdateAutomate_AutoUpdates::get_data(), 200);
+        return new WP_REST_Response(Updatronix_AutoUpdates::get_data(), 200);
     }
 
     /**
@@ -404,9 +404,9 @@ final class UpdateAutomate_Settings {
      */
     public static function rest_toggle_translation(\WP_REST_Request $request): WP_REST_Response {
         $enable = (bool) $request->get_param('enable');
-        UpdateAutomate_AutoUpdates::set_translations($enable);
+        Updatronix_AutoUpdates::set_translations($enable);
 
-        return new WP_REST_Response(UpdateAutomate_AutoUpdates::get_data(), 200);
+        return new WP_REST_Response(Updatronix_AutoUpdates::get_data(), 200);
     }
 
     /**
@@ -417,8 +417,8 @@ final class UpdateAutomate_Settings {
      */
     public static function rest_dismiss_constant(\WP_REST_Request $request): WP_REST_Response {
         $constant = sanitize_text_field($request->get_param('constant'));
-        UpdateAutomate_AutoUpdates::dismiss_constant($constant);
+        Updatronix_AutoUpdates::dismiss_constant($constant);
 
-        return new WP_REST_Response(UpdateAutomate_AutoUpdates::get_data(), 200);
+        return new WP_REST_Response(Updatronix_AutoUpdates::get_data(), 200);
     }
 }

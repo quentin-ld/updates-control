@@ -85,18 +85,18 @@ export function ItemsDataViewSection({
 		() => [
 			{
 				id: 'auto_update',
-				label: __('Auto-update', 'update-automate'),
+				label: __('Auto-update', 'updatronix'),
 				render: ({ item }) => (
-					<span className="updateautomate-autoupdates__toggle">
+					<span className="updatronix-autoupdates__toggle">
 						{item.auto_update_available === false ? (
 							<span
-								className="updateautomate-autoupdates__unavailable"
+								className="updatronix-autoupdates__unavailable"
 								title={__(
 									'Automatic updates are not available for this item (e.g. not from WordPress.org).',
-									'update-automate'
+									'updatronix'
 								)}
 							>
-								{__('Unavailable', 'update-automate')}
+								{__('Unavailable', 'updatronix')}
 							</span>
 						) : (
 							<ToggleControl
@@ -110,12 +110,9 @@ export function ItemsDataViewSection({
 									item.auto_update
 										? __(
 												'Disable auto-update',
-												'update-automate'
+												'updatronix'
 											)
-										: __(
-												'Enable auto-update',
-												'update-automate'
-											)
+										: __('Enable auto-update', 'updatronix')
 								}
 							/>
 						)}
@@ -129,10 +126,10 @@ export function ItemsDataViewSection({
 				id: 'icon',
 				label: '',
 				render: ({ item }) => (
-					<span className="updateautomate-autoupdates__icon">
+					<span className="updatronix-autoupdates__icon">
 						{item.icon ? (
 							<img
-								className="updateautomate-autoupdates__icon-img"
+								className="updatronix-autoupdates__icon-img"
 								src={item.icon}
 								alt=""
 								width={32}
@@ -143,7 +140,7 @@ export function ItemsDataViewSection({
 							<Icon
 								icon={icon}
 								size={32}
-								className="updateautomate-autoupdates__icon-fallback"
+								className="updatronix-autoupdates__icon-fallback"
 							/>
 						)}
 					</span>
@@ -157,7 +154,7 @@ export function ItemsDataViewSection({
 				label: itemLabel,
 				getValue: ({ item }) => item.name,
 				render: ({ item }) => (
-					<span className="updateautomate-autoupdates__name">
+					<span className="updatronix-autoupdates__name">
 						{item.name}
 					</span>
 				),
@@ -166,16 +163,16 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'status',
-				label: __('Status', 'update-automate'),
+				label: __('Status', 'updatronix'),
 				render: ({ item }) => (
-					<span className="updateautomate-autoupdates__status">
+					<span className="updatronix-autoupdates__status">
 						{item.active ? (
 							<StatusBadge intent="success">
-								{__('Active', 'update-automate')}
+								{__('Active', 'updatronix')}
 							</StatusBadge>
 						) : (
 							<StatusBadge intent="warning">
-								{__('Inactive', 'update-automate')}
+								{__('Inactive', 'updatronix')}
 							</StatusBadge>
 						)}
 					</span>
@@ -186,10 +183,10 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'version',
-				label: __('Version', 'update-automate'),
+				label: __('Version', 'updatronix'),
 				getValue: ({ item }) => item.version,
 				render: ({ item }) => (
-					<span className="updateautomate-autoupdates__version">
+					<span className="updatronix-autoupdates__version">
 						{item.version}
 					</span>
 				),
@@ -198,10 +195,10 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'description',
-				label: __('Description', 'update-automate'),
+				label: __('Description', 'updatronix'),
 				getValue: ({ item }) => item.description,
 				render: ({ item }) => (
-					<span className="updateautomate-autoupdates__description">
+					<span className="updatronix-autoupdates__description">
 						{item.description}
 					</span>
 				),
@@ -210,19 +207,19 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'details',
-				label: __('Details', 'update-automate'),
+				label: __('Details', 'updatronix'),
 				render: ({ item }) =>
 					item[uriKey] ? (
 						<a
-							className="updateautomate-autoupdates__details-link"
+							className="updatronix-autoupdates__details-link"
 							href={item[uriKey]}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							{__('View', 'update-automate')}
+							{__('View', 'updatronix')}
 						</a>
 					) : (
-						<span className="updateautomate-autoupdates__details-empty">
+						<span className="updatronix-autoupdates__details-empty">
 							—
 						</span>
 					),
@@ -239,8 +236,8 @@ export function ItemsDataViewSection({
 	);
 
 	return (
-		<div className="updateautomate-autoupdates-section">
-			<h3 className="updateautomate-autoupdates-section-title">
+		<div className="updatronix-autoupdates-section">
+			<h3 className="updatronix-autoupdates-section-title">
 				<Icon icon={icon} size={24} />
 				{sectionTitle}
 			</h3>

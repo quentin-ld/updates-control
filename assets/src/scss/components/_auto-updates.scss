@@ -1,10 +1,10 @@
-.updateautomate-autoupdates-panel {
+.updatronix-autoupdates-panel {
 	> .components-notice {
 		margin-bottom: var(--wpds-dimension-gap-md);
 	}
 }
 
-.updateautomate-autoupdates-loading {
+.updatronix-autoupdates-loading {
 	display: flex;
 	align-items: center;
 	gap: var(--wpds-dimension-gap-sm);
@@ -13,7 +13,7 @@
 }
 
 
-.updateautomate-autoupdates-section {
+.updatronix-autoupdates-section {
 	margin-bottom: var(--wpds-dimension-gap-2xl);
 
 	&:last-child {
@@ -33,7 +33,7 @@
 	}
 }
 
-.updateautomate-autoupdates-section-title {
+.updatronix-autoupdates-section-title {
 	display: flex;
 	align-items: center;
 	gap: var(--wpds-dimension-gap-xs);
@@ -48,7 +48,7 @@
 	}
 }
 
-.updateautomate-autoupdates {
+.updatronix-autoupdates {
 	&__unavailable {
 		color: var(--wpds-color-fg-content-neutral-weak);
 		font-size: var(--wpds-font-size-md);

@@ -1,4 +1,4 @@
-# PHPStan configuration for Update Automate: static analysis of plugin.
+# PHPStan configuration for Updatronix: static analysis of plugin.
 includes:
     - ../vendor/szepeviktor/phpstan-wordpress/extension.neon
 

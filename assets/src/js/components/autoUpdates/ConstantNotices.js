@@ -13,19 +13,19 @@ import { __ } from '@wordpress/i18n';
 const CONSTANT_DESCRIPTIONS = {
 	WP_AUTO_UPDATE_CORE: __(
 		'WP_AUTO_UPDATE_CORE is set in your wp-config.php file. It controls which core updates run automatically, and this setting cannot be changed here.',
-		'update-automate'
+		'updatronix'
 	),
 	AUTOMATIC_UPDATER_DISABLED: __(
 		'AUTOMATIC_UPDATER_DISABLED is set to true in your wp-config.php file. All automatic updates are turned off.',
-		'update-automate'
+		'updatronix'
 	),
 	DISALLOW_FILE_MODS: __(
 		'DISALLOW_FILE_MODS is set to true in your wp-config.php file. WordPress cannot change any files, so all automatic updates are blocked.',
-		'update-automate'
+		'updatronix'
 	),
 	DISABLE_WP_CRON: __(
 		'DISABLE_WP_CRON is set to true in your wp-config.php file. Automatic updates use WP-Cron and will not run unless you have set up an external cron job.',
-		'update-automate'
+		'updatronix'
 	),
 };
 

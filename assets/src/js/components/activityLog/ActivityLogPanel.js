@@ -75,21 +75,21 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 		() => [
 			{
 				id: 'title',
-				label: __('Title', 'update-automate'),
+				label: __('Title', 'updatronix'),
 				getValue: ({ item }) => getActivityTitle(item),
 				enableSorting: false,
 				enableGlobalSearch: true,
 			},
 			{
 				id: 'description',
-				label: __('Version', 'update-automate'),
+				label: __('Version', 'updatronix'),
 				getValue: ({ item }) => getActivityDescription(item),
 				enableSorting: false,
 				enableGlobalSearch: true,
 			},
 			{
 				id: 'icon',
-				label: __('Type', 'update-automate'),
+				label: __('Type', 'updatronix'),
 				getValue: ({ item }) => item.log_type || '',
 				render: ({ item, config }) => {
 					const size =
@@ -106,7 +106,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			},
 			{
 				id: 'date',
-				label: __('Date', 'update-automate'),
+				label: __('Date', 'updatronix'),
 				getValue: ({ item }) => item.created_at,
 				render: ({ item }) => formatDate(item.created_at),
 				enableSorting: false,
@@ -119,14 +119,14 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			},
 			{
 				id: 'context',
-				label: __('Context', 'update-automate'),
+				label: __('Context', 'updatronix'),
 				getValue: ({ item }) => getContextLabel(item.update_context),
 				enableSorting: false,
 				enableGlobalSearch: true,
 			},
 			{
 				id: 'user',
-				label: __('User', 'update-automate'),
+				label: __('User', 'updatronix'),
 				getValue: ({ item }) => item.performed_by_display || '',
 				render: ({ item }) =>
 					item.user_edit_link ? (
@@ -147,7 +147,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			},
 			{
 				id: 'status',
-				label: __('Status', 'update-automate'),
+				label: __('Status', 'updatronix'),
 				getValue: ({ item }) => item.status || '',
 				render: ({ item }) => (
 					<StatusBadge intent={statusToBadgeIntent(item.status)}>
@@ -165,8 +165,8 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 		() => [
 			{
 				id: 'view-logs',
-				label: __('View log', 'update-automate'),
-				modalHeader: __('Log details', 'update-automate'),
+				label: __('View log', 'updatronix'),
+				modalHeader: __('Log details', 'updatronix'),
 				modalSize: 'large',
 				modalFocusOnMount: 'firstContentElement',
 				isEligible: (item) => !!(item.message || item.trace),
@@ -176,8 +176,8 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			},
 			{
 				id: 'delete',
-				label: __('Delete', 'update-automate'),
-				modalHeader: __('Delete log', 'update-automate'),
+				label: __('Delete', 'updatronix'),
+				modalHeader: __('Delete log', 'updatronix'),
 				isDestructive: true,
 				RenderModal: ({ items, closeModal, onActionPerformed }) => {
 					const log = items[0];
@@ -194,19 +194,19 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 							<p>
 								{__(
 									'Are you sure you want to delete this log entry? This action cannot be undone.',
-									'update-automate'
+									'updatronix'
 								)}
 							</p>
 							<div style={DELETE_MODAL_STYLE}>
 								<Button variant="tertiary" onClick={closeModal}>
-									{__('Cancel', 'update-automate')}
+									{__('Cancel', 'updatronix')}
 								</Button>
 								<Button
 									variant="primary"
 									isDestructive
 									onClick={handleConfirm}
 								>
-									{__('Confirm', 'update-automate')}
+									{__('Confirm', 'updatronix')}
 								</Button>
 							</div>
 						</>
@@ -235,7 +235,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 	if (error) {
 		return (
 			<div
-				className="updateautomate-logs-error notice notice-error is-dismissible"
+				className="updatronix-logs-error notice notice-error is-dismissible"
 				aria-live="assertive"
 				role="alert"
 			>
@@ -246,15 +246,15 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 
 	if (!loggingEnabled) {
 		return (
-			<div className="updateautomate-logs updateautomate-activitylog-panel">
-				<p className="updateautomate-logs-disabled-message">
+			<div className="updatronix-logs updatronix-activitylog-panel">
+				<p className="updatronix-logs-disabled-message">
 					{__(
 						'Update logging is turned off. You can turn it on in the Settings tab.',
-						'update-automate'
+						'updatronix'
 					)}
 				</p>
 				<div
-					className="updateautomate-logs-dataview-wrapper"
+					className="updatronix-logs-dataview-wrapper"
 					style={{ display: 'none' }}
 					aria-hidden="true"
 				/>
@@ -263,14 +263,14 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 	}
 
 	return (
-		<div className="updateautomate-logs updateautomate-activitylog-panel">
-			<h2 className="updateautomate-panel-title">
-				{__('Update logs', 'update-automate')}
+		<div className="updatronix-logs updatronix-activitylog-panel">
+			<h2 className="updatronix-panel-title">
+				{__('Update logs', 'updatronix')}
 			</h2>
 			<Text variant="muted">
 				{__(
 					'Browse and search the history of all updates on your site, both automatic and manual.',
-					'update-automate'
+					'updatronix'
 				)}
 			</Text>
 			<DataViews
@@ -286,10 +286,10 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 				config={{ perPageSizes: [10, 25, 50, 100] }}
 				empty={__(
 					'No update logs yet. Logs will appear here after your first update.',
-					'update-automate'
+					'updatronix'
 				)}
 				search
-				searchLabel={__('Search logs', 'update-automate')}
+				searchLabel={__('Search logs', 'updatronix')}
 			/>
 		</div>
 	);

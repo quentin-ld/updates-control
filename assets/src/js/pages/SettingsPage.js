@@ -31,7 +31,7 @@ function setTabInUrl(tabId) {
 }
 
 /**
- * Main settings page for Update Automate.
+ * Main settings page for Updatronix.
  * Tabs: Logs and Settings. Active tab is synced with ?tab= URL param for direct links.
  *
  * @return {JSX.Element} The settings page UI.
@@ -53,12 +53,12 @@ export const SettingsPage = () => {
 	}, [selectedTabId]);
 
 	return (
-		<article className="updateautomate-row">
-			<section className="updateautomate-main">
-				<div className="updateautomate-notices">
+		<article className="updatronix-row">
+			<section className="updatronix-main">
+				<div className="updatronix-notices">
 					<Notices />
 				</div>
-				<div className="updateautomate-panel">
+				<div className="updatronix-panel">
 					<Tabs
 						orientation="vertical"
 						selectedTabId={selectedTabId}
@@ -67,24 +67,24 @@ export const SettingsPage = () => {
 						<Tabs.TabList>
 							<Tabs.Tab
 								tabId={TAB_LOGS}
-								title={__('Update logs', 'update-automate')}
+								title={__('Update logs', 'updatronix')}
 								icon={iconLogs}
 							>
-								{__('Update logs', 'update-automate')}
+								{__('Update logs', 'updatronix')}
 							</Tabs.Tab>
 							<Tabs.Tab
 								tabId={TAB_AUTO_UPDATES}
-								title={__('Auto-updates', 'update-automate')}
+								title={__('Auto-updates', 'updatronix')}
 								icon={iconUpdate}
 							>
-								{__('Auto-updates', 'update-automate')}
+								{__('Auto-updates', 'updatronix')}
 							</Tabs.Tab>
 							<Tabs.Tab
 								tabId={TAB_SETTINGS}
-								title={__('Settings', 'update-automate')}
+								title={__('Settings', 'updatronix')}
 								icon={iconSettings}
 							>
-								{__('Settings', 'update-automate')}
+								{__('Settings', 'updatronix')}
 							</Tabs.Tab>
 						</Tabs.TabList>
 						<Tabs.TabPanel tabId={TAB_LOGS}>

@@ -1,6 +1,6 @@
 @use '../abstracts/variables' as *;
 
-.updateautomate {
+.updatronix {
 	&-dashboard-wrap {
 		* {
 			box-sizing: border-box;
@@ -136,7 +136,7 @@
 	}
 }
 
-.updateautomate-logs {
+.updatronix-logs {
 	&-loading {
 		display: flex;
 		align-items: center;
@@ -178,13 +178,13 @@
 	}
 }
 
-.updateautomate-notes-modal {
-	.updateautomate-notes-content {
+.updatronix-notes-modal {
+	.updatronix-notes-content {
 		max-height: 70vh;
 		overflow-y: auto;
 	}
 
-	.updateautomate-notes-section {
+	.updatronix-notes-section {
 		margin-bottom: var(--wpds-dimension-gap-xl);
 
 		&:last-child {
@@ -197,8 +197,8 @@
 		}
 	}
 
-	.updateautomate-notes-text,
-	.updateautomate-notes-trace {
+	.updatronix-notes-text,
+	.updatronix-notes-trace {
 		margin: 0;
 		padding: var(--wpds-dimension-padding-md);
 		background: var(--wpds-color-bg-surface-neutral-weak);
@@ -210,11 +210,11 @@
 		line-height: 1.5;
 	}
 
-	.updateautomate-notes-trace {
+	.updatronix-notes-trace {
 		max-height: 250px;
 	}
 
-	.updateautomate-notes-toggle {
+	.updatronix-notes-toggle {
 		cursor: pointer;
 		font-weight: var(--wpds-font-weight-medium);
 		font-size: var(--wpds-font-size-md);
@@ -227,14 +227,14 @@
 		}
 	}
 
-	details[open] > .updateautomate-notes-toggle {
+	details[open] > .updatronix-notes-toggle {
 		margin-bottom: var(--wpds-dimension-gap-sm);
 	}
 }
 
-.updateautomate-settings-form {
+.updatronix-settings-form {
 
-	.updateautomate-settings-section {
+	.updatronix-settings-section {
 		margin-bottom: var(--wpds-dimension-gap-xl);
 
 		&-title {
@@ -245,22 +245,22 @@
 		}
 	}
 
-	.updateautomate-settings-checkboxes {
+	.updatronix-settings-checkboxes {
 		margin-top: var(--wpds-dimension-gap-sm);
 
-		.updateautomate-settings-label {
+		.updatronix-settings-label {
 			margin-bottom: var(--wpds-dimension-gap-xs);
 			font-weight: 600;
 		}
 
-		.updateautomate-settings-help {
+		.updatronix-settings-help {
 			color: var(--wpds-color-fg-content-neutral-weak);
 			font-size: var(--wpds-font-size-md);
 			margin-bottom: var(--wpds-dimension-gap-sm);
 		}
 	}
 
-	.updateautomate-settings-fieldset {
+	.updatronix-settings-fieldset {
 		border: none;
 		margin: 0;
 		padding: 0;
@@ -271,7 +271,7 @@
 		}
 	}
 
-	.updateautomate-settings-error {
+	.updatronix-settings-error {
 		margin: var(--wpds-dimension-gap-md) 0;
 	}
 
@@ -284,7 +284,7 @@
 	}
 }
 
-.updateautomate-panel-title {
+.updatronix-panel-title {
 	margin-top: 0;
 	margin-bottom: var(--wpds-dimension-gap-sm);
 	font-size: 1.5em;

@@ -1,4 +1,4 @@
-=== Update Automate ===
+=== Updatronix ===
 Contributors: @quentinldd
 Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, update control, logging
@@ -13,11 +13,11 @@ Manage your WordPress updates with confidence. Control auto-updates, capture tec
 
 == Description ==
 
-Update Automate provides a centralized, modern interface for managing how your WordPress site handles maintenance. By integrating deeply with the native WordPress update engine, the plugin gives you complete control over your site's evolution without introducing external dependencies or parallel setting systems.
+Updatronix provides a centralized, modern interface for managing how your WordPress site handles maintenance. By integrating deeply with the native WordPress update engine, the plugin gives you complete control over your site's evolution without introducing external dependencies or parallel setting systems.
 
-Unlike traditional update managers that focus solely on disabling features, Update Automate is built for the proactive administrator. It offers a comprehensive audit trail, granular notification routing, and high-level visibility into the background processes that keep your site secure. Whether you are managing a single blog or a complex multi-site network, Update Automate ensures you are never in the dark about a code change.
+Unlike traditional update managers that focus solely on disabling features, Updatronix is built for the proactive administrator. It offers a comprehensive audit trail, granular notification routing, and high-level visibility into the background processes that keep your site secure. Whether you are managing a single blog or a complex multi-site network, Updatronix ensures you are never in the dark about a code change.
 
-= Why choose Update Automate? =
+= Why choose Updatronix? =
 * Modern WordPress Admin Standards: Built entirely with React and Gutenberg components, the interface feels like a native part of WordPress, ensuring a fast and accessible experience.
 * Total Audit Transparency: Keep a detailed history of core, plugin, theme, and translation updates, including version "before and after" snapshots and user triggers.
 * Native Compatibility: Settings are written directly to the native WordPress options table. Your choices remain consistent even if the plugin is deactivated.
@@ -37,15 +37,15 @@ Every update event is captured with technical precision. The plugin records the 
 Take control of your inbox. Choose exactly which types of events trigger a notification. You can separate core update alerts from plugin notifications and ensure that critical error reports reach you immediately through smart routing.
 
 = Error and Recovery Handling =
-Updates can occasionally fail due to server timeouts or package errors. Update Automate includes a dedicated shutdown handler that captures logs even when a fatal error interrupts the process. This ensures you have the data needed to recover your site promptly.
+Updates can occasionally fail due to server timeouts or package errors. Updatronix includes a dedicated shutdown handler that captures logs even when a fatal error interrupts the process. This ensures you have the data needed to recover your site promptly.
 
 == Privacy Statement ==
 
-Update Automate is private by default and always will be. It does not collect, store, or transmit any personal data to third parties. All update logs are stored in a dedicated table in your own WordPress database. If you enable email notifications, emails are sent only to the addresses you configure using the standard WordPress mail function.
+Updatronix is private by default and always will be. It does not collect, store, or transmit any personal data to third parties. All update logs are stored in a dedicated table in your own WordPress database. If you enable email notifications, emails are sent only to the addresses you configure using the standard WordPress mail function.
 
 == Accessibility Statement ==
 
-Update Automate aims to be fully accessible to all of its users. The admin interface is built with WordPress components and follows WordPress accessibility guidelines.
+Updatronix aims to be fully accessible to all of its users. The admin interface is built with WordPress components and follows WordPress accessibility guidelines.
 
 == Screenshots ==
 
@@ -55,9 +55,9 @@ Update Automate aims to be fully accessible to all of its users. The admin inter
 
 == Installation ==
 
-1. Upload the plugin files to /wp-content/plugins/update-automate/ or install directly from the Plugins screen in your WordPress admin.
+1. Upload the plugin files to /wp-content/plugins/updatronix/ or install directly from the Plugins screen in your WordPress admin.
 2. Activate the plugin through the Plugins screen.
-3. Go to Tools then Update Automate, or Dashboard then Updates log, to view your update history and configure settings.
+3. Go to Tools then Updatronix, or Dashboard then Updates log, to view your update history and configure settings.
 
 On activation, the plugin creates a database table for logs and schedules a daily cleanup task. On deactivation, the scheduled task is removed; your log data is kept.
 
@@ -65,11 +65,11 @@ On activation, the plugin creates a database table for logs and schedules a dail
 
 = Does this plugin store data on external servers? =
 
-No. Update Automate is private by design. All logs and settings are stored exclusively in your own WordPress database.
+No. Updatronix is private by design. All logs and settings are stored exclusively in your own WordPress database.
 
 = Is this plugin compatible with managed hosting? =
 
-Yes. Update Automate uses standard WordPress hooks and APIs. It is designed to respect the restrictions placed by managed hosts and will notify you if certain update settings are locked at the server level.
+Yes. Updatronix uses standard WordPress hooks and APIs. It is designed to respect the restrictions placed by managed hosts and will notify you if certain update settings are locked at the server level.
 
 = How does the log cleanup work? =
 
@@ -77,7 +77,7 @@ The plugin includes a configurable retention policy. You can choose to keep logs
 
 = Does this plugin work on multisite? =
 
-Update Automate tracks the site ID for each log entry and uses WordPress site options for auto-update settings, which provides basic multisite compatibility. Full network-wide administration is planned for a future release.
+Updatronix tracks the site ID for each log entry and uses WordPress site options for auto-update settings, which provides basic multisite compatibility. Full network-wide administration is planned for a future release.
 
 = What happens to my logs if I deactivate the plugin? =
 
@@ -85,12 +85,12 @@ Your log data is kept in the database when you deactivate the plugin. Only the d
 
 = I have a suggestion =
 
-Suggestions are welcome. Please visit the [support forum on WordPress.org](https://wordpress.org/support/plugin/update-automate/) or open an issue on the [GitHub repository](https://github.com/quentin-ld/update-automate/).
+Suggestions are welcome. Please visit the [support forum on WordPress.org](https://wordpress.org/support/plugin/updatronix/) or open an issue on the [GitHub repository](https://github.com/quentin-ld/updatronix/).
 
 == Changelog ==
 
 = 1.0 =
-* Initial release of Update Automate.
+* Initial release of Updatronix.
 
 == Upgrade Notice ==
 

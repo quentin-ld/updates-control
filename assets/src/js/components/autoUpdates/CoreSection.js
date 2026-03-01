@@ -36,31 +36,28 @@ export function CoreSection({ core, constants, setCoreMode, busy }) {
 		{
 			label: __(
 				'Minor releases only (default — e.g. 6.4.1 to 6.4.2)',
-				'update-automate'
+				'updatronix'
 			),
 			value: 'minor',
 		},
 		{
 			label: __(
 				'All releases — major and minor (e.g. 6.4 to 6.5)',
-				'update-automate'
+				'updatronix'
 			),
 			value: 'all',
 		},
 		{
-			label: __(
-				'Disabled — no automatic core updates',
-				'update-automate'
-			),
+			label: __('Disabled — no automatic core updates', 'updatronix'),
 			value: 'disabled',
 		},
 	];
 
 	return (
-		<div className="updateautomate-autoupdates-section">
-			<h3 className="updateautomate-autoupdates-section-title">
+		<div className="updatronix-autoupdates-section">
+			<h3 className="updatronix-autoupdates-section-title">
 				<Icon icon={dashboardIcon} size={24} />
-				{__('Core updates', 'update-automate')}
+				{__('Core updates', 'updatronix')}
 			</h3>
 			<ConstantNotices
 				constants={constants}
@@ -68,7 +65,7 @@ export function CoreSection({ core, constants, setCoreMode, busy }) {
 				lockingOnly
 			/>
 			<RadioControl
-				label={__('Core auto-update mode', 'update-automate')}
+				label={__('Core auto-update mode', 'updatronix')}
 				selected={core.mode}
 				options={options}
 				onChange={(value) => setCoreMode(value)}
@@ -77,7 +74,7 @@ export function CoreSection({ core, constants, setCoreMode, busy }) {
 					locked
 						? __(
 								'A constant in your wp-config.php file controls this setting. To change it, edit that file directly.',
-								'update-automate'
+								'updatronix'
 							)
 						: ''
 				}

@@ -1,127 +1,127 @@
 <?php
 
 /**
- * Admin menu: Update Automate under Tools and Dashboard.
+ * Admin menu: Updatronix under Tools and Dashboard.
  *
- * @package updateautomate
+ * @package updatronix
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action('admin_menu', 'updateautomate_add_option_page');
+add_action('admin_menu', 'updatronix_add_option_page');
 /**
- * Adds Update Automate under Tools and a link under Dashboard > Update Automate.
+ * Adds Updatronix under Tools and a link under Dashboard > Updatronix.
  *
  * @return void
  */
-function updateautomate_add_option_page(): void {
+function updatronix_add_option_page(): void {
     add_management_page(
-        __('Update Automate', 'update-automate'),
-        __('Update Automate', 'update-automate'),
+        __('Updatronix', 'updatronix'),
+        __('Updatronix', 'updatronix'),
         'manage_options',
-        'update-automate',
-        'updateautomate_options_page'
+        'updatronix',
+        'updatronix_options_page'
     );
     add_submenu_page(
         'index.php',
-        __('Update Automate', 'update-automate'),
-        __('Updates log', 'update-automate'),
+        __('Updatronix', 'updatronix'),
+        __('Updates log', 'updatronix'),
         'manage_options',
-        'update-automate',
-        'updateautomate_options_page'
+        'updatronix',
+        'updatronix_options_page'
     );
 }
 
 /**
- * Outputs Update Automate settings page (shell; React app mounts in #updateautomate-settings).
+ * Outputs Updatronix settings page (shell; React app mounts in #updatronix-settings).
  *
  * @return void
  */
-function updateautomate_options_page(): void {
-    $plugin_data = get_file_data(updateautomate_PLUGIN_FILE, ['Version' => 'Version'], 'plugin');
+function updatronix_options_page(): void {
+    $plugin_data = get_file_data(updatronix_PLUGIN_FILE, ['Version' => 'Version'], 'plugin');
     $plugin_version = $plugin_data['Version'] ?? '';
     ?>
-    <div class="wrap updateautomate-dashboard-wrap">
-        <header class="updateautomate-header">
-            <div class="updateautomate-header-title">
-                <h1><?php echo esc_html__('Update Automate', 'update-automate'); ?></h1>
+    <div class="wrap updatronix-dashboard-wrap">
+        <header class="updatronix-header">
+            <div class="updatronix-header-title">
+                <h1><?php echo esc_html__('Updatronix', 'updatronix'); ?></h1>
                 <?php if ($plugin_version) { ?>
-                    <p class="updateautomate-plugin-version">
+                    <p class="updatronix-plugin-version">
                         <?php
                         printf(
                             /* translators: %s: plugin version number */
-                            esc_html__('Version %s', 'update-automate'),
+                            esc_html__('Version %s', 'updatronix'),
                             esc_html($plugin_version)
                         );
                     echo ' — ';
                     ?>
-                        <a href="https://wordpress.org/plugins/update-automate/#developers"
+                        <a href="https://wordpress.org/plugins/updatronix/#developers"
                            target="_blank"
                            rel="noopener noreferrer"
-                           aria-label="<?php echo esc_attr__('View Update Automate changelog on WordPress.org (opens in a new tab)', 'update-automate'); ?>">
-                            <?php echo esc_html__('What\'s new?', 'update-automate'); ?>
+                           aria-label="<?php echo esc_attr__('View Updatronix changelog on WordPress.org (opens in a new tab)', 'updatronix'); ?>">
+                            <?php echo esc_html__('What\'s new?', 'updatronix'); ?>
                         </a>
                     </p>
                 <?php } ?>
             </div>
-            <div class="updateautomate-header-navigation">
-                <a href="https://holdmywp.com/update-automate/"
+            <div class="updatronix-header-navigation">
+                <a href="https://holdmywp.com/updatronix/"
                    target="_blank"
                    rel="noopener noreferrer"
-                   aria-label="<?php echo esc_attr__('Read the Update Automate documentation (opens in a new tab)', 'update-automate'); ?>">
-                    <?php echo esc_html__('Documentation', 'update-automate'); ?>
+                   aria-label="<?php echo esc_attr__('Read the Updatronix documentation (opens in a new tab)', 'updatronix'); ?>">
+                    <?php echo esc_html__('Documentation', 'updatronix'); ?>
                 </a>
-                <a href="https://wordpress.org/plugins/update-automate/#reviews"
+                <a href="https://wordpress.org/plugins/updatronix/#reviews"
                    target="_blank"
                    rel="noopener noreferrer"
-                   aria-label="<?php echo esc_attr__('Leave a review for Update Automate on WordPress.org (opens in a new tab)', 'update-automate'); ?>">
-                    <?php echo esc_html__('Leave a review', 'update-automate'); ?>
+                   aria-label="<?php echo esc_attr__('Leave a review for Updatronix on WordPress.org (opens in a new tab)', 'updatronix'); ?>">
+                    <?php echo esc_html__('Leave a review', 'updatronix'); ?>
                 </a>
                 <a href="https://buymeacoffee.com/quentinld"
                    target="_blank"
                    rel="noopener noreferrer"
                    class="components-button is-next-40px-default-size is-tertiary"
-                   aria-label="<?php echo esc_attr__('Support development: Buy me a coffee (opens in a new tab)', 'update-automate'); ?>">
-                    <?php echo esc_html__('Buy me a coffee', 'update-automate'); ?> <span aria-hidden="true">☕</span>
+                   aria-label="<?php echo esc_attr__('Support development: Buy me a coffee (opens in a new tab)', 'updatronix'); ?>">
+                    <?php echo esc_html__('Buy me a coffee', 'updatronix'); ?> <span aria-hidden="true">☕</span>
                 </a>
             </div>
         </header>
-        <main id="updateautomate-settings" class="updateautomate-settings">
-            <div class="updateautomate-loading card">
-                <div class="updateautomate-loading-body">
-                    <p class="updateautomate-loading-text">
-                        <?php echo esc_html__('Loading your Update Automate settings…', 'update-automate'); ?>
+        <main id="updatronix-settings" class="updatronix-settings">
+            <div class="updatronix-loading card">
+                <div class="updatronix-loading-body">
+                    <p class="updatronix-loading-text">
+                        <?php echo esc_html__('Loading your Updatronix settings…', 'updatronix'); ?>
                     </p>
                 </div>
             </div>
         </main>
-        <footer class="updateautomate-footer">
-            <div class="updateautomate-footer-title">
+        <footer class="updatronix-footer">
+            <div class="updatronix-footer-title">
                 <p>
                     <?php
                     echo wp_kses_post(sprintf(
                         /* translators: 1: decorative heart emoji, 2: author name */
-                        __('Made with %1$s by %2$s', 'update-automate'),
+                        __('Made with %1$s by %2$s', 'updatronix'),
                         '<span aria-hidden="true">❤️</span>',
                         'Quentin Le Duff'
                     ));
     ?>
                 </p>
             </div>
-            <div class="updateautomate-footer-navigation">
+            <div class="updatronix-footer-navigation">
                 <a href="https://holdmywp.com/"
                    target="_blank"
                    rel="noopener noreferrer"
-                   aria-label="<?php echo esc_attr__('Visit the developer website (opens in a new tab)', 'update-automate'); ?>">
-                    <?php echo esc_html__('Developer website', 'update-automate'); ?>
+                   aria-label="<?php echo esc_attr__('Visit the developer website (opens in a new tab)', 'updatronix'); ?>">
+                    <?php echo esc_html__('Developer website', 'updatronix'); ?>
                 </a>
-                <a href="https://github.com/quentin-ld/update-automate/"
+                <a href="https://github.com/quentin-ld/updatronix/"
                    target="_blank"
                    rel="noopener noreferrer"
-                   aria-label="<?php echo esc_attr__('View the source code on GitHub (opens in a new tab)', 'update-automate'); ?>">
-                    <?php echo esc_html__('Source code', 'update-automate'); ?>
+                   aria-label="<?php echo esc_attr__('View the source code on GitHub (opens in a new tab)', 'updatronix'); ?>">
+                    <?php echo esc_html__('Source code', 'updatronix'); ?>
                 </a>
             </div>
         </footer>

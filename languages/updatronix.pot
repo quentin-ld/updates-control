@@ -2,49 +2,49 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Update Automate 1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/update-automate\n"
+"Project-Id-Version: Updatronix 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/updatronix\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-27T17:13:26+00:00\n"
+"POT-Creation-Date: 2026-03-01T10:35:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: update-automate\n"
+"X-Domain: updatronix\n"
 
 #. Plugin Name of the plugin
-#: update-automate.php
+#: updatronix.php
 #: inc/admin/menu.php:21
 #: inc/admin/menu.php:22
 #: inc/admin/menu.php:29
 #: inc/admin/menu.php:49
-msgid "Update Automate"
+msgid "Updatronix"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: update-automate.php
-msgid "https://wordpress.org/plugins/update-automate/"
+#: updatronix.php
+msgid "https://wordpress.org/plugins/updatronix/"
 msgstr ""
 
 #. Description of the plugin
-#: update-automate.php
+#: updatronix.php
 msgid "Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places."
 msgstr ""
 
 #. Author of the plugin
-#: update-automate.php
+#: updatronix.php
 msgid "Quentin Le Duff"
 msgstr ""
 
 #. Author URI of the plugin
-#: update-automate.php
+#: updatronix.php
 msgid "https://profiles.wordpress.org/quentinldd/"
 msgstr ""
 
 #: inc/admin/links.php:25
-msgid "Open Update Automate settings"
+msgid "Open Updatronix settings"
 msgstr ""
 
 #: inc/admin/links.php:26
@@ -56,7 +56,7 @@ msgstr ""
 
 #: inc/admin/links.php:46
 #: inc/admin/menu.php:63
-msgid "View Update Automate changelog on WordPress.org (opens in a new tab)"
+msgid "View Updatronix changelog on WordPress.org (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/links.php:47
@@ -64,7 +64,7 @@ msgid "Changelog"
 msgstr ""
 
 #: inc/admin/links.php:52
-msgid "Read Update Automate documentation (opens in a new tab)"
+msgid "Read Updatronix documentation (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/links.php:53
@@ -72,7 +72,7 @@ msgid "Docs"
 msgstr ""
 
 #: inc/admin/links.php:58
-msgid "Support the development of Update Automate (opens in a new tab)"
+msgid "Support the development of Updatronix (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/links.php:59
@@ -94,7 +94,7 @@ msgid "What's new?"
 msgstr ""
 
 #: inc/admin/menu.php:73
-msgid "Read the Update Automate documentation (opens in a new tab)"
+msgid "Read the Updatronix documentation (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/menu.php:74
@@ -102,7 +102,7 @@ msgid "Documentation"
 msgstr ""
 
 #: inc/admin/menu.php:79
-msgid "Leave a review for Update Automate on WordPress.org (opens in a new tab)"
+msgid "Leave a review for Updatronix on WordPress.org (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/menu.php:80
@@ -118,7 +118,7 @@ msgid "Buy me a coffee"
 msgstr ""
 
 #: inc/admin/menu.php:95
-msgid "Loading your Update Automate settings…"
+msgid "Loading your Updatronix settings…"
 msgstr ""
 
 #. translators: 1: decorative heart emoji, 2: author name
@@ -254,7 +254,7 @@ msgid "Title"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:85
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:189
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:186
 msgid "Version"
 msgstr ""
 
@@ -275,7 +275,7 @@ msgid "User"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:150
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:169
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:166
 msgid "Status"
 msgstr ""
 
@@ -371,66 +371,66 @@ msgctxt "empty value fallback"
 msgid "—"
 msgstr ""
 
-#: assets/src/js/components/activityLog/utils.js:62
+#: assets/src/js/components/activityLog/utils.js:58
 msgid "Bulk action"
 msgstr ""
 
-#: assets/src/js/components/activityLog/utils.js:65
+#: assets/src/js/components/activityLog/utils.js:61
 msgid "Single action"
 msgstr ""
 
-#: assets/src/js/components/activityLog/utils.js:77
+#: assets/src/js/components/activityLog/utils.js:73
 msgid "Item"
 msgstr ""
 
 #. translators: 1: previous version number, 2: new version number
-#: assets/src/js/components/activityLog/utils.js:98
+#: assets/src/js/components/activityLog/utils.js:94
 #, js-format
 msgid "v%1$s → v%2$s"
 msgstr ""
 
 #. translators: %s: version number
-#: assets/src/js/components/activityLog/utils.js:106
-#: assets/src/js/components/activityLog/utils.js:113
+#: assets/src/js/components/activityLog/utils.js:102
+#: assets/src/js/components/activityLog/utils.js:109
 #, js-format
 msgid "v%s"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:48
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:47
 msgid "Loading auto-update settings…"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:57
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:55
 #: assets/src/js/pages/SettingsPage.js:77
 #: assets/src/js/pages/SettingsPage.js:80
 msgid "Auto-updates"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:60
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:58
 msgid "Choose which parts of your site update automatically: core, plugins, themes, and translations."
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:84
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:82
 msgid "Themes"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:85
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:83
 msgid "Theme"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:86
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:84
 msgid "Search themes"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:98
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:96
 msgid "Plugins"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:99
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:97
 msgid "Plugin"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:100
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:98
 msgid "Search plugins"
 msgstr ""
 
@@ -462,16 +462,16 @@ msgstr ""
 msgid "Disabled — no automatic core updates"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:63
+#: assets/src/js/components/autoUpdates/CoreSection.js:60
 #: assets/src/js/components/SettingsPanel.js:20
 msgid "Core updates"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:71
+#: assets/src/js/components/autoUpdates/CoreSection.js:68
 msgid "Core auto-update mode"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:78
+#: assets/src/js/components/autoUpdates/CoreSection.js:75
 msgid "A constant in your wp-config.php file controls this setting. To change it, edit that file directly."
 msgstr ""
 
@@ -495,23 +495,23 @@ msgstr ""
 msgid "Enable auto-update"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:174
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:171
 msgid "Active"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:178
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:175
 msgid "Inactive"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:201
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:198
 msgid "Description"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:213
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:210
 msgid "Details"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:222
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:219
 msgid "View"
 msgstr ""
 
@@ -635,11 +635,11 @@ msgstr ""
 msgid "Translation auto-update setting saved."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:144
+#: assets/src/js/hooks/useAutoUpdates.js:141
 msgid "The translation auto-update setting could not be changed. Try again."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:168
+#: assets/src/js/hooks/useAutoUpdates.js:165
 msgid "The notice could not be dismissed. Try again."
 msgstr ""
 
@@ -647,14 +647,14 @@ msgstr ""
 msgid "Your update logs could not be loaded. Try refreshing the page."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:75
+#: assets/src/js/hooks/usePluginSettings.js:74
 msgid "Settings saved successfully."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:79
+#: assets/src/js/hooks/usePluginSettings.js:78
 msgid "Your settings were saved, but the server did not return the updated values. Refresh the page to confirm."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:88
+#: assets/src/js/hooks/usePluginSettings.js:87
 msgid "Your settings could not be saved. Check your connection and try again."
 msgstr ""

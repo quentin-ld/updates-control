@@ -5,11 +5,11 @@ import { SettingsPage } from './js/pages/SettingsPage';
 import './index.scss';
 
 /**
- * Render the updateautomate settings page once the DOM is ready.
+ * Render the updatronix settings page once the DOM is ready.
  * Notices use the default context wp-data and wp-notices are script dependencies.
  */
 domReady(() => {
-	const rootEl = document.getElementById('updateautomate-settings');
+	const rootEl = document.getElementById('updatronix-settings');
 	if (!rootEl || !(rootEl instanceof HTMLElement)) {
 		return;
 	}

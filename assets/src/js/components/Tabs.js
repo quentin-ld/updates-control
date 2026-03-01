@@ -52,7 +52,7 @@ export const Tabs = ({
 		return tabs
 			.map((tab) => {
 				const id = tab.getAttribute('id');
-				return id ? id.replace('updateautomate-tab-', '') : null;
+				return id ? id.replace('updatronix-tab-', '') : null;
 			})
 			.filter(Boolean);
 	}, []);
@@ -70,9 +70,7 @@ export const Tabs = ({
 
 	return (
 		<TabsContext.Provider value={contextValue}>
-			<div
-				className={`updateautomate-tabs updateautomate-tabs--${orientation}`}
-			>
+			<div className={`updatronix-tabs updatronix-tabs--${orientation}`}>
 				{children}
 			</div>
 		</TabsContext.Provider>
@@ -92,7 +90,7 @@ export const TabList = ({ children }) => {
 	return (
 		<div
 			ref={tabListRef}
-			className={`updateautomate-tabs__list updateautomate-tabs__list--${orientation}`}
+			className={`updatronix-tabs__list updatronix-tabs__list--${orientation}`}
 			role="tablist"
 			aria-orientation={orientation}
 		>
@@ -181,7 +179,7 @@ export const Tab = ({
 		) {
 			const targetTabId = tabIds[targetIndex];
 			const targetTabElement = document.getElementById(
-				`updateautomate-tab-${targetTabId}`
+				`updatronix-tab-${targetTabId}`
 			);
 			if (targetTabElement) {
 				targetTabElement.focus();
@@ -199,22 +197,22 @@ export const Tab = ({
 	return (
 		<button
 			ref={tabRef}
-			className={`updateautomate-tabs__tab ${isSelected ? 'updateautomate-tabs__tab--is-active' : ''} ${icon ? 'updateautomate-tabs__tab--has-icon' : ''} ${className}`.trim()}
+			className={`updatronix-tabs__tab ${isSelected ? 'updatronix-tabs__tab--is-active' : ''} ${icon ? 'updatronix-tabs__tab--has-icon' : ''} ${className}`.trim()}
 			role="tab"
 			aria-selected={isSelected}
-			aria-controls={`updateautomate-tab-panel-${tabId}`}
-			id={`updateautomate-tab-${tabId}`}
+			aria-controls={`updatronix-tab-panel-${tabId}`}
+			id={`updatronix-tab-${tabId}`}
 			tabIndex={isSelected ? 0 : -1}
 			onClick={() => onSelect(tabId)}
 			onKeyDown={handleKeyDown}
 			onFocus={handleFocus}
 		>
 			{icon && (
-				<span className="updateautomate-tabs__tab-icon" aria-hidden>
+				<span className="updatronix-tabs__tab-icon" aria-hidden>
 					<Icon icon={icon} size={iconSize} />
 				</span>
 			)}
-			<span className="updateautomate-tabs__tab-label">
+			<span className="updatronix-tabs__tab-label">
 				{title || children}
 			</span>
 		</button>
@@ -252,10 +250,10 @@ export const TabPanel = ({ tabId, children }) => {
 	return (
 		<div
 			ref={panelRef}
-			className="updateautomate-tabs__panel"
+			className="updatronix-tabs__panel"
 			role="tabpanel"
-			id={`updateautomate-tab-panel-${tabId}`}
-			aria-labelledby={`updateautomate-tab-${tabId}`}
+			id={`updatronix-tab-panel-${tabId}`}
+			aria-labelledby={`updatronix-tab-${tabId}`}
 			hidden={!isSelected}
 			aria-hidden={!isSelected}
 		>

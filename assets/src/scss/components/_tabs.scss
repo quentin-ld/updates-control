@@ -1,6 +1,6 @@
 @use '../abstracts/variables' as *;
 
-.updateautomate {
+.updatronix {
 	&-tabs {
 		display: grid;
 		width: 100%;
@@ -90,7 +90,7 @@
 				}
 			}
 
-			.updateautomate-tabs__list--vertical & {
+			.updatronix-tabs__list--vertical & {
 				width: 100%;
 				justify-content: flex-start;
 			}

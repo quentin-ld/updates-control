@@ -24,7 +24,7 @@ export function useLogs() {
 				status: params.status || '',
 			}).toString();
 			const response = await apiFetch({
-				path: `updateautomate/v1/logs?${query}`,
+				path: `updatronix/v1/logs?${query}`,
 			});
 			setLogs(response.logs || []);
 			setTotal(response.total ?? 0);
@@ -33,7 +33,7 @@ export function useLogs() {
 				e?.message ||
 					__(
 						'Your update logs could not be loaded. Try refreshing the page.',
-						'update-automate'
+						'updatronix'
 					)
 			);
 		} finally {
@@ -44,7 +44,7 @@ export function useLogs() {
 	const deleteLog = useCallback(async (id) => {
 		try {
 			await apiFetch({
-				path: `updateautomate/v1/logs/${id}`,
+				path: `updatronix/v1/logs/${id}`,
 				method: 'DELETE',
 			});
 			setLogs((prev) =>

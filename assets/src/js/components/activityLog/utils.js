@@ -5,11 +5,7 @@ import { __, _x, sprintf } from '@wordpress/i18n';
 import { ACTION_LABELS } from './constants';
 
 /** Translated fallback for empty values (em dash). */
-export const EMPTY_FALLBACK = _x(
-	'—',
-	'empty value fallback',
-	'update-automate'
-);
+export const EMPTY_FALLBACK = _x('—', 'empty value fallback', 'updatronix');
 
 /**
  * Map log status to badge intent (success, warning, error, default).
@@ -59,10 +55,10 @@ export function formatDate(dateStr) {
  */
 export function getContextLabel(updateContext) {
 	if (updateContext === 'bulk') {
-		return __('Bulk action', 'update-automate');
+		return __('Bulk action', 'updatronix');
 	}
 	if (updateContext === 'single') {
-		return __('Single action', 'update-automate');
+		return __('Single action', 'updatronix');
 	}
 	return updateContext || EMPTY_FALLBACK;
 }
@@ -74,7 +70,7 @@ export function getContextLabel(updateContext) {
  * @return {string} Title.
  */
 export function getActivityTitle(item) {
-	const name = item.item_name || __('Item', 'update-automate');
+	const name = item.item_name || __('Item', 'updatronix');
 	const actionLabel =
 		ACTION_LABELS[item.action_type] ||
 		item.action_display ||
@@ -95,7 +91,7 @@ export function getActivityDescription(item) {
 	if (from && to) {
 		return sprintf(
 			/* translators: 1: previous version number, 2: new version number */
-			__('v%1$s → v%2$s', 'update-automate'),
+			__('v%1$s → v%2$s', 'updatronix'),
 			from,
 			to
 		);
@@ -103,14 +99,14 @@ export function getActivityDescription(item) {
 	if (to) {
 		return sprintf(
 			/* translators: %s: version number */
-			__('v%s', 'update-automate'),
+			__('v%s', 'updatronix'),
 			to
 		);
 	}
 	if (from) {
 		return sprintf(
 			/* translators: %s: version number */
-			__('v%s', 'update-automate'),
+			__('v%s', 'updatronix'),
 			from
 		);
 	}

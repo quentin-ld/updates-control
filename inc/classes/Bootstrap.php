@@ -3,7 +3,7 @@
 /**
  * Plugin bootstrap: loads classes and registers hooks.
  *
- * @package updateautomate
+ * @package updatronix
  */
 
 if (!defined('ABSPATH')) {
@@ -11,9 +11,9 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Bootstraps the Update Automate plugin.
+ * Bootstraps the Updatronix plugin.
  */
-final class UpdateAutomate_Bootstrap {
+final class Updatronix_Bootstrap {
     /**
      * Initialize the plugin: load classes and register hooks.
      *
@@ -22,12 +22,12 @@ final class UpdateAutomate_Bootstrap {
     public static function init(): void {
         self::load_classes();
         self::on_activation_create_table();
-        UpdateAutomate_Cron::register();
-        UpdateAutomate_Update_Logger::register();
-        UpdateAutomate_ErrorHandler::register();
-        UpdateAutomate_Settings::register();
-        UpdateAutomate_Notifications::register();
-        UpdateAutomate_AutoUpdates::register();
+        Updatronix_Cron::register();
+        Updatronix_Update_Logger::register();
+        Updatronix_ErrorHandler::register();
+        Updatronix_Settings::register();
+        Updatronix_Notifications::register();
+        Updatronix_AutoUpdates::register();
     }
 
     /**
@@ -62,11 +62,11 @@ final class UpdateAutomate_Bootstrap {
      * @return void
      */
     private static function on_activation_create_table(): void {
-        $version = get_option(UpdateAutomate_Database::OPTION_DB_VERSION, '');
-        if ($version === UpdateAutomate_Database::DB_VERSION && UpdateAutomate_Database::table_exists()) {
+        $version = get_option(Updatronix_Database::OPTION_DB_VERSION, '');
+        if ($version === Updatronix_Database::DB_VERSION && Updatronix_Database::table_exists()) {
             return;
         }
 
-        UpdateAutomate_Database::create_table();
+        Updatronix_Database::create_table();
     }
 }
