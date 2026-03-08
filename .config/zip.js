@@ -53,7 +53,8 @@ archive.glob('**/*', {
     'phpstan-bootstrap.php',
     'workflow.md',
     'docs/**',
-    'wordpress-org/**'
+    'wordpress-org/**',
+    'FEATURE_REQUEST.md'
   ],
 });
 
