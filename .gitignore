@@ -384,3 +384,5 @@ library/vendors/composer
 assets/img/.DS_Store
 
 docs/*
+.cursor/
+FEATURE_REQUEST.md

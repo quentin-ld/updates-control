@@ -26,7 +26,6 @@ Updatronix enforces strict coding standards and static analysis to avoid bugs an
 
 All configuration files are stored in the `.config` folder:
 - `.config/.eslintrc.js` - ESLint configuration
-- `.config/.prettierrc.js` - Prettier configuration
 - `.config/.php-cs-fixer.php` - PHP CS Fixer configuration
 - `.config/phpstan.neon` - PHPStan configuration
 - `.config/phpstan-bootstrap.php` - PHPStan bootstrap file
@@ -50,47 +49,11 @@ Run JavaScript/React linting with:
 npm run lint
 ```
 - ESLint (configured in `.config/.eslintrc.js`) checks for code quality, JSDoc alignment, and best practices.
-- Prettier (configured in `.config/.prettierrc.js`) enforces consistent formatting.
 
 To automatically fix fixable issues:
 ```bash
 npm run lint -- --fix
 ```
-
-### Plugin Check (PCP)
-
-[Plugin Check](https://wordpress.org/plugins/plugin-check/) (PCP) is the **WordPress.org directory compliance tool**. It is separate from PHPStan and runs additional checks (PHPCS, security, i18n, etc.). Errors you see in **Tools → Plugin Check** in WP Admin come from PCP, not from PHPStan.
-
-**Ignoring PCP errors:**
-
-1. **WP-CLI (recommended)**
-   Run Plugin Check with ignore/exclude options:
-   ```bash
-   # Ignore specific error codes (use the exact code from the PCP report)
-   wp plugin check updatronix --ignore-codes=WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
-
-   # Exclude entire checks (e.g. a whole category)
-   wp plugin check updatronix --exclude-checks=plugin_updater_detected,update_modification_detected
-
-   # Combine: exclude checks and ignore codes
-   wp plugin check updatronix --exclude-checks=plugin_updater_detected --ignore-codes=WordPress.DB.DirectDatabaseQuery.DirectQuery
-   ```
-   Use the **exact code** from the "Code" column in the Plugin Check report (e.g. `WordPress.WP.I18n.MissingTranslatorsComment`).
-
-2. **In-code `phpcs:ignore`**
-   Many PCP results come from PHPCS. The `// phpcs:ignore Sniff.Name` comments in this plugin are for those PHPCS sniffs. If a warning still appears in PCP, either the sniff name in the comment doesn't match exactly, or that check is not PHPCS-based; in that case use `--ignore-codes` or `--exclude-checks` when running Plugin Check via WP-CLI.
-
-3. **Official CLI reference**
-   Full options: [Plugin Check CLI documentation](https://github.com/WordPress/plugin-check/blob/trunk/docs/CLI.md) (`--ignore-codes`, `--exclude-checks`, `--exclude-directories`, `--exclude-files`, etc.).
-
-### Code Formatting
-
-Format code with Prettier:
-```bash
-npm run format
-```
-
-This will format all JavaScript files according to the Prettier configuration.
 
 ## 🛠️ Development Workflow
 

@@ -16,8 +16,19 @@ if (!defined('ABSPATH')) {
 
 /**
  * Redirect native WordPress update emails to the plugin's recipient.
+ *
+ * When the detailed (debug) email is sent by WordPress, the standard summary emails
+ * (core, plugin, theme) are suppressed so the user receives only one email per run.
+ * The standard email is used as fallback when the detailed email is not sent.
  */
 final class Updatronix_Notifications {
+    /**
+     * Set to true when we allow the debug (detailed) email this run; used to suppress standard emails.
+     *
+     * @var bool
+     */
+    private static bool $detailed_email_sent_this_run = false;
+
     /**
      * Register filters for native WordPress update notification emails.
      *
@@ -108,6 +119,7 @@ final class Updatronix_Notifications {
 
     /**
      * Only send core update email when "core" is in notify_on; for fail/critical also require "error".
+     * Suppress standard core email when the detailed (debug) email was already sent this run.
      *
      * @param bool   $send        Whether to send. Default true.
      * @param string $type        success, fail, manual, critical.
@@ -121,6 +133,10 @@ final class Updatronix_Notifications {
         }
 
         if (!$send) {
+            return false;
+        }
+
+        if (self::$detailed_email_sent_this_run) {
             return false;
         }
 
@@ -169,6 +185,7 @@ final class Updatronix_Notifications {
 
     /**
      * Only send plugin update email when "plugin" is in notify_on.
+     * Suppress when the detailed (debug) email was already sent this run.
      *
      * @param bool               $enabled        Default true.
      * @param array<int, object> $update_results Plugin update results.
@@ -183,6 +200,10 @@ final class Updatronix_Notifications {
             return false;
         }
 
+        if (self::$detailed_email_sent_this_run) {
+            return false;
+        }
+
         if (self::has_notify('plugin')) {
             return true;
         }
@@ -192,6 +213,7 @@ final class Updatronix_Notifications {
 
     /**
      * Only send theme update email when "theme" is in notify_on.
+     * Suppress when the detailed (debug) email was already sent this run.
      *
      * @param bool               $enabled        Default true.
      * @param array<int, object> $update_results Theme update results.
@@ -203,6 +225,10 @@ final class Updatronix_Notifications {
         }
 
         if (!$enabled) {
+            return false;
+        }
+
+        if (self::$detailed_email_sent_this_run) {
             return false;
         }
 
@@ -232,6 +258,7 @@ final class Updatronix_Notifications {
 
     /**
      * Enable debug email when translation/error notifications require it.
+     * When we allow the debug email, mark so standard (core/plugin/theme) emails are suppressed this run.
      *
      * @param bool $development_version WordPress default for debug mail sending.
      * @return bool
@@ -242,6 +269,14 @@ final class Updatronix_Notifications {
         }
 
         if (self::has_notify('translation') || self::has_notify('error')) {
+            self::$detailed_email_sent_this_run = true;
+
+            return true;
+        }
+
+        if ($development_version) {
+            self::$detailed_email_sent_this_run = true;
+
             return true;
         }
 

@@ -3,7 +3,7 @@
  */
 
 import { Icon, RadioControl } from '@wordpress/components';
-import { dashboard as dashboardIcon } from '@wordpress/icons';
+import { wordpress as coreIcon } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { ConstantNotices } from './ConstantNotices';
 
@@ -56,7 +56,7 @@ export function CoreSection({ core, constants, setCoreMode, busy }) {
 	return (
 		<div className="updatronix-autoupdates-section">
 			<h3 className="updatronix-autoupdates-section-title">
-				<Icon icon={dashboardIcon} size={24} />
+				<Icon icon={coreIcon} size={24} />
 				{__('Core updates', 'updatronix')}
 			</h3>
 			<ConstantNotices

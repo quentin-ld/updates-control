@@ -17,14 +17,32 @@ import {
 import { __ } from '@wordpress/i18n';
 
 const NOTIFY_TYPES = [
-	{ key: 'core', label: __('Core updates', 'updatronix') },
+	{ key: 'core', label: __('Core (WordPress) updates', 'updatronix') },
 	{ key: 'plugin', label: __('Plugin updates', 'updatronix') },
 	{ key: 'theme', label: __('Theme updates', 'updatronix') },
-	{ key: 'translation', label: __('Translation updates', 'updatronix') },
-	{ key: 'error', label: __('Update errors', 'updatronix') },
+	{
+		key: 'translation',
+		label: __('Translation updates', 'updatronix'),
+		help: __(
+			'Only in the detailed report; WordPress does not send a separate translation email.',
+			'updatronix'
+		),
+	},
+	{
+		key: 'error',
+		label: __('Update failures', 'updatronix'),
+		help: __(
+			'Same summary emails when an update fails (core or plugin/theme).',
+			'updatronix'
+		),
+	},
 	{
 		key: 'technical',
-		label: __('Technical issues (recovery mode)', 'updatronix'),
+		label: __('Recovery mode (technical email)', 'updatronix'),
+		help: __(
+			'WordPress recovery mode technical email when the site enters recovery mode.',
+			'updatronix'
+		),
 	},
 ];
 
@@ -154,15 +172,16 @@ export const SettingsPanel = memo(function SettingsPanel({
 						</p>
 						<p className="updatronix-settings-help">
 							{__(
-								'Check the types of updates you want to receive emails about. Unchecked types will not send emails.',
+								'Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behaviour.',
 								'updatronix'
 							)}
 						</p>
-						{NOTIFY_TYPES.map(({ key, label }) => (
+						{NOTIFY_TYPES.map(({ key, label, help: itemHelp }) => (
 							<CheckboxControl
 								key={key}
 								__nextHasNoMarginBottom
 								label={label}
+								help={itemHelp}
 								checked={settings.notifyOn.includes(key)}
 								onChange={(checked) =>
 									handleNotifyChange(key, checked)

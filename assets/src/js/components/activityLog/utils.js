@@ -2,7 +2,7 @@
  * Pure helpers for activity log display and formatting.
  */
 import { __, _x, sprintf } from '@wordpress/i18n';
-import { ACTION_LABELS } from './constants';
+import { ACTION_LABELS, LOG_TYPE_PREFIX } from './constants';
 
 /** Translated fallback for empty values (em dash). */
 export const EMPTY_FALLBACK = _x('—', 'empty value fallback', 'updatronix');
@@ -64,7 +64,8 @@ export function getContextLabel(updateContext) {
 }
 
 /**
- * Build activity title: [item name] + " — " + [action].
+ * Build activity title: [type prefix] + [item name] + " — " + [action].
+ * e.g. "Plugin: Akismet — Update", "Core: WordPress — Update".
  *
  * @param {Object} item Log item.
  * @return {string} Title.
@@ -76,7 +77,10 @@ export function getActivityTitle(item) {
 		item.action_display ||
 		item.action_type ||
 		'';
-	return actionLabel ? `${name} — ${actionLabel}` : name;
+	const base = actionLabel ? `${name} — ${actionLabel}` : name;
+	const typeKey = String(item.log_type || '').toLowerCase();
+	const prefix = LOG_TYPE_PREFIX[typeKey];
+	return prefix ? `${prefix} ${base}` : base;
 }
 
 /**
