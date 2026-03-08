@@ -48,3 +48,12 @@ vendor
 workflow.md
 wp-cli.local.yml
 docs/*
+.cursor/
+.github/
+.sublime/
+.vscode/
+.wordpress-org/
+.gitmodules
+.gitignore
+.gitattributes
+.gitignore

@@ -30,10 +30,14 @@ archive.glob('**/*', {
     '.git/**',
     '.gitignore',
     '.gitattributes',
+    '.gitmodules',
+    '.github/**',
     '.config/**',
+    '.cursor/**',
     '.distignore',
     '.php-cs-fixer.php',
     '.prettierrc*',
+    '.sublime/**',
     '.vscode/**',
     '.wordpress-org/**',
     'composer.json',
@@ -48,7 +52,8 @@ archive.glob('**/*', {
     'phpstan.neon',
     'phpstan-bootstrap.php',
     'workflow.md',
-    'docs/**'
+    'docs/**',
+    'wordpress-org/**'
   ],
 });
 
