@@ -86,7 +86,7 @@ export function ItemsDataViewSection({
 	});
 
 	const handleChangeView = useCallback((nextView) => {
-		setView((prev) => ({
+		setView(() => ({
 			...nextView,
 			fields: FIXED_FIELDS,
 			layout: {

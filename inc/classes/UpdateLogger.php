@@ -415,7 +415,7 @@ final class Updatronix_Update_Logger {
      */
     public static function store_core_version_before(bool $result, array $hook_extra = []): bool {
         $type = $hook_extra['type'] ?? '';
-        if ($type === 'core') {
+        if ($type === 'core' && get_option(self::OPTION_CORE_VERSION_BEFORE, '') === '') {
             update_option(self::OPTION_CORE_VERSION_BEFORE, get_bloginfo('version'));
         }
         if (!empty($hook_extra['plugin']) && is_string($hook_extra['plugin'])) {
@@ -481,8 +481,13 @@ final class Updatronix_Update_Logger {
         if (!$upgrader instanceof \Core_Upgrader) {
             return $reply;
         }
-        $version_before = get_bloginfo('version');
-        update_option(self::OPTION_CORE_VERSION_BEFORE, $version_before);
+        $current_version = get_bloginfo('version');
+        // Only set version_before on the first step of a (possibly multi-step) core update,
+        // so automatic partial+full updates log as "6.9.1 → 6.9.2" instead of "Reinstall 6.9.2".
+        if (get_option(self::OPTION_CORE_VERSION_BEFORE, '') === '') {
+            update_option(self::OPTION_CORE_VERSION_BEFORE, $current_version);
+        }
+        $version_before = get_option(self::OPTION_CORE_VERSION_BEFORE, $current_version);
         self::$core_feedback = [];
         self::$core_package_url = $package;
         $version_after = '';
@@ -920,9 +925,27 @@ final class Updatronix_Update_Logger {
             $performed_as
         );
 
-        delete_option(self::OPTION_CORE_VERSION_BEFORE);
+        // Defer cleanup so a second core update step in the same request (e.g. partial then full)
+        // still sees the original version_before and logs "Update" instead of "Reinstall".
+        self::schedule_core_version_before_cleanup();
         self::$core_feedback = [];
         self::$core_package_url = '';
+    }
+
+    /**
+     * Schedule deletion of OPTION_CORE_VERSION_BEFORE at end of request.
+     * Ensures multi-step automatic core updates (e.g. partial + full) use the same version_before.
+     *
+     * @return void
+     */
+    private static function schedule_core_version_before_cleanup(): void {
+        static $scheduled = false;
+        if (!$scheduled) {
+            $scheduled = true;
+            register_shutdown_function(static function (): void {
+                delete_option(self::OPTION_CORE_VERSION_BEFORE);
+            });
+        }
     }
 
     /**

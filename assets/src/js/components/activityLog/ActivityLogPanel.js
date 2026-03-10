@@ -15,7 +15,7 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useLogs } from '../../hooks/useLogs';
-import { LAYOUT_ACTIVITY } from './constants';
+import { LAYOUT_ACTIVITY, LOG_TYPE_PREFIX, ACTION_LABELS } from './constants';
 import {
 	statusToBadgeIntent,
 	formatDate,
@@ -71,6 +71,40 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 		fetchLogs({ per_page: view.perPage, page: view.page });
 	}, [fetchLogs, view.perPage, view.page]);
 
+	const categoryElements = useMemo(
+		() =>
+			Object.entries(LOG_TYPE_PREFIX).map(([value, label]) => ({
+				value,
+				label: String(label).replace(/:$/, '').trim(),
+			})),
+		[]
+	);
+
+	const actionTypeElements = useMemo(
+		() =>
+			Object.entries(ACTION_LABELS).map(([value, label]) => ({
+				value,
+				label: String(label),
+			})),
+		[]
+	);
+
+	const userElements = useMemo(() => {
+		const seen = new Set();
+		return logs
+			.map((item) => item.performed_by_display)
+			.filter(Boolean)
+			.filter((name) => {
+				if (seen.has(name)) {
+					return false;
+				}
+				seen.add(name);
+				return true;
+			})
+			.sort((a, b) => String(a).localeCompare(String(b)))
+			.map((value) => ({ value, label: value }));
+	}, [logs]);
+
 	const fields = useMemo(
 		() => [
 			{
@@ -78,6 +112,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 				label: __('Title', 'updatronix'),
 				getValue: ({ item }) => getActivityTitle(item),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: true,
 			},
 			{
@@ -85,7 +120,28 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 				label: __('Version', 'updatronix'),
 				getValue: ({ item }) => getActivityDescription(item),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: true,
+			},
+			{
+				id: 'category',
+				label: __('Category', 'updatronix'),
+				getValue: ({ item }) => item.log_type || '',
+				enableSorting: false,
+				enableHiding: false,
+				enableGlobalSearch: false,
+				elements: categoryElements,
+				filterBy: { operators: ['is', 'isNot'] },
+			},
+			{
+				id: 'actionType',
+				label: __('Type', 'updatronix'),
+				getValue: ({ item }) => item.action_type || '',
+				enableSorting: false,
+				enableHiding: false,
+				enableGlobalSearch: false,
+				elements: actionTypeElements,
+				filterBy: { operators: ['is', 'isNot'] },
 			},
 			{
 				id: 'icon',
@@ -107,6 +163,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			{
 				id: 'date',
 				label: __('Date', 'updatronix'),
+				type: 'date',
 				getValue: ({ item }) => item.created_at,
 				render: ({ item }) => formatDate(item.created_at),
 				enableSorting: false,
@@ -116,12 +173,26 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 					return direction === 'asc' ? tA - tB : tB - tA;
 				},
 				enableGlobalSearch: false,
+				enableHiding: false,
+				filterBy: {
+					operators: [
+						'on',
+						'before',
+						'after',
+						'beforeInc',
+						'afterInc',
+						'inThePast',
+						'over',
+						'between',
+					],
+				},
 			},
 			{
 				id: 'context',
 				label: __('Context', 'updatronix'),
 				getValue: ({ item }) => getContextLabel(item.update_context),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: true,
 			},
 			{
@@ -143,7 +214,10 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 						</span>
 					),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: true,
+				elements: userElements,
+				filterBy: { operators: ['is', 'isNot'] },
 			},
 			{
 				id: 'status',
@@ -155,10 +229,11 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 					</StatusBadge>
 				),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: true,
 			},
 		],
-		[]
+		[categoryElements, actionTypeElements, userElements]
 	);
 
 	const actions = useMemo(

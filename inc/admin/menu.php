@@ -113,7 +113,7 @@ function updatronix_options_page(): void {
                             '<span aria-hidden="true">❤️</span>',
                             'Quentin Le Duff'
                         ));
-        ?>
+    ?>
                     </p>
                 </div>
                 <div class="updatronix-footer-navigation">
