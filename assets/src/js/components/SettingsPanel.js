@@ -19,22 +19,27 @@ import { bellUnread, seen } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 const NOTIFY_TYPES = [
-	{ key: 'core', label: __('Core (WordPress) updates', 'updatronix') },
-	{ key: 'plugin', label: __('Plugin updates', 'updatronix') },
-	{ key: 'theme', label: __('Theme updates', 'updatronix') },
 	{
-		key: 'translation',
-		label: __('Translation updates', 'updatronix'),
+		key: 'core',
+		label: __('Core (WordPress) updates', 'updatronix'),
 		help: __(
-			'Only in the detailed report; WordPress does not send a separate translation email.',
+			'WordPress core update emails: success, failure, manual, and critical.',
 			'updatronix'
 		),
 	},
 	{
-		key: 'error',
-		label: __('Update failures', 'updatronix'),
+		key: 'plugin_theme',
+		label: __('Plugin and theme updates', 'updatronix'),
 		help: __(
-			'Same summary emails when an update fails (core or plugin/theme).',
+			'WordPress sends one combined email for plugin and theme auto-updates (success, fail, or mixed).',
+			'updatronix'
+		),
+	},
+	{
+		key: 'debug',
+		label: __('Debug email (detailed report)', 'updatronix'),
+		help: __(
+			'Development-style report with core, plugin, theme, and translation results. WordPress normally sends this only on development versions; enable here to receive it on any site.',
 			'updatronix'
 		),
 	},

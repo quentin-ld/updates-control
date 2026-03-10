@@ -99,26 +99,7 @@ final class Updatronix_Notifications {
     }
 
     /**
-     * Whether update results contain at least one failure.
-     *
-     * @param array<int, object> $update_results Update results.
-     * @return bool
-     */
-    private static function has_failed_updates(array $update_results): bool {
-        foreach ($update_results as $item) {
-            if (!isset($item->result)) {
-                continue;
-            }
-            if ($item->result !== true) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Only send core update email when "core" is in notify_on; for fail/critical also require "error".
+     * Only send core update email when "core" is in notify_on.
      * Suppress standard core email when the detailed (debug) email was already sent this run.
      *
      * @param bool   $send        Whether to send. Default true.
@@ -138,10 +119,6 @@ final class Updatronix_Notifications {
 
         if (self::$detailed_email_sent_this_run) {
             return false;
-        }
-
-        if (in_array($type, ['fail', 'critical'], true)) {
-            return self::has_notify('core') || self::has_notify('error');
         }
 
         return self::has_notify('core');
@@ -184,7 +161,8 @@ final class Updatronix_Notifications {
     }
 
     /**
-     * Only send plugin update email when "plugin" is in notify_on.
+     * Only send plugin update email when "plugin_theme" is in notify_on.
+     * WordPress sends one combined plugin/theme email; both filters use the same setting.
      * Suppress when the detailed (debug) email was already sent this run.
      *
      * @param bool               $enabled        Default true.
@@ -204,15 +182,12 @@ final class Updatronix_Notifications {
             return false;
         }
 
-        if (self::has_notify('plugin')) {
-            return true;
-        }
-
-        return self::has_notify('error') && self::has_failed_updates($update_results);
+        return self::has_notify('plugin_theme');
     }
 
     /**
-     * Only send theme update email when "theme" is in notify_on.
+     * Only send theme update email when "plugin_theme" is in notify_on.
+     * WordPress sends one combined plugin/theme email; both filters use the same setting.
      * Suppress when the detailed (debug) email was already sent this run.
      *
      * @param bool               $enabled        Default true.
@@ -232,11 +207,7 @@ final class Updatronix_Notifications {
             return false;
         }
 
-        if (self::has_notify('theme')) {
-            return true;
-        }
-
-        return self::has_notify('error') && self::has_failed_updates($update_results);
+        return self::has_notify('plugin_theme');
     }
 
     /**
@@ -257,18 +228,18 @@ final class Updatronix_Notifications {
     }
 
     /**
-     * Enable debug email when translation/error notifications require it.
+     * Enable debug email when "debug" is in notify_on, or when WordPress would send it (development version).
      * When we allow the debug email, mark so standard (core/plugin/theme) emails are suppressed this run.
      *
-     * @param bool $development_version WordPress default for debug mail sending.
+     * @param bool $development_version WordPress default for debug mail sending (e.g. version string contains '-').
      * @return bool
      */
     public static function filter_should_send_debug_email(bool $development_version): bool {
-        if (!$development_version && !self::should_redirect()) {
-            return false;
+        if (!self::should_redirect()) {
+            return $development_version;
         }
 
-        if (self::has_notify('translation') || self::has_notify('error')) {
+        if (self::has_notify('debug')) {
             self::$detailed_email_sent_this_run = true;
 
             return true;
@@ -280,12 +251,12 @@ final class Updatronix_Notifications {
             return true;
         }
 
-        return $development_version;
+        return false;
     }
 
     /**
-     * Redirect debug email (includes translation results) to plugin recipient when "translation" in notify_on.
-     * The debug email is sent in development versions and includes core, plugin, theme, and translation results.
+     * Redirect debug email to plugin recipient when notifications enabled.
+     * The debug email includes core, plugin, theme, and translation results.
      *
      * @param array<string, string>              $email   to, subject, body, headers.
      * @param int                                $failures Number of failures.
@@ -311,7 +282,7 @@ final class Updatronix_Notifications {
         if (!self::should_redirect()) {
             return $email;
         }
-        if (!self::has_notify('technical') && !self::has_notify('error')) {
+        if (!self::has_notify('technical')) {
             return $email;
         }
         $email['to'] = self::get_recipient();

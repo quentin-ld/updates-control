@@ -89,16 +89,20 @@ function updatronix_sanitize_settings_json(mixed $value): string {
     if (!is_array($value)) {
         $value = [];
     }
-    $allowed_notify = ['core', 'plugin', 'theme', 'translation', 'error', 'technical'];
+    $allowed_notify = ['core', 'plugin_theme', 'debug', 'technical'];
+    $raw_notify = array_filter((array) ($value['notify_on'] ?? []), 'is_string');
+    $notify_on = array_values(array_intersect($raw_notify, $allowed_notify));
+    // Legacy: treat 'plugin' or 'theme' as 'plugin_theme'.
+    if (array_intersect($raw_notify, ['plugin', 'theme']) !== [] && !in_array('plugin_theme', $notify_on, true)) {
+        $notify_on[] = 'plugin_theme';
+        $notify_on = array_values(array_unique($notify_on));
+    }
     $out = [
         'logging_enabled' => (bool) ($value['logging_enabled'] ?? true),
         'retention_days' => max(1, min(365, (int) ($value['retention_days'] ?? 90))),
         'notify_enabled' => (bool) ($value['notify_enabled'] ?? false),
         'notify_emails' => updatronix_sanitize_emails($value['notify_emails'] ?? ''),
-        'notify_on' => array_values(array_intersect(
-            array_filter((array) ($value['notify_on'] ?? []), 'is_string'),
-            $allowed_notify
-        )),
+        'notify_on' => $notify_on,
         'auto_update_translations' => (bool) ($value['auto_update_translations'] ?? true),
         'dismissed_constants' => array_values(array_filter((array) ($value['dismissed_constants'] ?? []), 'is_string')),
     ];
@@ -126,10 +130,16 @@ function updatronix_sanitize_emails(mixed $value): string {
  * @return array<string>
  */
 function updatronix_normalize_notify_on(mixed $notify_on): array {
-    $allowed = ['core', 'plugin', 'theme', 'translation', 'error', 'technical'];
-    $arr = array_values(array_intersect(array_filter((array) $notify_on, 'is_string'), $allowed));
-    if (in_array('all', (array) $notify_on, true)) {
+    $allowed = ['core', 'plugin_theme', 'debug', 'technical'];
+    $raw = array_filter((array) $notify_on, 'is_string');
+    if (in_array('all', $raw, true)) {
         return $allowed;
+    }
+    $arr = array_values(array_intersect($raw, $allowed));
+    // Legacy: map 'plugin' or 'theme' to 'plugin_theme' for display.
+    if (array_intersect($raw, ['plugin', 'theme']) !== [] && !in_array('plugin_theme', $arr, true)) {
+        $arr[] = 'plugin_theme';
+        $arr = array_values(array_unique($arr));
     }
 
     return $arr;
