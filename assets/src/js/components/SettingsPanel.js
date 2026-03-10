@@ -6,6 +6,7 @@
 import { memo } from '@wordpress/element';
 import {
 	Button,
+	Icon,
 	ToggleControl,
 	TextControl,
 	CheckboxControl,
@@ -14,6 +15,7 @@ import {
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalText as Text,
 } from '@wordpress/components';
+import { bellUnread, seen } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 const NOTIFY_TYPES = [
@@ -82,6 +84,7 @@ export const SettingsPanel = memo(function SettingsPanel({
 			</Text>
 			<div className="updatronix-settings-section">
 				<h3 className="updatronix-settings-section-title">
+					<Icon icon={seen} size={24} />
 					{__('Logging', 'updatronix')}
 				</h3>
 				<ToggleControl
@@ -127,6 +130,7 @@ export const SettingsPanel = memo(function SettingsPanel({
 			</div>
 			<div className="updatronix-settings-section">
 				<h3 className="updatronix-settings-section-title">
+					<Icon icon={bellUnread} size={24} />
 					{__('Update notifications', 'updatronix')}
 				</h3>
 				<ToggleControl
@@ -167,9 +171,9 @@ export const SettingsPanel = memo(function SettingsPanel({
 						placeholder={__('admin@example.com', 'updatronix')}
 					/>
 					<div className="updatronix-settings-checkboxes">
-						<p className="updatronix-settings-label">
+						<h4 className="updatronix-settings-label">
 							{__('Notification types', 'updatronix')}
-						</p>
+						</h4>
 						<p className="updatronix-settings-help">
 							{__(
 								'Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behaviour.',
@@ -191,16 +195,19 @@ export const SettingsPanel = memo(function SettingsPanel({
 					</div>
 				</fieldset>
 			</div>
-			<Button
-				variant="primary"
-				onClick={saveSettings}
-				isBusy={saving}
-				disabled={saving}
-			>
-				{saving
-					? __('Saving…', 'updatronix')
-					: __('Save settings', 'updatronix')}
-			</Button>
+			<div className="updatronix-actions">
+				<Button
+					variant="primary"
+					onClick={saveSettings}
+					isBusy={saving}
+					disabled={saving}
+					__next40pxDefaultSize
+				>
+					{saving
+						? __('Saving…', 'updatronix')
+						: __('Save settings', 'updatronix')}
+				</Button>
+			</div>
 		</div>
 	);
 });

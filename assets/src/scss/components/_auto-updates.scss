@@ -31,6 +31,18 @@
 	.components-base-control {
 		margin-bottom: var(--wpds-dimension-gap-sm);
 	}
+
+	.dataviews-view-table {
+		thead {
+			th:has(.dataviews-view-table-header-button):first-child {
+				padding-left: 24px;
+			}
+		} 
+	}
+
+	.dataviews-view-table__col-auto_update.dataviews-view-table__col-first-data {
+		width: 1%;
+	}
 }
 
 .updatronix-autoupdates-section-title {

@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 .dataviews-view-activity {
     &__item {
         &-fields {
@@ -27,4 +29,8 @@
 .dataviews-view-activity {
     padding-left: var(--wpds-dimension-padding-xs) !important;
     padding-right: var(--wpds-dimension-padding-xs) !important;
+}
+
+.updatronix-activitylog-panel .dataviews-wrapper {
+    max-width: 500px;
 }

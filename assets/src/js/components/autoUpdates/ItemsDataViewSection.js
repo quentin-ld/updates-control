@@ -72,12 +72,36 @@ export function ItemsDataViewSection({
 		search: '',
 		filters: [],
 		fields: FIXED_FIELDS,
+		layout: {
+			enableMoving: false,
+			styles: {
+				auto_update: {
+					width: '140px',
+					maxWidth: '140px',
+					align: 'start',
+				},
+				description: { maxWidth: '400px' },
+			},
+		},
 	});
 
 	const handleChangeView = useCallback((nextView) => {
-		setView(() => ({
+		setView((prev) => ({
 			...nextView,
 			fields: FIXED_FIELDS,
+			layout: {
+				...nextView.layout,
+				enableMoving: false,
+				styles: {
+					...nextView.layout?.styles,
+					auto_update: {
+						width: '140px',
+						maxWidth: '140px',
+						align: 'start',
+					},
+					description: { maxWidth: '400px' },
+				},
+			},
 		}));
 	}, []);
 
@@ -159,6 +183,7 @@ export function ItemsDataViewSection({
 					</span>
 				),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: true,
 			},
 			{
@@ -191,6 +216,7 @@ export function ItemsDataViewSection({
 					</span>
 				),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: false,
 			},
 			{
@@ -203,6 +229,7 @@ export function ItemsDataViewSection({
 					</span>
 				),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: true,
 			},
 			{
@@ -224,6 +251,7 @@ export function ItemsDataViewSection({
 						</span>
 					),
 				enableSorting: false,
+				enableHiding: false,
 				enableGlobalSearch: false,
 			},
 		],

@@ -110,11 +110,11 @@ msgid "Leave a review"
 msgstr ""
 
 #: inc/admin/menu.php:86
-msgid "Support development: Buy me a coffee (opens in a new tab)"
+msgid "Support development (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/menu.php:87
-msgid "Buy me a coffee"
+msgid "Support development"
 msgstr ""
 
 #: inc/admin/menu.php:95

@@ -75,6 +75,13 @@ export function AutoUpdatesPanel() {
 				busy={busy}
 			/>
 
+			<TranslationsSection
+				translations={data.translations}
+				constants={data.constants}
+				toggleTranslation={toggleTranslation}
+				busy={busy}
+			/>
+
 			<ItemsDataViewSection
 				items={data.themes}
 				itemIdKey="stylesheet"
@@ -100,13 +107,6 @@ export function AutoUpdatesPanel() {
 				constants={data.constants}
 				sections={['plugins']}
 				onToggle={togglePlugin}
-				busy={busy}
-			/>
-
-			<TranslationsSection
-				translations={data.translations}
-				constants={data.constants}
-				toggleTranslation={toggleTranslation}
 				busy={busy}
 			/>
 		</div>

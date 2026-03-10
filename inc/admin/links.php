@@ -48,7 +48,7 @@ function updatronix_plugin_row_meta(array $links, string $file): array {
             ),
             sprintf(
                 '<a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>',
-                esc_url('https://holdmywp.com/updatronix/'),
+                esc_url('https://holdmywp.com/en/plugins/updatronix/'),
                 esc_attr__('Read Updatronix documentation (opens in a new tab)', 'updatronix'),
                 esc_html__('Docs', 'updatronix')
             ),

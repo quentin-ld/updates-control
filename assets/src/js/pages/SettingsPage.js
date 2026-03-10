@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from '@wordpress/element';
 import {
-	timeToRead as iconLogs,
+	backup as iconLogs,
 	settings as iconSettings,
 	update as iconUpdate,
 } from '@wordpress/icons';
