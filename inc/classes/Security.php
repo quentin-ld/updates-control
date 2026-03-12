@@ -125,9 +125,10 @@ final class Updatronix_Security {
      * @return string
      */
     public static function sanitize_message(string $value): string {
-        $value = wp_kses_post(wp_unslash($value));
+        $value = wp_strip_all_tags(wp_unslash($value));
+        $value = self::redact_sensitive_text($value);
 
-        return html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return mb_substr(html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8'), 0, 65535);
     }
 
     /**
@@ -149,8 +150,22 @@ final class Updatronix_Security {
      */
     public static function sanitize_trace(string $value, int $max_length = 65535): string {
         $value = wp_strip_all_tags($value);
+        $value = self::redact_sensitive_text($value);
 
         return mb_substr($value, 0, $max_length);
+    }
+
+    /**
+     * Redact common sensitive fragments from stored log text.
+     *
+     * @param string $value Raw text.
+     * @return string
+     */
+    private static function redact_sensitive_text(string $value): string {
+        $value = preg_replace('/([?&](?:token|signature|sig|key|access_token|auth)[^=\s]*=)[^&\s]+/i', '$1[redacted]', $value) ?: $value;
+        $value = preg_replace('/([A-Z0-9._%+\-]+)@([A-Z0-9.\-]+\.[A-Z]{2,})/i', '[redacted-email]', $value) ?: $value;
+
+        return $value;
     }
 
     /**

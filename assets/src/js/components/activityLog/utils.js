@@ -90,8 +90,38 @@ export function getActivityTitle(item) {
  * @return {string} Description.
  */
 export function getActivityDescription(item) {
+	if (item.summary_text) {
+		return item.summary_text;
+	}
+
 	const from = item.version_before;
 	const to = item.version_after;
+	if (item.log_type === 'translation' && (!from || from === to)) {
+		if (to) {
+			return sprintf(
+				/* translators: 1: item name, 2: version number */
+				__('Language pack updated for %1$s %2$s', 'updatronix'),
+				item.item_name || __('WordPress', 'updatronix'),
+				to
+			);
+		}
+
+		return sprintf(
+			/* translators: %s: item name */
+			__('Language pack updated for %s', 'updatronix'),
+			item.item_name || __('WordPress', 'updatronix')
+		);
+	}
+	if (item.action_type === 'same_version') {
+		const version = to || from;
+		return version
+			? sprintf(
+					/* translators: %s: version number */
+					__('v%s', 'updatronix'),
+					version
+				)
+			: EMPTY_FALLBACK;
+	}
 	if (from && to) {
 		return sprintf(
 			/* translators: 1: previous version number, 2: new version number */

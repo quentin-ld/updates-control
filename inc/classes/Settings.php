@@ -72,14 +72,28 @@ final class Updatronix_Settings {
         ]);
 
         register_rest_route(self::REST_NAMESPACE, '/logs/(?P<id>\d+)', [
-            'methods' => \WP_REST_Server::DELETABLE,
-            'callback' => [self::class, 'rest_delete_log'],
-            'permission_callback' => [self::class, 'rest_can_manage_logs'],
-            'args' => [
-                'id' => [
-                    'type' => 'integer',
-                    'required' => true,
-                    'minimum' => 1,
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [self::class, 'rest_get_log'],
+                'permission_callback' => [self::class, 'rest_can_manage_logs'],
+                'args' => [
+                    'id' => [
+                        'type' => 'integer',
+                        'required' => true,
+                        'minimum' => 1,
+                    ],
+                ],
+            ],
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [self::class, 'rest_delete_log'],
+                'permission_callback' => [self::class, 'rest_can_manage_logs'],
+                'args' => [
+                    'id' => [
+                        'type' => 'integer',
+                        'required' => true,
+                        'minimum' => 1,
+                    ],
                 ],
             ],
         ]);
@@ -205,6 +219,7 @@ final class Updatronix_Settings {
             'page' => $request->get_param('page'),
             'orderby' => 'created_at',
             'order' => 'DESC',
+            'site_id' => self::resolve_site_id($request),
         ];
         if ($request->get_param('log_type') !== '') {
             $args['log_type'] = $request->get_param('log_type');
@@ -212,14 +227,11 @@ final class Updatronix_Settings {
         if ($request->get_param('status') !== '') {
             $args['status'] = $request->get_param('status');
         }
-        if ($request->get_param('site_id') !== null) {
-            $args['site_id'] = $request->get_param('site_id');
-        }
         if ($request->get_param('performed_as') !== '') {
             $args['performed_as'] = $request->get_param('performed_as');
         }
 
-        $logs = Updatronix_Logger::get_logs($args);
+        $logs = Updatronix_Logger::get_logs($args, false);
         $total = Updatronix_Logger::get_logs_count($args);
 
         $user_ids = array_unique(array_filter(array_map(
@@ -235,6 +247,27 @@ final class Updatronix_Settings {
         return new WP_REST_Response([
             'logs' => $logs,
             'total' => $total,
+        ], 200);
+    }
+
+    /**
+     * REST: Get a single log entry with details.
+     *
+     * @param \WP_REST_Request<array<string, mixed>> $request Request.
+     * @return WP_REST_Response
+     */
+    public static function rest_get_log(\WP_REST_Request $request): WP_REST_Response {
+        $id = absint((string) $request->get_param('id'));
+        $log = Updatronix_Logger::get_log($id, true);
+
+        if (!$log || (int) ($log->site_id ?? 0) !== self::resolve_site_id($request)) {
+            return new WP_REST_Response([
+                'message' => __('The requested log entry could not be found.', 'updatronix'),
+            ], 404);
+        }
+
+        return new WP_REST_Response([
+            'log' => self::enrich_log_for_display($log),
         ], 200);
     }
 
@@ -260,14 +293,109 @@ final class Updatronix_Settings {
 
         $performed_as = $log->performed_as ?? 'manual';
         if ($performed_as === 'automatic') {
-            $log->action_display = __('Automatic', 'updatronix');
+            $log->performed_as_display = __('Automatic', 'updatronix');
         } elseif ($performed_as === 'upload') {
-            $log->action_display = __('File upload', 'updatronix');
+            $log->performed_as_display = __('File upload', 'updatronix');
         } else {
-            $log->action_display = __('Manual', 'updatronix');
+            $log->performed_as_display = __('Manual', 'updatronix');
+        }
+
+        $action_type = (string) ($log->action_type ?? '');
+        $action_labels = [
+            'update' => __('Update', 'updatronix'),
+            'downgrade' => __('Rollback', 'updatronix'),
+            'install' => __('Install', 'updatronix'),
+            'same_version' => __('Reinstall', 'updatronix'),
+            'failed' => __('Failed', 'updatronix'),
+            'uninstall' => __('Uninstall', 'updatronix'),
+        ];
+        $log->action_type_display = $action_labels[$action_type] ?? $action_type;
+
+        $update_context = $log->update_context ?? '';
+        if ($update_context === 'bulk') {
+            $log->update_context_display = __('Bulk action', 'updatronix');
+        } elseif ($update_context === 'single') {
+            $log->update_context_display = __('Single action', 'updatronix');
+        } else {
+            $log->update_context_display = __('—', 'updatronix');
+        }
+
+        $log->summary_text = self::build_summary_text($log);
+        if (!isset($log->detail_available)) {
+            $log->detail_available = !empty($log->message) || !empty($log->trace);
+        } else {
+            $log->detail_available = (bool) $log->detail_available;
         }
 
         return $log;
+    }
+
+    /**
+     * Build a stable secondary summary line for the activity log list.
+     *
+     * @param object $log Log row.
+     * @return string
+     */
+    private static function build_summary_text(object $log): string {
+        $version_before = (string) ($log->version_before ?? '');
+        $version_after = (string) ($log->version_after ?? '');
+        $item_name = (string) ($log->item_name ?? '');
+
+        if (($log->log_type ?? '') === 'translation' && ($version_before === '' || $version_before === $version_after)) {
+            if ($version_after !== '') {
+                return sprintf(
+                    /* translators: 1: item name, 2: version number */
+                    __('Language pack updated for %1$s %2$s', 'updatronix'),
+                    $item_name ?: __('WordPress', 'updatronix'),
+                    $version_after
+                );
+            }
+
+            return sprintf(
+                /* translators: %s: item name */
+                __('Language pack updated for %s', 'updatronix'),
+                $item_name ?: __('WordPress', 'updatronix')
+            );
+        }
+
+        if (($log->action_type ?? '') === 'same_version') {
+            $version = $version_after !== '' ? $version_after : $version_before;
+
+            return $version !== ''
+                ? sprintf(
+                    /* translators: %s: version number */
+                    __('v%s', 'updatronix'),
+                    $version
+                )
+                : __('—', 'updatronix');
+        }
+
+        if ($version_before !== '' && $version_after !== '') {
+            return sprintf(
+                /* translators: 1: previous version number, 2: new version number */
+                __('v%1$s → v%2$s', 'updatronix'),
+                $version_before,
+                $version_after
+            );
+        }
+
+        if ($version_after !== '') {
+            return sprintf(
+                /* translators: %s: version number */
+                __('v%s', 'updatronix'),
+                $version_after
+            );
+        }
+
+        if ($version_before !== '') {
+            return sprintf(
+                /* translators: %s: version number */
+                __('v%s', 'updatronix'),
+                $version_before
+            );
+        }
+
+        return __('—', 'updatronix');
     }
 
     /**
@@ -278,6 +406,11 @@ final class Updatronix_Settings {
      */
     public static function rest_delete_log(\WP_REST_Request $request): WP_REST_Response {
         $id = (int) $request->get_param('id');
+        $log = Updatronix_Logger::get_log($id, false);
+        if (!$log || (int) ($log->site_id ?? 0) !== self::resolve_site_id($request)) {
+            return new WP_REST_Response(['message' => __('The requested log entry could not be found.', 'updatronix')], 404);
+        }
+
         $deleted = Updatronix_Logger::delete_log($id);
 
         if (!$deleted) {
@@ -420,5 +553,26 @@ final class Updatronix_Settings {
         Updatronix_AutoUpdates::dismiss_constant($constant);
 
         return new WP_REST_Response(Updatronix_AutoUpdates::get_data(), 200);
+    }
+
+    /**
+     * Resolve the allowed site scope for log routes.
+     *
+     * @param \WP_REST_Request<array<string, mixed>> $request Request.
+     * @return int
+     */
+    private static function resolve_site_id(\WP_REST_Request $request): int {
+        $current_site_id = (int) get_current_blog_id();
+        $requested_site_id = absint((string) $request->get_param('site_id'));
+
+        if (!is_multisite()) {
+            return $current_site_id;
+        }
+
+        if ($requested_site_id > 0 && current_user_can('manage_network_options')) {
+            return $requested_site_id;
+        }
+
+        return $current_site_id;
     }
 }

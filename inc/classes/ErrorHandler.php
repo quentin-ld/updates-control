@@ -99,6 +99,7 @@ final class Updatronix_ErrorHandler {
 
         $trace = self::capture_trace();
         $performed_as = Updatronix_Update_Logger::is_automatic_update() ? 'automatic' : 'manual';
+        $event_key = Updatronix_UpdateLogState::find_pending_event_key($type, $slug !== '' ? $slug : 'core');
 
         Updatronix_Logger::log(
             $type,
@@ -110,8 +111,13 @@ final class Updatronix_ErrorHandler {
             'error',
             $message,
             $trace,
-            $performed_as
+            $performed_as,
+            '',
+            $event_key
         );
+        if ($event_key !== '') {
+            Updatronix_UpdateLogState::mark_finalized($event_key);
+        }
     }
 
     /**
@@ -268,6 +274,7 @@ final class Updatronix_ErrorHandler {
     public static function capture_redirect_error(string $location, int $status): string {
         if ($status >= 400 && str_contains($location, 'update-core.php')) {
             $performed_as = Updatronix_Update_Logger::is_automatic_update() ? 'automatic' : 'manual';
+            $event_key = Updatronix_UpdateLogState::find_pending_event_key('core', 'core');
             Updatronix_Logger::log(
                 'core',
                 'failed',
@@ -282,8 +289,13 @@ final class Updatronix_ErrorHandler {
                     $status
                 ),
                 self::capture_trace(),
-                $performed_as
+                $performed_as,
+                '',
+                $event_key
             );
+            if ($event_key !== '') {
+                Updatronix_UpdateLogState::mark_finalized($event_key);
+            }
         }
 
         return $location;
@@ -311,7 +323,11 @@ final class Updatronix_ErrorHandler {
             $name = $skin->theme;
         }
         $performed_as = Updatronix_Update_Logger::is_automatic_update() ? 'automatic' : 'manual';
-        Updatronix_Logger::log($type, 'failed', $name ?: 'unknown', '', '', '', 'error', $reply->get_error_message(), self::capture_trace(), $performed_as);
+        $event_key = Updatronix_UpdateLogState::find_pending_event_key($type, $name);
+        Updatronix_Logger::log($type, 'failed', $name ?: 'unknown', '', '', '', 'error', $reply->get_error_message(), self::capture_trace(), $performed_as, '', $event_key);
+        if ($event_key !== '') {
+            Updatronix_UpdateLogState::mark_finalized($event_key);
+        }
 
         return $reply;
     }

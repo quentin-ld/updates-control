@@ -4,7 +4,7 @@ Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, update control, logging
 Requires at least: 6.2
 Tested up to: 6.9
-Stable tag: 1.0
+Stable tag: 1.0.1
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html/
@@ -88,6 +88,8 @@ Your log data is kept in the database when you deactivate the plugin. Only the d
 Suggestions are welcome. Please visit the [support forum on WordPress.org](https://wordpress.org/support/plugin/updatronix/) or open an issue on the [GitHub repository](https://github.com/quentin-ld/updatronix/).
 
 == Changelog ==
+
+= 1.0.1 =
 
 = 1.0 =
 * Initial release of Updatronix.

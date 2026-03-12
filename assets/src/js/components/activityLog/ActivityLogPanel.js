@@ -45,7 +45,12 @@ const DELETE_MODAL_STYLE = {
  * @return {JSX.Element} The activity log panel UI.
  */
 export function ActivityLogPanel({ loggingEnabled = true }) {
-	const { logs, loading, error, fetchLogs, deleteLog } = useLogs();
+	const { logs, loading, error, fetchLogs, fetchLogDetails, deleteLog } =
+		useLogs();
+	const [announcement, setAnnouncement] = useState({
+		message: '',
+		type: 'polite',
+	});
 
 	const [view, setView] = useState({
 		type: LAYOUT_ACTIVITY,
@@ -54,7 +59,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 		search: '',
 		filters: [],
 		sort: FIXED_SORT,
-		fields: ['date', 'context', 'user', 'status'],
+		fields: ['date', 'triggeredBy', 'runType', 'user', 'status'],
 		titleField: 'title',
 		descriptionField: 'description',
 		mediaField: 'icon',
@@ -188,8 +193,17 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 				},
 			},
 			{
-				id: 'context',
-				label: __('Context', 'updatronix'),
+				id: 'triggeredBy',
+				label: __('Triggered by', 'updatronix'),
+				getValue: ({ item }) =>
+					item.performed_as_display || item.performed_as || '',
+				enableSorting: false,
+				enableHiding: false,
+				enableGlobalSearch: true,
+			},
+			{
+				id: 'runType',
+				label: __('Run type', 'updatronix'),
 				getValue: ({ item }) => getContextLabel(item.update_context),
 				enableSorting: false,
 				enableHiding: false,
@@ -240,18 +254,22 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 		() => [
 			{
 				id: 'view-logs',
-				label: __('View log', 'updatronix'),
-				modalHeader: __('Log details', 'updatronix'),
+				label: __('View details', 'updatronix'),
+				modalHeader: __('View details', 'updatronix'),
 				modalSize: 'large',
 				modalFocusOnMount: 'firstContentElement',
-				isEligible: (item) => !!(item.message || item.trace),
+				isEligible: (item) => !!item.detail_available,
 				RenderModal: ({ items }) => (
-					<LogDetailsContent log={items[0]} />
+					<LogDetailsContent
+						log={items[0]}
+						logId={items[0]?.id}
+						fetchLogDetails={fetchLogDetails}
+					/>
 				),
 			},
 			{
 				id: 'delete',
-				label: __('Delete', 'updatronix'),
+				label: __('Delete log', 'updatronix'),
 				modalHeader: __('Delete log', 'updatronix'),
 				isDestructive: true,
 				RenderModal: ({ items, closeModal, onActionPerformed }) => {
@@ -260,7 +278,19 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 						return null;
 					}
 					const handleConfirm = async () => {
-						await deleteLog(log.id);
+						const deleted = await deleteLog(log.id);
+						setAnnouncement({
+							message: deleted
+								? __('Log deleted.', 'updatronix')
+								: __(
+										'The log entry could not be deleted. Try again or check your database connection.',
+										'updatronix'
+									),
+							type: deleted ? 'polite' : 'assertive',
+						});
+						if (!deleted) {
+							return;
+						}
 						onActionPerformed?.(items);
 						closeModal?.();
 					};
@@ -268,7 +298,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 						<>
 							<p>
 								{__(
-									'Are you sure you want to delete this log entry? This action cannot be undone.',
+									'Delete this log entry permanently? This action cannot be undone.',
 									'updatronix'
 								)}
 							</p>
@@ -281,7 +311,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 									isDestructive
 									onClick={handleConfirm}
 								>
-									{__('Confirm', 'updatronix')}
+									{__('Delete log', 'updatronix')}
 								</Button>
 							</div>
 						</>
@@ -289,7 +319,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 				},
 			},
 		],
-		[deleteLog]
+		[deleteLog, fetchLogDetails]
 	);
 
 	const defaultLayouts = useMemo(
@@ -324,7 +354,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			<div className="updatronix-logs updatronix-activitylog-panel">
 				<p className="updatronix-logs-disabled-message">
 					{__(
-						'Update logging is turned off. You can turn it on in the Settings tab.',
+						'Update logging is off. Turn it on in Settings to keep a history of updates.',
 						'updatronix'
 					)}
 				</p>
@@ -339,12 +369,19 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 
 	return (
 		<div className="updatronix-logs updatronix-activitylog-panel">
+			<div
+				aria-live={announcement.type}
+				className="screen-reader-text"
+				role={announcement.type === 'assertive' ? 'alert' : 'status'}
+			>
+				{announcement.message}
+			</div>
 			<h2 className="updatronix-panel-title">
 				{__('Update logs', 'updatronix')}
 			</h2>
 			<Text variant="muted">
 				{__(
-					'Browse and search the history of all updates on your site, both automatic and manual.',
+					'Browse recent WordPress, plugin, theme, and translation updates.',
 					'updatronix'
 				)}
 			</Text>
@@ -360,7 +397,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 				defaultLayouts={defaultLayouts}
 				config={{ perPageSizes: [10, 25, 50, 100] }}
 				empty={__(
-					'No update logs yet. Logs will appear here after your first update.',
+					'No update logs yet. Logs will appear here after the next update.',
 					'updatronix'
 				)}
 				search

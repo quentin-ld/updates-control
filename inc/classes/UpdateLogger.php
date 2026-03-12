@@ -50,9 +50,121 @@ final class Updatronix_Update_Logger {
     /**
      * Pending log entries keyed by type and item (for shutdown fallback).
      *
-     * @var array<string, array<string, array{name: string, slug: string, version_before: string, version_after: string}>>
+     * @var array<string, array<string, array<string, string>>>
      */
     private static array $pending_logs = [];
+
+    /**
+     * Get the current performed_as context for this request.
+     *
+     * @return string
+     */
+    private static function get_current_performed_as(): string {
+        return self::$auto_update ? 'automatic' : 'manual';
+    }
+
+    /**
+     * Build a canonical event key for the current request.
+     *
+     * @param string $log_type Update type.
+     * @param string $slug Item slug.
+     * @param string $context Optional locale or extra context.
+     * @return string
+     */
+    private static function build_event_key(string $log_type, string $slug, string $context = ''): string {
+        return Updatronix_UpdateLogState::build_event_key(
+            $log_type,
+            $slug,
+            self::get_current_performed_as(),
+            $context
+        );
+    }
+
+    /**
+     * Register a pending log in memory and shared temp state.
+     *
+     * @param string               $log_type Update type.
+     * @param string               $key In-memory item key.
+     * @param array<string, mixed> $data Pending log data.
+     * @return void
+     */
+    private static function register_pending_log(string $log_type, string $key, array $data): void {
+        if (!isset(self::$pending_logs[$log_type])) {
+            self::$pending_logs[$log_type] = [];
+        }
+
+        $defaults = [
+            'name' => '',
+            'slug' => '',
+            'version_before' => '',
+            'version_after' => '',
+            'event_key' => '',
+            'locale' => '',
+        ];
+        $data = array_merge($defaults, $data);
+        if ($data['event_key'] === '') {
+            $data['event_key'] = self::build_event_key($log_type, (string) $data['slug'], (string) $data['locale']);
+        }
+
+        self::$pending_logs[$log_type][$key] = $data;
+
+        Updatronix_UpdateLogState::store_pending(
+            (string) $data['event_key'],
+            [
+                'run_id' => Updatronix_UpdateLogState::get_request_run_id(),
+                'log_type' => $log_type,
+                'item_slug' => (string) $data['slug'],
+                'item_name' => (string) $data['name'],
+                'version_before' => (string) $data['version_before'],
+                'version_after' => (string) $data['version_after'],
+                'performed_as' => self::get_current_performed_as(),
+                'locale' => (string) $data['locale'],
+            ]
+        );
+    }
+
+    /**
+     * Resolve an event key from in-memory pending state.
+     *
+     * @param string $log_type Update type.
+     * @param string $key In-memory item key.
+     * @return string
+     */
+    private static function get_pending_event_key(string $log_type, string $key): string {
+        return isset(self::$pending_logs[$log_type][$key]['event_key'])
+            ? (string) self::$pending_logs[$log_type][$key]['event_key']
+            : '';
+    }
+
+    /**
+     * Mark an event as finalized and remove it from in-memory pending state.
+     *
+     * @param string $event_key Event key.
+     * @param string $log_type Update type.
+     * @param string $key In-memory item key.
+     * @return void
+     */
+    private static function finalize_pending_log(string $event_key, string $log_type = '', string $key = ''): void {
+        if ($event_key !== '') {
+            Updatronix_UpdateLogState::mark_finalized($event_key);
+        }
+        if ($log_type !== '' && $key !== '' && isset(self::$pending_logs[$log_type][$key])) {
+            unset(self::$pending_logs[$log_type][$key]);
+        }
+    }
+
+    /**
+     * Whether fallback logging should skip this event because it was already finalized.
+     *
+     * @param string $event_key Event key.
+     * @return bool
+     */
+    private static function should_skip_event(string $event_key): bool {
+        return $event_key !== '' && (
+            Updatronix_UpdateLogState::is_finalized($event_key) ||
+            Updatronix_Logger::has_event($event_key)
+        );
+    }
 
     /**
      * Whether we are currently in an automatic update context.
@@ -124,15 +236,12 @@ final class Updatronix_Update_Logger {
             $current = get_site_transient('update_plugins');
             if (is_object($current) && isset($current->response[$file])) {
                 $plugins = function_exists('get_plugins') ? get_plugins() : [];
-                if (!isset(self::$pending_logs['plugin'])) {
-                    self::$pending_logs['plugin'] = [];
-                }
-                self::$pending_logs['plugin'][$file] = [
+                self::register_pending_log('plugin', $file, [
                     'name' => isset($plugins[$file]['Name']) ? (string) $plugins[$file]['Name'] : $file,
                     'slug' => dirname($file) === '.' ? $file : dirname($file),
                     'version_before' => isset($plugins[$file]['Version']) ? (string) $plugins[$file]['Version'] : '',
                     'version_after' => isset($current->response[$file]->new_version) ? (string) $current->response[$file]->new_version : '',
-                ];
+                ]);
             }
         } elseif ($has_theme) {
             $slug = $hook_extra['theme'];
@@ -140,16 +249,13 @@ final class Updatronix_Update_Logger {
             $theme_response = is_object($current) && isset($current->response[$slug]) ? $current->response[$slug] : null;
             if (is_array($theme_response)) {
                 $themes = wp_get_themes();
-                if (!isset(self::$pending_logs['theme'])) {
-                    self::$pending_logs['theme'] = [];
-                }
                 $version_before = isset($themes[$slug]) ? (string) $themes[$slug]->get('Version') : '';
-                self::$pending_logs['theme'][$slug] = [
+                self::register_pending_log('theme', $slug, [
                     'name' => isset($themes[$slug]) ? (string) $themes[$slug]->get('Name') : $slug,
                     'slug' => $slug,
                     'version_before' => $version_before,
                     'version_after' => isset($theme_response['new_version']) ? (string) $theme_response['new_version'] : '',
-                ];
+                ]);
             }
         } elseif (isset($hook_extra['language_update_type'], $hook_extra['language_update']) && is_object($hook_extra['language_update'])) {
             $lu = $hook_extra['language_update'];
@@ -158,9 +264,6 @@ final class Updatronix_Update_Logger {
             $slug = isset($lu->slug) ? (string) $lu->slug : '';
             $type = $hook_extra['language_update_type'] ?? '';
             if ($type === 'core') {
-                if (!isset(self::$pending_logs['translation'])) {
-                    self::$pending_logs['translation'] = [];
-                }
                 $key = 'core_' . $lang;
                 $current = get_site_transient('update_core');
                 $ver_to = '';
@@ -172,12 +275,13 @@ final class Updatronix_Update_Logger {
                         }
                     }
                 }
-                self::$pending_logs['translation'][$key] = [
+                self::register_pending_log('translation', $key, [
                     'name' => 'WordPress (' . $lang . ')',
                     'slug' => $slug ?: $lang,
                     'version_before' => $ver_from,
                     'version_after' => $ver_to,
-                ];
+                    'locale' => $lang,
+                ]);
             } else {
                 $ver_to = '';
                 if ($type === 'plugin' && $slug) {
@@ -193,8 +297,8 @@ final class Updatronix_Update_Logger {
                     $name = $slug . ' (' . $lang . ')';
                 } else {
                     $current = get_site_transient('update_themes');
-                    if (is_array($current) && !empty($current['translations'])) {
-                        foreach ($current['translations'] as $t) {
+                    if (is_object($current) && !empty($current->translations)) {
+                        foreach ($current->translations as $t) {
                             if (isset($t['slug']) && $t['slug'] === $slug && isset($t['version'])) {
                                 $ver_to = (string) $t['version'];
                                 break;
@@ -203,15 +307,13 @@ final class Updatronix_Update_Logger {
                     }
                     $name = $slug . ' (' . $lang . ')';
                 }
-                if (!isset(self::$pending_logs['translation'])) {
-                    self::$pending_logs['translation'] = [];
-                }
-                self::$pending_logs['translation'][$slug . '_' . $lang] = [
+                self::register_pending_log('translation', $slug . '_' . $lang, [
                     'name' => $name,
                     'slug' => $slug,
                     'version_before' => $ver_from,
                     'version_after' => $ver_to,
-                ];
+                    'locale' => $lang,
+                ]);
             }
         }
 
@@ -238,7 +340,11 @@ final class Updatronix_Update_Logger {
         $status = 'error';
         foreach (self::$pending_logs as $log_type => $items) {
             foreach ($items as $key => $data) {
-                $data = array_merge(['name' => '', 'slug' => '', 'version_before' => '', 'version_after' => ''], $data);
+                $data = array_merge(['name' => '', 'slug' => '', 'version_before' => '', 'version_after' => '', 'event_key' => ''], $data);
+                $event_key = (string) $data['event_key'];
+                if (self::should_skip_event($event_key)) {
+                    continue;
+                }
                 $name = $data['name'];
                 $slug = $data['slug'];
                 $version_before = $data['version_before'];
@@ -253,8 +359,11 @@ final class Updatronix_Update_Logger {
                     $status,
                     __('This update may not have completed. It was logged when the process ended unexpectedly.', 'updatronix'),
                     $trace,
-                    $performed_as
+                    $performed_as,
+                    '',
+                    $event_key
                 );
+                self::finalize_pending_log($event_key, $log_type, (string) $key);
             }
         }
         self::$pending_logs = [];
@@ -289,12 +398,15 @@ final class Updatronix_Update_Logger {
                 $status = 'success';
                 $action_type = 'update';
                 $notes = '';
+                $event_key = '';
+                $item = null;
                 if (isset($result->item)) {
                     $item = $result->item;
                     if ($type === 'plugin' && isset($item->plugin)) {
                         $file = $item->plugin;
+                        $event_key = self::get_pending_event_key('plugin', $file);
                         if (isset(self::$already_logged['plugin:' . $file])) {
-                            unset(self::$pending_logs['plugin'][$file]);
+                            self::finalize_pending_log($event_key, 'plugin', $file);
                             continue;
                         }
                         $slug = dirname($file) === '.' ? $file : dirname($file);
@@ -303,15 +415,17 @@ final class Updatronix_Update_Logger {
                             $name = $p['name'];
                             $version_before = $p['version_before'];
                             $version_after = $p['version_after'];
+                            $event_key = (string) ($p['event_key'] ?? $event_key);
                         } else {
                             $name = $all_plugins[$file]['Name'] ?? $file;
                             $version_after = $all_plugins[$file]['Version'] ?? '';
+                            $event_key = self::build_event_key('plugin', $slug);
                         }
-                        unset(self::$pending_logs['plugin'][$file]);
                     } elseif ($type === 'theme' && isset($item->theme)) {
                         $slug = $item->theme;
+                        $event_key = self::get_pending_event_key('theme', $slug);
                         if (isset(self::$already_logged['theme:' . $slug])) {
-                            unset(self::$pending_logs['theme'][$slug]);
+                            self::finalize_pending_log($event_key, 'theme', $slug);
                             continue;
                         }
                         if (isset(self::$pending_logs['theme'][$slug])) {
@@ -319,41 +433,53 @@ final class Updatronix_Update_Logger {
                             $name = $p['name'];
                             $version_before = $p['version_before'];
                             $version_after = $p['version_after'];
+                            $event_key = (string) ($p['event_key'] ?? $event_key);
                         } else {
                             $name = isset($all_themes[$slug]) ? (string) $all_themes[$slug]->get('Name') : $slug;
                             $version_after = isset($all_themes[$slug]) ? (string) $all_themes[$slug]->get('Version') : '';
+                            $event_key = self::build_event_key('theme', $slug);
                         }
-                        unset(self::$pending_logs['theme'][$slug]);
                     } elseif ($type === 'translation' && isset($item->slug, $item->language)) {
                         $slug = $item->slug . '_' . $item->language;
-                        if (isset(self::$already_logged['translation:' . $slug])) {
-                            unset(self::$pending_logs['translation'][$slug]);
+                        $translation_key = isset(self::$pending_logs['translation']['core_' . $item->language])
+                            ? 'core_' . $item->language
+                            : $slug;
+                        $event_key = self::get_pending_event_key('translation', $translation_key);
+                        if (isset(self::$already_logged['translation:' . $translation_key])) {
+                            self::finalize_pending_log($event_key, 'translation', $translation_key);
                             continue;
                         }
-                        if (isset(self::$pending_logs['translation'][$slug])) {
-                            $p = self::$pending_logs['translation'][$slug];
+                        if (isset(self::$pending_logs['translation'][$translation_key])) {
+                            $p = self::$pending_logs['translation'][$translation_key];
                             $name = $p['name'];
                             $version_before = $p['version_before'];
                             $version_after = $p['version_after'];
+                            $event_key = (string) ($p['event_key'] ?? $event_key);
                         } else {
                             $name = $item->slug . ' (' . $item->language . ')';
                             $version_after = $item->version ?? '';
+                            $event_key = self::build_event_key('translation', (string) $item->slug, (string) $item->language);
                         }
-                        unset(self::$pending_logs['translation'][$slug]);
                     } elseif ($type === 'core') {
-                        if (isset(self::$already_logged['core:core'])) {
-                            if (!empty(self::$pending_logs['core'])) {
-                                array_shift(self::$pending_logs['core']);
-                            }
+                        $event_key = self::get_pending_event_key('core', 'core');
+                        if (isset(self::$already_logged['core:core']) || self::should_skip_event($event_key)) {
+                            self::finalize_pending_log($event_key, 'core', 'core');
                             continue;
                         }
                         $name = 'WordPress';
                         $version_before = get_option(self::OPTION_CORE_VERSION_BEFORE, '');
                         $version_after = get_bloginfo('version');
-                        if (!empty(self::$pending_logs['core'])) {
-                            array_shift(self::$pending_logs['core']);
+                        if (isset(self::$pending_logs['core']['core'])) {
+                            $pending_core = self::$pending_logs['core']['core'];
+                            $version_before = (string) ($pending_core['version_before'] ?? $version_before);
+                            $version_after = (string) ($pending_core['version_after'] ?: $version_after);
+                            $event_key = (string) ($pending_core['event_key'] ?? $event_key);
                         }
+                        $action_type = self::resolve_action_type($version_before, $version_after, 'update');
                     }
+                }
+                if (self::should_skip_event($event_key)) {
+                    continue;
                 }
                 if (isset($result->result) && is_wp_error($result->result)) {
                     $status = 'error';
@@ -371,8 +497,27 @@ final class Updatronix_Update_Logger {
                     $status,
                     $notes,
                     $trace,
-                    $performed_as
+                    $performed_as,
+                    '',
+                    $event_key
                 );
+                if ($type === 'core') {
+                    self::$already_logged['core:core'] = true;
+                    self::schedule_core_version_before_cleanup();
+                    self::$core_feedback = [];
+                    self::$core_package_url = '';
+                    self::finalize_pending_log($event_key, 'core', 'core');
+                } elseif ($type === 'plugin' && is_object($item) && isset($item->plugin)) {
+                    self::finalize_pending_log($event_key, 'plugin', $item->plugin);
+                } elseif ($type === 'theme' && is_object($item) && isset($item->theme)) {
+                    self::finalize_pending_log($event_key, 'theme', $item->theme);
+                } elseif ($type === 'translation' && is_object($item) && isset($item->slug, $item->language)) {
+                    $translation_key = isset(self::$pending_logs['translation']['core_' . $item->language])
+                        ? 'core_' . $item->language
+                        : $item->slug . '_' . $item->language;
+                    self::finalize_pending_log($event_key, 'translation', $translation_key);
+                    self::$already_logged['translation:' . $translation_key] = true;
+                }
             }
         }
     }
@@ -501,14 +646,12 @@ final class Updatronix_Update_Logger {
                 }
             }
         }
-        self::$pending_logs['core'] = [
-            'core' => [
-                'name' => 'WordPress',
-                'slug' => 'core',
-                'version_before' => $version_before,
-                'version_after' => $version_after,
-            ],
-        ];
+        self::register_pending_log('core', 'core', [
+            'name' => 'WordPress',
+            'slug' => 'core',
+            'version_before' => $version_before,
+            'version_after' => $version_after,
+        ]);
         add_filter('update_feedback', [self::class, 'collect_core_feedback'], 1, 1);
 
         return $reply;
@@ -762,15 +905,27 @@ final class Updatronix_Update_Logger {
         }
 
         $trace = Updatronix_ErrorHandler::capture_trace();
-        $performed_as = self::$auto_update ? 'automatic' : 'manual';
+        $performed_as = self::get_current_performed_as();
         $update_context = (($type === 'plugin' || $type === 'theme') && $upgrader->skin instanceof \Bulk_Upgrader_Skin) ? 'bulk' : (($type === 'plugin' || $type === 'theme') ? 'single' : '');
 
         if ($type === 'core' && $action === 'update') {
-            self::log_core_update($upgrader, $process_message, $trace, $performed_as);
-            self::$already_logged['core:core'] = true;
-            if (!empty(self::$pending_logs['core'])) {
-                array_shift(self::$pending_logs['core']);
+            if ($performed_as === 'automatic') {
+                if (isset(self::$pending_logs['core']['core'])) {
+                    self::$pending_logs['core']['core']['version_after'] = get_bloginfo('version');
+                    self::$pending_logs['core']['core']['message'] = $process_message;
+                    Updatronix_UpdateLogState::store_pending(
+                        (string) self::$pending_logs['core']['core']['event_key'],
+                        self::$pending_logs['core']['core']
+                    );
+                }
+
+                return;
             }
+
+            $event_key = self::get_pending_event_key('core', 'core');
+            self::log_core_update($upgrader, $process_message, $trace, $performed_as, $event_key);
+            self::$already_logged['core:core'] = true;
+            self::finalize_pending_log($event_key, 'core', 'core');
 
             return;
         }
@@ -788,12 +943,12 @@ final class Updatronix_Update_Logger {
                     $has_version_before = isset($stored[$plugin_file]) || isset($by_mainfile[basename($plugin_file)]);
                     $log_action = $has_version_before ? 'update' : 'install';
                     $plugin_performed_as = $has_version_before ? 'upload' : $performed_as;
-                    self::log_plugin_update($plugin_file, $log_action, $upgrader, $process_message, $trace, $plugin_performed_as, $update_context);
+                    self::log_plugin_update($plugin_file, $log_action, $upgrader, $process_message, $trace, $plugin_performed_as, $update_context, self::get_pending_event_key('plugin', $plugin_file));
                     self::$already_logged['plugin:' . $plugin_file] = true;
                 }
             } else {
                 foreach ($plugins as $plugin_file) {
-                    self::log_plugin_update($plugin_file, $action, $upgrader, $process_message, $trace, $performed_as, $update_context);
+                    self::log_plugin_update($plugin_file, $action, $upgrader, $process_message, $trace, $performed_as, $update_context, self::get_pending_event_key('plugin', $plugin_file));
                     self::$already_logged['plugin:' . $plugin_file] = true;
                 }
             }
@@ -812,13 +967,13 @@ final class Updatronix_Update_Logger {
                         $stored = (array) get_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
                         $log_action = isset($stored[$theme_slug]) ? 'update' : 'install';
                         $theme_performed_as = isset($stored[$theme_slug]) ? 'upload' : $performed_as;
-                        self::log_theme_update($theme_slug, $log_action, $upgrader, $process_message, $trace, $theme_performed_as, $update_context);
+                        self::log_theme_update($theme_slug, $log_action, $upgrader, $process_message, $trace, $theme_performed_as, $update_context, self::get_pending_event_key('theme', $theme_slug));
                         self::$already_logged['theme:' . $theme_slug] = true;
                     }
                 }
             } else {
                 foreach ($themes as $theme_slug) {
-                    self::log_theme_update($theme_slug, $action, $upgrader, $process_message, $trace, $performed_as, $update_context);
+                    self::log_theme_update($theme_slug, $action, $upgrader, $process_message, $trace, $performed_as, $update_context, self::get_pending_event_key('theme', $theme_slug));
                     self::$already_logged['theme:' . $theme_slug] = true;
                 }
             }
@@ -834,11 +989,13 @@ final class Updatronix_Update_Logger {
                 $slug = $t_slug ?: $t_lang;
                 $version_before = '';
                 $version_after = $trans['version'] ?? '';
+                $event_key = self::get_pending_event_key('translation', $key);
                 if (isset(self::$pending_logs['translation'][$key])) {
                     $p = self::$pending_logs['translation'][$key];
                     $name = $p['name'];
                     $version_before = $p['version_before'];
                     $version_after = $p['version_after'];
+                    $event_key = (string) ($p['event_key'] ?? $event_key);
                 } else {
                     if ($t_type === 'core') {
                         $name = 'WordPress (' . $t_lang . ')';
@@ -854,8 +1011,12 @@ final class Updatronix_Update_Logger {
                         $themes = wp_get_themes();
                         $name = (isset($themes[$t_slug]) ? $themes[$t_slug]->get('Name') : $t_slug) . ' (' . $t_lang . ')';
                     }
+                    $event_key = self::build_event_key('translation', $slug, (string) $t_lang);
                 }
-                unset(self::$pending_logs['translation'][$key]);
+                if (self::should_skip_event($event_key)) {
+                    self::finalize_pending_log($event_key, 'translation', $key);
+                    continue;
+                }
                 Updatronix_Logger::log(
                     'translation',
                     'update',
@@ -866,8 +1027,11 @@ final class Updatronix_Update_Logger {
                     'success',
                     $process_message,
                     $trace,
-                    $performed_as
+                    $performed_as,
+                    '',
+                    $event_key
                 );
+                self::finalize_pending_log($event_key, 'translation', $key);
                 self::$already_logged['translation:' . $key] = true;
             }
         }
@@ -882,8 +1046,11 @@ final class Updatronix_Update_Logger {
      * @param string     $performed_as    manual or automatic.
      * @return void
      */
-    private static function log_core_update(WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual'): void {
+    private static function log_core_update(WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual', string $event_key = ''): void {
         remove_filter('update_feedback', [self::class, 'collect_core_feedback'], 1);
+        if ($event_key === '') {
+            $event_key = self::build_event_key('core', 'core');
+        }
 
         $version_before = get_option(self::OPTION_CORE_VERSION_BEFORE, '');
         $version_after = get_bloginfo('version');
@@ -922,7 +1089,9 @@ final class Updatronix_Update_Logger {
             'success',
             $message,
             $trace,
-            $performed_as
+            $performed_as,
+            '',
+            $event_key
         );
 
         // Defer cleanup so a second core update step in the same request (e.g. partial then full)
@@ -1034,7 +1203,10 @@ final class Updatronix_Update_Logger {
      * @param string       $update_context  bulk or single (empty for legacy).
      * @return void
      */
-    private static function log_plugin_update(string $plugin_file, string $action, WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual', string $update_context = ''): void {
+    private static function log_plugin_update(string $plugin_file, string $action, WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual', string $update_context = '', string $event_key = ''): void {
+        if ($event_key === '') {
+            $event_key = self::build_event_key('plugin', dirname($plugin_file) === '.' ? $plugin_file : dirname($plugin_file));
+        }
         $stored = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
         $by_mainfile = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, []);
         $version_before = isset($stored[$plugin_file]) ? (string) $stored[$plugin_file] : '';
@@ -1080,12 +1252,13 @@ final class Updatronix_Update_Logger {
             $message,
             $trace,
             $performed_as,
-            $update_context
+            $update_context,
+            $event_key
         );
 
         unset($stored[$plugin_file]);
         unset($by_mainfile[basename($plugin_file)]);
-        unset(self::$pending_logs['plugin'][$plugin_file]);
+        self::finalize_pending_log($event_key, 'plugin', $plugin_file);
         update_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, $stored);
         update_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, $by_mainfile);
     }
@@ -1235,7 +1408,10 @@ final class Updatronix_Update_Logger {
      * @param string      $update_context  bulk or single (empty for legacy).
      * @return void
      */
-    private static function log_theme_update(string $theme_slug, string $action, WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual', string $update_context = ''): void {
+    private static function log_theme_update(string $theme_slug, string $action, WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual', string $update_context = '', string $event_key = ''): void {
+        if ($event_key === '') {
+            $event_key = self::build_event_key('theme', $theme_slug);
+        }
         $stored = (array) get_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
         $version_before = isset($stored[$theme_slug]) ? (string) $stored[$theme_slug] : '';
         $themes = wp_get_themes();
@@ -1263,11 +1439,12 @@ final class Updatronix_Update_Logger {
             $message,
             $trace,
             $performed_as,
-            $update_context
+            $update_context,
+            $event_key
         );
 
         unset($stored[$theme_slug]);
-        unset(self::$pending_logs['theme'][$theme_slug]);
+        self::finalize_pending_log($event_key, 'theme', $theme_slug);
         update_option(self::OPTION_THEME_VERSIONS_BEFORE, $stored);
     }
 }

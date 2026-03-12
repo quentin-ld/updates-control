@@ -67,6 +67,7 @@ final class Updatronix_Database {
             version_before varchar(64) NOT NULL DEFAULT '',
             version_after varchar(64) NOT NULL DEFAULT '',
             status varchar(20) NOT NULL DEFAULT 'success',
+            event_key varchar(191) DEFAULT NULL,
             message longtext DEFAULT NULL,
             trace longtext DEFAULT NULL,
             user_id bigint(20) unsigned NOT NULL DEFAULT 0,
@@ -78,7 +79,9 @@ final class Updatronix_Database {
             KEY site_id (site_id),
             KEY log_type (log_type),
             KEY status (status),
-            KEY created_at (created_at)
+            KEY created_at (created_at),
+            UNIQUE KEY event_key (event_key),
+            KEY created_type_status (created_at, log_type, status)
         ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';

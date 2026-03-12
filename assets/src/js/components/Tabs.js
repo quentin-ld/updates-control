@@ -82,20 +82,23 @@ export const Tabs = ({
  *
  * @param {Object} props          - Component props.
  * @param {Object} props.children - Tab components.
+ * @param {string} props.label    - Optional accessible label for the tab navigation.
  * @return {JSX.Element} The tab list container.
  */
-export const TabList = ({ children }) => {
+export const TabList = ({ children, label = '' }) => {
 	const { orientation, tabListRef } = useContext(TabsContext);
 
 	return (
-		<div
-			ref={tabListRef}
-			className={`updatronix-tabs__list updatronix-tabs__list--${orientation}`}
-			role="tablist"
-			aria-orientation={orientation}
-		>
-			{children}
-		</div>
+		<nav aria-label={label || undefined}>
+			<div
+				ref={tabListRef}
+				className={`updatronix-tabs__list updatronix-tabs__list--${orientation}`}
+				role="tablist"
+				aria-orientation={orientation}
+			>
+				{children}
+			</div>
+		</nav>
 	);
 };
 

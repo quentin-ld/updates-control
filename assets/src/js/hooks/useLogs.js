@@ -12,6 +12,7 @@ export function useLogs() {
 	const [total, setTotal] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [detailsCache, setDetailsCache] = useState({});
 
 	const fetchLogs = useCallback(async (params = {}) => {
 		setLoading(true);
@@ -41,6 +42,29 @@ export function useLogs() {
 		}
 	}, []);
 
+	const fetchLogDetails = useCallback(
+		async (id) => {
+			const cacheKey = String(id);
+			if (detailsCache[cacheKey]) {
+				return detailsCache[cacheKey];
+			}
+
+			const response = await apiFetch({
+				path: `updatronix/v1/logs/${id}`,
+			});
+			const log = response?.log || null;
+			if (log) {
+				setDetailsCache((prev) => ({
+					...prev,
+					[cacheKey]: log,
+				}));
+			}
+
+			return log;
+		},
+		[detailsCache]
+	);
+
 	const deleteLog = useCallback(async (id) => {
 		try {
 			await apiFetch({
@@ -50,6 +74,11 @@ export function useLogs() {
 			setLogs((prev) =>
 				prev.filter((log) => Number(log.id) !== Number(id))
 			);
+			setDetailsCache((prev) => {
+				const next = { ...prev };
+				delete next[String(id)];
+				return next;
+			});
 			setTotal((prev) => Math.max(0, prev - 1));
 			return true;
 		} catch (e) {
@@ -63,6 +92,7 @@ export function useLogs() {
 		loading,
 		error,
 		fetchLogs,
+		fetchLogDetails,
 		deleteLog,
 	};
 }

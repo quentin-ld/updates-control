@@ -40,6 +40,7 @@ final class Updatronix_Bootstrap {
         $classes = [
             'Database.php',
             'Security.php',
+            'UpdateLogState.php',
             'Logger.php',
             'Cron.php',
             'ErrorHandler.php',

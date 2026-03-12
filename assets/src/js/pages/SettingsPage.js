@@ -53,7 +53,7 @@ export const SettingsPage = () => {
 	}, [selectedTabId]);
 
 	return (
-		<article className="updatronix-row">
+		<main className="updatronix-row">
 			<section className="updatronix-main">
 				<div className="updatronix-notices">
 					<Notices />
@@ -64,7 +64,12 @@ export const SettingsPage = () => {
 						selectedTabId={selectedTabId}
 						onSelect={handleSelectTab}
 					>
-						<Tabs.TabList>
+						<Tabs.TabList
+							label={__(
+								'Updatronix settings sections',
+								'updatronix'
+							)}
+						>
 							<Tabs.Tab
 								tabId={TAB_LOGS}
 								title={__('Update logs', 'updatronix')}
@@ -106,6 +111,6 @@ export const SettingsPage = () => {
 					</Tabs>
 				</div>
 			</section>
-		</article>
+		</main>
 	);
 };
