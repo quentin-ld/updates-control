@@ -90,11 +90,11 @@ export const SettingsPanel = memo(function SettingsPanel({
 			<div className="updatronix-settings-section">
 				<h3 className="updatronix-settings-section-title">
 					<Icon icon={seen} size={24} />
-					{__('Logging', 'updatronix')}
+					{__('Update logging', 'updatronix')}
 				</h3>
 				<ToggleControl
 					__nextHasNoMarginBottom
-					label={__('Update logging', 'updatronix')}
+					label={__('Record all updates', 'updatronix')}
 					help={__(
 						'Keep a record of all core, plugin, theme, and translation updates.',
 						'updatronix'
