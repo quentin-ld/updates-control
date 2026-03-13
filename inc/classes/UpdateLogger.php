@@ -31,7 +31,7 @@ final class Updatronix_Update_Logger {
         // phpcs:ignore plugin_updater_detected, update_modification_detected -- Update logger (logs updates only); we only add version_before to the transient for audit logging. We do not implement a plugin updater or alter what gets updated.
         add_filter('set_site_transient_update_plugins', [self::class, 'capture_plugin_versions_before'], 10, 1);
         add_filter('set_site_transient_update_themes', [self::class, 'capture_theme_versions_before'], 10, 1);
-        register_shutdown_function([self::class, 'maybe_flush_pending_logs']);
+        register_shutdown_function([self::class, 'shutdown_cleanup']);
         add_action('delete_plugin', [self::class, 'log_plugin_uninstall'], 10, 1);
         add_action('delete_theme', [self::class, 'log_theme_uninstall'], 10, 1);
     }
@@ -210,21 +210,7 @@ final class Updatronix_Update_Logger {
 
         if ($needs_feedback_ob && !self::$feedback_ob_started) {
             $is_multi = !empty($options['is_multi']);
-            if ($is_multi || $is_translation) {
-                if (self::$feedback_ob_callback === null) {
-                    self::$feedback_ob_callback = function (string $buf): string {
-                        self::$captured_bulk_feedback .= $buf;
-                        self::$feedback_ob_started = false;
-                        self::$bulk_flush_happened = true;
-
-                        return $buf;
-                    };
-                }
-                ob_start(self::$feedback_ob_callback);
-            } else {
-                ob_start();
-            }
-            self::$feedback_ob_started = true;
+            self::start_feedback_buffer($is_multi || $is_translation);
         }
 
         if ($action !== 'update' && !$has_plugin && !$has_theme && !$has_translation) {
@@ -318,6 +304,16 @@ final class Updatronix_Update_Logger {
         }
 
         return $options;
+    }
+
+    /**
+     * On shutdown: close any plugin-owned output buffers, then flush pending logs.
+     *
+     * @return void
+     */
+    public static function shutdown_cleanup(): void {
+        self::cleanup_output_buffer_state();
+        self::maybe_flush_pending_logs();
     }
 
     /**
@@ -536,6 +532,12 @@ final class Updatronix_Update_Logger {
     /** Whether we started an output buffer to capture WordPress feedback (plugin/theme manual flow). */
     private static bool $feedback_ob_started = false;
 
+    /** Output buffer level of the feedback buffer started by this class. */
+    private static ?int $feedback_ob_level = null;
+
+    /** Whether the feedback buffer uses the bulk/translation callback. */
+    private static bool $feedback_ob_uses_callback = false;
+
     /** Captured feedback from WordPress show_message() during the last run (plugin/theme). */
     private static string $captured_feedback = '';
 
@@ -548,8 +550,184 @@ final class Updatronix_Update_Logger {
     /** True when we started an OB in upgrader_pre_download to capture post-flush feedback (Downloading…, etc.). */
     private static bool $post_flush_ob_started = false;
 
+    /** Output buffer level of the post-flush buffer started by this class. */
+    private static ?int $post_flush_ob_level = null;
+
     /** Callable for ob_start used in bulk flow so we can re-start OB after each flush. */
     private static ?\Closure $feedback_ob_callback = null;
+
+    /**
+     * Start the plugin-owned feedback buffer and record its stack level.
+     *
+     * @param bool $use_callback Whether the bulk/translation callback should be used.
+     * @return void
+     */
+    private static function start_feedback_buffer(bool $use_callback): void {
+        if (self::$feedback_ob_started) {
+            return;
+        }
+
+        if ($use_callback) {
+            if (self::$feedback_ob_callback === null) {
+                self::$feedback_ob_callback = function (string $buf): string {
+                    self::$captured_bulk_feedback .= $buf;
+                    self::reset_feedback_buffer_state();
+                    self::$bulk_flush_happened = true;
+
+                    return $buf;
+                };
+            }
+
+            ob_start(self::$feedback_ob_callback);
+        } else {
+            ob_start();
+        }
+
+        self::$feedback_ob_started = true;
+        self::$feedback_ob_level = ob_get_level();
+        self::$feedback_ob_uses_callback = $use_callback;
+    }
+
+    /**
+     * Start the plugin-owned post-flush buffer and record its stack level.
+     *
+     * @return void
+     */
+    private static function start_post_flush_buffer(): void {
+        if (self::$post_flush_ob_started) {
+            return;
+        }
+
+        ob_start(function (string $buf): string {
+            self::$captured_bulk_feedback .= $buf;
+            self::reset_post_flush_buffer_state();
+
+            return $buf;
+        });
+
+        self::$post_flush_ob_started = true;
+        self::$post_flush_ob_level = ob_get_level();
+    }
+
+    /**
+     * Whether the current top output buffer matches the one this class started.
+     *
+     * @param int|null $expected_level Recorded level when the buffer started.
+     * @return bool
+     */
+    private static function can_close_owned_buffer(?int $expected_level): bool {
+        return $expected_level !== null && ob_get_level() === $expected_level;
+    }
+
+    /**
+     * Reset feedback-buffer ownership state.
+     *
+     * @return void
+     */
+    private static function reset_feedback_buffer_state(): void {
+        self::$feedback_ob_started = false;
+        self::$feedback_ob_level = null;
+        self::$feedback_ob_uses_callback = false;
+    }
+
+    /**
+     * Reset post-flush buffer ownership state.
+     *
+     * @return void
+     */
+    private static function reset_post_flush_buffer_state(): void {
+        self::$post_flush_ob_started = false;
+        self::$post_flush_ob_level = null;
+    }
+
+    /**
+     * Close the feedback buffer if this class still owns the active top buffer.
+     *
+     * @return string Captured raw buffer contents for plain buffers only.
+     */
+    private static function close_feedback_buffer(): string {
+        if (!self::$feedback_ob_started) {
+            return '';
+        }
+
+        $uses_callback = self::$feedback_ob_uses_callback;
+        $level = self::$feedback_ob_level;
+        if (!self::can_close_owned_buffer($level)) {
+            self::reset_feedback_buffer_state();
+
+            return '';
+        }
+
+        $buffer = ob_get_clean();
+        self::reset_feedback_buffer_state();
+
+        if ($uses_callback) {
+            return '';
+        }
+
+        return is_string($buffer) ? $buffer : '';
+    }
+
+    /**
+     * Close the post-flush buffer if this class still owns the active top buffer.
+     *
+     * @return string Empty string; callback-based output is accumulated in bulk feedback state.
+     */
+    private static function close_post_flush_buffer(): string {
+        if (!self::$post_flush_ob_started) {
+            return '';
+        }
+
+        $level = self::$post_flush_ob_level;
+        if (!self::can_close_owned_buffer($level)) {
+            self::reset_post_flush_buffer_state();
+
+            return '';
+        }
+
+        $buffer = ob_get_clean();
+        self::reset_post_flush_buffer_state();
+
+        unset($buffer);
+
+        return '';
+    }
+
+    /**
+     * Collect plugin-owned feedback buffers and reset temporary capture state.
+     *
+     * @return string Combined raw HTML feedback captured by this class.
+     */
+    private static function collect_and_reset_feedback_buffers(): string {
+        $buffer = self::close_feedback_buffer();
+        $post_flush_buffer = self::close_post_flush_buffer();
+
+        if ($post_flush_buffer !== '') {
+            $buffer .= $post_flush_buffer;
+        }
+
+        if (self::$captured_bulk_feedback !== '') {
+            $buffer = self::$captured_bulk_feedback . $buffer;
+            self::$captured_bulk_feedback = '';
+        }
+
+        self::$bulk_flush_happened = false;
+
+        return $buffer;
+    }
+
+    /**
+     * Best-effort cleanup for plugin-owned output buffers when the request cannot continue.
+     *
+     * @return void
+     */
+    private static function cleanup_output_buffer_state(): void {
+        self::close_post_flush_buffer();
+        self::close_feedback_buffer();
+        self::$captured_feedback = '';
+        self::$captured_bulk_feedback = '';
+        self::$bulk_flush_happened = false;
+    }
 
     /**
      * Store current core/plugin/theme versions before upgrade runs. For core, also hook update_feedback to collect process.
@@ -602,13 +780,7 @@ final class Updatronix_Update_Logger {
     public static function start_bulk_post_flush_buffer(bool|\WP_Error $reply, string $package, \WP_Upgrader $upgrader): bool|\WP_Error {
         if (self::$bulk_flush_happened && $upgrader->skin instanceof \Bulk_Upgrader_Skin) {
             self::$bulk_flush_happened = false;
-            ob_start(function (string $buf): string {
-                self::$captured_bulk_feedback .= $buf;
-                self::$post_flush_ob_started = false;
-
-                return $buf;
-            });
-            self::$post_flush_ob_started = true;
+            self::start_post_flush_buffer();
         }
 
         return $reply;
@@ -852,42 +1024,55 @@ final class Updatronix_Update_Logger {
      * @return void
      */
     public static function on_upgrader_process_complete(WP_Upgrader $upgrader, array $options): void {
+        $type = $options['type'] ?? '';
+        $action = $options['action'] ?? '';
+        $should_capture_feedback = $type === 'plugin' || $type === 'theme' || $type === 'translation';
+        $buffer = '';
+
+        if ($should_capture_feedback) {
+            $buffer = self::collect_and_reset_feedback_buffers();
+        } else {
+            self::cleanup_output_buffer_state();
+        }
+
+        self::$captured_feedback = '';
+
+        $should_replay_feedback = $buffer !== '' && !($upgrader->skin instanceof \Bulk_Upgrader_Skin);
+
         if (!updatronix_get_settings()['logging_enabled']) {
+            if ($should_replay_feedback) {
+                echo wp_kses_post($buffer);
+            }
+
             return;
         }
 
         if (is_wp_error($upgrader->skin->result)) {
+            if ($should_replay_feedback) {
+                echo wp_kses_post($buffer);
+            }
+
             return;
         }
         if ($upgrader instanceof \Plugin_Upgrader && is_wp_error($upgrader->result)) {
+            if ($should_replay_feedback) {
+                echo wp_kses_post($buffer);
+            }
+
             return;
         }
         if ($upgrader instanceof \Theme_Upgrader && is_wp_error($upgrader->result)) {
+            if ($should_replay_feedback) {
+                echo wp_kses_post($buffer);
+            }
+
             return;
         }
 
-        $type = $options['type'] ?? '';
-        $action = $options['action'] ?? '';
-
-        if ($type === 'plugin' || $type === 'theme' || $type === 'translation') {
-            $buffer = '';
-            if (self::$feedback_ob_started) {
-                $ob = ob_get_clean();
-                self::$feedback_ob_started = false;
-                $buffer = is_string($ob) ? $ob : '';
-            } elseif (self::$post_flush_ob_started) {
-                ob_get_clean();
-                self::$post_flush_ob_started = false;
-                $buffer = self::$captured_bulk_feedback;
-                self::$captured_bulk_feedback = '';
-            }
-            if (self::$captured_bulk_feedback !== '') {
-                $buffer = self::$captured_bulk_feedback . $buffer;
-                self::$captured_bulk_feedback = '';
-            }
+        if ($should_capture_feedback) {
             if ($buffer !== '') {
                 self::$captured_feedback = self::feedback_html_to_plain($buffer);
-                if (!$upgrader->skin instanceof \Bulk_Upgrader_Skin) {
+                if ($should_replay_feedback) {
                     echo wp_kses_post($buffer);
                 }
             }

@@ -4,7 +4,7 @@ Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, maintenance, security, audit-log
 Requires at least: 6.2
 Tested up to: 6.9
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -124,6 +124,10 @@ Updatronix is multisite-aware and tracks logs on a per-site basis. Full network-
 
 == Changelog ==
 
+= 1.0.2 =
+
+* Fix: Close `ob_start()` buffers safely.
+
 = 1.0.1 =
 
 * Fix: Better handling of updates logging.
@@ -135,6 +139,10 @@ Updatronix is multisite-aware and tracks logs on a per-site basis. Full network-
 * Initial release of Updatronix.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+
+Fix buffer cleanup in update logging.
 
 = 1.0 =
 
