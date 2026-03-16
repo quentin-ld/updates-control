@@ -5,7 +5,6 @@
 		position: relative;
 		margin-left: -20px;
 		background: transparent;
-		margin-bottom: -30px;
 	}
 
 	&-dashboard-wrap {
@@ -15,7 +14,7 @@
 
 		a:not(.components-button) {
 			color: $wp-color-accent;
-			
+
 			&[target='_blank'] {
 				position: relative;
 				gap: var(--wpds-dimension-gap-xs);
@@ -131,7 +130,7 @@
 			justify-content: flex-start;
 
 			h1,
-			p {	
+			p {
 				color: var(--wpds-color-bg-surface-neutral-strong);
 				margin: 0;
 				padding: 0;
