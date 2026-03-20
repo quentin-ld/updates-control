@@ -32,6 +32,7 @@ archive.glob('**/*', {
     '.gitattributes',
     '.gitmodules',
     '.github/**',
+    '.config',
     '.config/**',
     '.cursor/**',
     '.distignore',
@@ -53,7 +54,6 @@ archive.glob('**/*', {
     'phpstan-bootstrap.php',
     'workflow.md',
     'docs/**',
-    'wordpress-org/**',
     'FEATURE_REQUEST.md'
   ],
 });
