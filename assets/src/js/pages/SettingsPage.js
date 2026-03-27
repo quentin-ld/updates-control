@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback } from '@wordpress/element';
+import {
+	useState,
+	useEffect,
+	useCallback,
+	lazy,
+	Suspense,
+} from '@wordpress/element';
 import {
 	backup as iconLogs,
 	settings as iconSettings,
@@ -6,9 +12,6 @@ import {
 } from '@wordpress/icons';
 import { Notices } from '../components/Notices';
 import { Tabs } from '../components/Tabs';
-import { ActivityLogPanel } from '../components/activityLog';
-import { SettingsPanel } from '../components/SettingsPanel';
-import { AutoUpdatesPanel } from '../components/autoUpdates';
 import { usePluginSettings } from '../hooks/usePluginSettings';
 import { __ } from '@wordpress/i18n';
 
@@ -16,6 +19,22 @@ const TAB_LOGS = 'logs';
 const TAB_AUTO_UPDATES = 'auto-updates';
 const TAB_SETTINGS = 'settings';
 const VALID_TABS = [TAB_LOGS, TAB_AUTO_UPDATES, TAB_SETTINGS];
+
+const ActivityLogPanel = lazy(() =>
+	import('../components/activityLog').then((module) => ({
+		default: module.ActivityLogPanel,
+	}))
+);
+const AutoUpdatesPanel = lazy(() =>
+	import('../components/autoUpdates').then((module) => ({
+		default: module.AutoUpdatesPanel,
+	}))
+);
+const SettingsPanel = lazy(() =>
+	import('../components/SettingsPanel').then((module) => ({
+		default: module.SettingsPanel,
+	}))
+);
 
 function getTabFromUrl() {
 	const params = new URLSearchParams(window.location.search);
@@ -39,6 +58,9 @@ function setTabInUrl(tabId) {
 export const SettingsPage = () => {
 	const { settings, setSettings, saveSettings, saving } = usePluginSettings();
 	const [selectedTabId, setSelectedTabId] = useState(getTabFromUrl);
+	const [loadedTabs, setLoadedTabs] = useState(
+		() => new Set([getTabFromUrl()])
+	);
 
 	const handleSelectTab = useCallback((tabId) => {
 		setSelectedTabId(tabId);
@@ -51,6 +73,21 @@ export const SettingsPage = () => {
 			setTabInUrl(TAB_LOGS);
 		}
 	}, [selectedTabId]);
+
+	useEffect(() => {
+		setLoadedTabs((previousTabs) => {
+			if (previousTabs.has(selectedTabId)) {
+				return previousTabs;
+			}
+			const nextTabs = new Set(previousTabs);
+			nextTabs.add(selectedTabId);
+			return nextTabs;
+		});
+	}, [selectedTabId]);
+
+	const tabLoadingFallback = (
+		<p aria-live="polite">{__('Loading section…', 'updatronix')}</p>
+	);
 
 	return (
 		<main className="updatronix-row">
@@ -93,20 +130,34 @@ export const SettingsPage = () => {
 							</Tabs.Tab>
 						</Tabs.TabList>
 						<Tabs.TabPanel tabId={TAB_LOGS}>
-							<ActivityLogPanel
-								loggingEnabled={settings.logging_enabled}
-							/>
+							{loadedTabs.has(TAB_LOGS) ? (
+								<Suspense fallback={tabLoadingFallback}>
+									<ActivityLogPanel
+										loggingEnabled={
+											settings.logging_enabled
+										}
+									/>
+								</Suspense>
+							) : null}
 						</Tabs.TabPanel>
 						<Tabs.TabPanel tabId={TAB_AUTO_UPDATES}>
-							<AutoUpdatesPanel />
+							{loadedTabs.has(TAB_AUTO_UPDATES) ? (
+								<Suspense fallback={tabLoadingFallback}>
+									<AutoUpdatesPanel />
+								</Suspense>
+							) : null}
 						</Tabs.TabPanel>
 						<Tabs.TabPanel tabId={TAB_SETTINGS}>
-							<SettingsPanel
-								settings={settings}
-								setSettings={setSettings}
-								saveSettings={saveSettings}
-								saving={saving}
-							/>
+							{loadedTabs.has(TAB_SETTINGS) ? (
+								<Suspense fallback={tabLoadingFallback}>
+									<SettingsPanel
+										settings={settings}
+										setSettings={setSettings}
+										saveSettings={saveSettings}
+										saving={saving}
+									/>
+								</Suspense>
+							) : null}
 						</Tabs.TabPanel>
 					</Tabs>
 				</div>

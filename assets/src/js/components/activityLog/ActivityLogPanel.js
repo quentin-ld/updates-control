@@ -7,7 +7,7 @@
  */
 
 import { useMemo, useState, useEffect, useCallback } from '@wordpress/element';
-import { DataViews, filterSortAndPaginate } from '@wordpress/dataviews/wp';
+import { DataViews, filterSortAndPaginate } from '@wordpress/dataviews';
 import {
 	Button,
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis

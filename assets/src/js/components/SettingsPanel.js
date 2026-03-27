@@ -21,7 +21,7 @@ import { __ } from '@wordpress/i18n';
 const NOTIFY_TYPES = [
 	{
 		key: 'core',
-		label: __('Core (WordPress) updates', 'updatronix'),
+		label: __('Core updates', 'updatronix'),
 		help: __(
 			'WordPress core update emails: success, failure, manual, and critical.',
 			'updatronix'

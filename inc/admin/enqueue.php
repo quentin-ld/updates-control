@@ -41,6 +41,12 @@ function updatronix_admin_enqueue_scripts(string $admin_page): void {
         true
     );
 
+    wp_set_script_translations(
+        'updatronix-scripts',
+        'updatronix',
+        updatronix_PLUGIN_DIR . 'languages'
+    );
+
     wp_enqueue_style(
         'updatronix-style',
         plugins_url('assets/build/index.css', updatronix_PLUGIN_FILE),

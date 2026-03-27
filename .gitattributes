@@ -1,5 +1,6 @@
 # Directories
 /.git export-ignore
+/.config export-ignore
 /.github export-ignore
 /.vscode export-ignore
 /.wordpress-org export-ignore
@@ -43,7 +44,6 @@ phpunit.xml.dist export-ignore
 postcss.config.sort.js export-ignore
 prettierrc export-ignore
 prettierrc.js export-ignore
-README.md export-ignore
 Thumbs.db export-ignore
 workflow.md export-ignore
 wp-cli.local.yml export-ignore

@@ -6,22 +6,31 @@
   "scripts": {
     "lint": "eslint --config .config/.eslintrc.js assets/src/**/*.js",
     "lint:fix": "eslint --config .config/.eslintrc.js --fix assets/src/**/*.js",
+    "lint:css": "stylelint --config .config/stylelintrc.json 'assets/src/**/*.scss'",
+    "lint:css:fix": "stylelint --config .config/stylelintrc.json 'assets/src/**/*.scss' --fix",
+    "format": "prettier --check 'assets/src/**/*.{js,jsx}'",
+    "format:fix": "prettier --write 'assets/src/**/*.{js,jsx}'",
     "start": "wp-scripts start assets/src/index.js --output-path=assets/build",
     "build": "wp-scripts build assets/src/index.js --output-path=assets/build",
     "zip": "node .config/zip.js"
   },
+  "prettier": "@wordpress/prettier-config",
   "author": "Quentin Le Duff",
   "license": "GPL-2.0-or-later",
   "devDependencies": {
     "@wordpress/eslint-plugin": "^22.22.0",
+    "@wordpress/prettier-config": "^4.0.0",
     "@wordpress/scripts": "^30.22.0",
+    "@wordpress/stylelint-config": "^23.0.0",
+    "archiver": "^7.0.1",
     "eslint": "^8.57.1",
     "prettier": "^3.8.1",
-    "archiver": "^7.0.1"
+    "stylelint": "^16.0.0"
   },
   "dependencies": {
     "@wordpress/components": "^32.2.0",
     "@wordpress/dataviews": "^12.0.0",
-    "@wordpress/icons": "^11.0.0"
+    "@wordpress/icons": "^11.0.0",
+    "clipboard": "^2.0.11"
   }
 }

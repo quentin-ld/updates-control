@@ -471,6 +471,25 @@ final class Updatronix_Update_Logger {
                             $version_after = (string) ($pending_core['version_after'] ?: $version_after);
                             $event_key = (string) ($pending_core['event_key'] ?? $event_key);
                         }
+                        $core_success = isset($result->result) && !is_wp_error($result->result);
+                        if ($core_success && is_object($item)) {
+                            if (is_string($result->result) && $result->result !== '') {
+                                $version_after = $result->result;
+                            } else {
+                                $offer_after = '';
+                                if (isset($item->current) && $item->current !== '') {
+                                    $offer_after = (string) $item->current;
+                                } elseif (isset($item->version) && $item->version !== '') {
+                                    $offer_after = (string) $item->version;
+                                }
+                                if ($offer_after !== '') {
+                                    $version_after = $offer_after;
+                                }
+                            }
+                            if ($version_before === '' && isset($item->partial_version) && $item->partial_version !== '') {
+                                $version_before = (string) $item->partial_version;
+                            }
+                        }
                         $action_type = self::resolve_action_type($version_before, $version_after, 'update');
                     }
                 }

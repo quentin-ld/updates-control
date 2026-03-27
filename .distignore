@@ -1,7 +1,7 @@
 *.sql
 *.tar.gz
 *.zip
-.config
+.config/
 .distignore
 .DS_Store
 .editorconfig
@@ -9,16 +9,13 @@
 .eslintrc.js
 .git
 .gitattributes
-.github
 .gitignore
 .gitlab-ci.yml
 .php-cs-fixer.php
 .prettierrc
 .prettierrc.js
-.sublime
 .travis.yml
-.vscode
-.wordpress-org
+assets/src
 behat.yml
 bin
 eslintrc
@@ -41,7 +38,6 @@ phpunit.xml.dist
 postcss.config.sort.js
 prettierrc
 prettierrc.js
-README.md
 tests
 Thumbs.db
 vendor
@@ -54,7 +50,4 @@ docs/*
 .vscode/
 .wordpress-org/
 .gitmodules
-.gitignore
-.gitattributes
-.gitignore
 FEATURE_REQUEST.md

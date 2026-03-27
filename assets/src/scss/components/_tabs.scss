@@ -1,6 +1,7 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as *;
 
 .updatronix {
+
 	&-tabs {
 		display: grid;
 		width: 100%;
@@ -21,8 +22,19 @@
 
 			&--vertical {
 				flex-direction: column;
-				border-right: var(--wpds-border-width-xs) solid $color-border-light;
+				border-right:
+					var(--wpds-border-width-xs) solid
+					$color-border-light;
 				padding-right: 0;
+				height: 100%;
+
+				@media screen and (max-width: 768px) {
+					height: auto;
+					border-bottom:
+						var(--wpds-border-width-xs) solid
+						$color-border-light;
+					border-right: none;
+				}
 			}
 		}
 
@@ -52,7 +64,7 @@
 				flex-shrink: 0;
 
 				svg {
-					fill: currentColor;
+					fill: currentcolor;
 				}
 			}
 
@@ -80,13 +92,17 @@
 				background-color: $color-accent-active-bg;
 
 				&::after {
-					content: '';
+					content: "";
 					position: absolute;
 					right: 0;
 					top: 0;
 					bottom: 0;
 					width: $border-width-thick;
 					background: $wp-color-accent;
+
+					@media screen and (max-width: 768px) {
+						display: none;
+					}
 				}
 			}
 
@@ -103,7 +119,9 @@
 			max-height: $tab-panel-height;
 			position: relative;
 			overflow: auto;
-			padding: var(--wpds-dimension-padding-3xl) var(--wpds-dimension-padding-2xl);
+			padding:
+				var(--wpds-dimension-padding-3xl)
+				var(--wpds-dimension-padding-2xl);
 
 			@media screen and (max-width: 1281px) {
 				height: $tab-panel-height;

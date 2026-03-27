@@ -1,6 +1,5 @@
 import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
-import { SettingsPage } from './js/pages/SettingsPage';
 
 import './index.scss';
 
@@ -13,6 +12,15 @@ domReady(() => {
 	if (!rootEl || !(rootEl instanceof HTMLElement)) {
 		return;
 	}
+
 	const root = createRoot(rootEl);
-	root.render(<SettingsPage />);
+	root.render(null);
+
+	import('./js/pages/SettingsPage')
+		.then(({ SettingsPage }) => {
+			root.render(<SettingsPage />);
+		})
+		.catch(() => {
+			rootEl.textContent = 'Updatronix failed to load.';
+		});
 });

@@ -1,9 +1,9 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as *;
 
 .components-toggle-control {
-    margin: var(--wpds-dimension-gap-md) 0;
+	margin: var(--wpds-dimension-gap-md) 0;
 
-    &__help {
-        font-size: $font-size-help;
-    }
+	&__help {
+		font-size: $font-size-help;
+	}
 }

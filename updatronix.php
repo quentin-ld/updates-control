@@ -6,19 +6,19 @@
  * @package   updatronix
  * @link      https://github.com/quentin-ld/updatronix/
  * @author    Quentin Le Duff
- * @copyright 2024-2025 Quentin Le Duff
+ * @copyright 2024-2026 Quentin Le Duff
  * @license   GPL v2 or later
  *
  * Plugin Name: Updatronix
  * Description: Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Plugin URI: https://wordpress.org/plugins/updatronix/
  * Author: Quentin Le Duff
  * Author URI: https://profiles.wordpress.org/quentinldd/
  * Text Domain: updatronix
  * Domain Path: /languages/
  * Requires at least: 6.2
- * Tested up to: 6.9
+ * Tested up to: 7.0
  * Requires PHP: 8.1
  * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html/
  * License: GPL v2 or later
@@ -39,7 +39,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** Plugin version (must match Version header above; used for DB schema version). */
-define('UPDATRONIX_VERSION', '1.0.3');
+define('UPDATRONIX_VERSION', '1.0.4');
 
 define('updatronix_PLUGIN_FILE', __FILE__);
 define('updatronix_PLUGIN_DIR', plugin_dir_path(__FILE__));

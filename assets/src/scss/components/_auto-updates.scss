@@ -1,4 +1,5 @@
 .updatronix-autoupdates-panel {
+
 	> .components-notice {
 		margin-bottom: var(--wpds-dimension-gap-md);
 	}
@@ -11,7 +12,6 @@
 	padding: var(--wpds-dimension-padding-lg);
 	color: var(--wpds-color-fg-content-neutral-weak);
 }
-
 
 .updatronix-autoupdates-section {
 	margin-bottom: var(--wpds-dimension-gap-2xl);
@@ -33,11 +33,22 @@
 	}
 
 	.dataviews-view-table {
+
 		thead {
+
 			th:has(.dataviews-view-table-header-button):first-child {
 				padding-left: 24px;
 			}
-		} 
+		}
+	}
+
+	/* Improve row readability in DataViews auto-updates tables. */
+	.dataviews-view-table > tbody > tr:nth-child(2n + 1) {
+		background-color: #f6f7f7;
+	}
+
+	.dataviews-view-table > tbody > tr:nth-child(2n) {
+		background-color: transparent;
 	}
 
 	.dataviews-view-table__col-auto_update.dataviews-view-table__col-first-data {
@@ -52,15 +63,18 @@
 	margin-top: 0;
 	margin-bottom: var(--wpds-dimension-gap-md);
 	padding-bottom: var(--wpds-dimension-gap-sm);
-	border-bottom: var(--wpds-border-width-xs) solid var(--wpds-color-stroke-surface-neutral-weak);
+	border-bottom:
+		var(--wpds-border-width-xs) solid
+		var(--wpds-color-stroke-surface-neutral-weak);
 
 	> svg {
-		fill: currentColor;
+		fill: currentcolor;
 		flex-shrink: 0;
 	}
 }
 
 .updatronix-autoupdates {
+
 	&__unavailable {
 		color: var(--wpds-color-fg-content-neutral-weak);
 		font-size: var(--wpds-font-size-md);

@@ -5,7 +5,7 @@
 
 import { useMemo, useState, useCallback } from '@wordpress/element';
 import { ToggleControl, Icon } from '@wordpress/components';
-import { DataViews, filterSortAndPaginate } from '@wordpress/dataviews/wp';
+import { DataViews, filterSortAndPaginate } from '@wordpress/dataviews';
 import { __ } from '@wordpress/i18n';
 import { StatusBadge } from '../activityLog/StatusBadge';
 import { ConstantNotices } from './ConstantNotices';

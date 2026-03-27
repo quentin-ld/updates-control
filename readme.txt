@@ -3,8 +3,8 @@ Contributors: quentinldd
 Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, maintenance, security, audit-log
 Requires at least: 6.2
-Tested up to: 6.9
-Stable tag: 1.0.3
+Tested up to: 7.0
+Stable tag: 1.0.4
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -72,9 +72,12 @@ Updatronix aims to be fully accessible to all of its users.
 
 == Screenshots ==
 
-1. Update Log activity view showing a detailed history of changes, triggers, and success status.
-2. Auto-update management dashboard for core, plugins, themes, and translations.
-3. Settings panel for log retention, cleanup scheduling, and email notification routing.
+1. Update Log Activity panel: detailed history of changes, triggers, and statuses.
+2. Update Log Activity panel: log filtering controls.
+3. Update Log Activity panel: detailed log view.
+4. Update Log Activity panel: log deletion actions.
+5. Auto-update Management panel: controls for core, plugins, themes, and translations.
+6. Settings panel: controls for log retention, cleanup scheduling, and email notification routing.
 
 == Installation ==
 
@@ -123,6 +126,15 @@ You can configure a retention policy from 1 to 365 days. A daily background task
 Updatronix is multisite-aware and tracks logs on a per-site basis. Full network-wide management features are planned for future updates.
 
 == Changelog ==
+
+= 1.0.4 =
+* Fix: Wire js script translations.
+* Fix: Wrong logging behaviour for minor core auto-update. Was logged as "Reinstall" instead of "Update".
+* Performance: Code-split the admin JavaScript bundle with lazy-loaded tab modules to keep all emitted chunks below Webpack’s recommended size limit and improve wp-admin load performance.
+* UI: Align user interface standards to WP 7.0.
+* Compatibility : Tested up to WP 7.0-RC2.
+* Documentation : Update screenshots for WordPress.org.
+* Visual identity: Update of the logo and banners.
 
 = 1.0.3 =
 * Updatronix release on WordPress.org.
