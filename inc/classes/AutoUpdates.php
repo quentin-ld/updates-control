@@ -41,14 +41,81 @@ final class Updatronix_AutoUpdates {
      * @return array{constants: array<string, array{defined: bool, value: mixed, affects: array<string>, locks: bool}>, dismissed_constants: array<string>, core: array{mode: string, major: string, minor: string, dev: string, overridden_by_constant: bool}, plugins: array<int, array{file: string, slug: string, name: string, description: string, version: string, author: string, plugin_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>, themes: array<int, array{stylesheet: string, name: string, description: string, version: string, author: string, theme_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>, translations: array{auto_update: bool}}
      */
     public static function get_data(): array {
+        $plugins_and_themes = self::with_admin_locale(static function (): array {
+            return [
+                'plugins' => self::get_plugins_data(),
+                'themes' => self::get_themes_data(),
+            ];
+        });
+
         return [
             'constants' => self::get_constants(),
             'dismissed_constants' => updatronix_get_settings()['dismissed_constants'],
             'core' => self::get_core_config(),
-            'plugins' => self::get_plugins_data(),
-            'themes' => self::get_themes_data(),
+            'plugins' => $plugins_and_themes['plugins'],
+            'themes' => $plugins_and_themes['themes'],
             'translations' => self::get_translations_config(),
         ];
+    }
+
+    /**
+     * Run a callback with locale set to the current user's admin locale (get_user_locale()).
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     */
+    private static function with_admin_locale(callable $callback) {
+        $locale = get_user_locale();
+        $switched = switch_to_locale($locale);
+        try {
+            return $callback();
+        } finally {
+            if ($switched) {
+                restore_previous_locale();
+            }
+        }
+    }
+
+    /**
+     * Plugin description for the current locale if a language pack / textdomain is available.
+     *
+     * @param string               $file        Plugin basename path (key from get_plugins()).
+     * @param string               $slug        Plugin slug.
+     * @param array<string, mixed> $plugin_data Row from get_plugins().
+     */
+    private static function get_localized_plugin_description(string $file, string $slug, array $plugin_data): string {
+        // Note: Plugin Check forbids translating dynamic strings via low-level
+        // functions like `translate( $text, $domain )` because those strings are
+        // not statically extractable for translators.
+        // We therefore only translate known literals (ours), and display
+        // everything else as-is (sanitized).
+        $raw = (string) ($plugin_data['Description'] ?? '');
+
+        // Only translate Updatronix's own plugin description (known literal).
+        if ($slug === 'updatronix') {
+            $raw = trim($raw);
+            if ($raw === 'Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places.') {
+                $raw = __(
+                    'Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places.',
+                    'updatronix'
+                );
+            }
+        }
+
+        return wp_strip_all_tags($raw);
+    }
+
+    /**
+     * Theme description for the current locale if a language pack is available.
+     */
+    private static function get_localized_theme_description(WP_Theme $theme): string {
+        $desc = $theme->display('Description', false, true);
+        if (false === $desc) {
+            return '';
+        }
+
+        return wp_strip_all_tags((string) $desc);
     }
 
     /**
@@ -202,7 +269,7 @@ final class Updatronix_AutoUpdates {
                 'file' => $file,
                 'slug' => $slug,
                 'name' => $data['Name'] ?? '',
-                'description' => wp_strip_all_tags($data['Description'] ?? ''),
+                'description' => self::get_localized_plugin_description($file, $slug, $data),
                 'version' => $data['Version'] ?? '',
                 'author' => wp_strip_all_tags($data['AuthorName'] ?? $data['Author'] ?? ''),
                 'plugin_uri' => $data['PluginURI'] ?? '',
@@ -242,7 +309,7 @@ final class Updatronix_AutoUpdates {
             $themes[] = [
                 'stylesheet' => $stylesheet,
                 'name' => $theme->get('Name'),
-                'description' => wp_strip_all_tags($theme->get('Description')),
+                'description' => self::get_localized_theme_description($theme),
                 'version' => $theme->get('Version'),
                 'author' => wp_strip_all_tags($theme->get('Author')),
                 'theme_uri' => $theme->get('ThemeURI'),

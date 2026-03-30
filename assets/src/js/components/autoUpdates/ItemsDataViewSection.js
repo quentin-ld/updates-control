@@ -148,7 +148,7 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'icon',
-				label: '',
+				label: __('Icon', 'updatronix'),
 				render: ({ item }) => (
 					<span className="updatronix-autoupdates__icon">
 						{item.icon ? (

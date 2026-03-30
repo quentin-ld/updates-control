@@ -103,6 +103,28 @@ composer run lint:pcp
 composer run make:pot
 ```
 
+## Build
+
+Run the complete build + verification pipeline in one shot:
+
+```bash
+npm run build:all
+```
+
+This command executes, in order (as documented in `workflow.md`):
+
+1. `composer run lint:php`
+2. `composer run lint:pcp`
+3. `npm run lint`
+4. `npm run lint:css`
+5. `npm run format`
+6. `composer run make:pot`
+7. `npm run build`
+
+Notes:
+- `lint:pcp` and `make:pot` rely on Local by Flywheel (see `workflow.md` / `.config/local-wp-cli.sh`).
+- `npm run build` uses `@wordpress/scripts` to bundle JS (and compile SCSS imports via the entry `assets/src/index.js`) into `assets/build/`.
+
 ## Development workflow
 
 ### Build assets (`@wordpress/scripts`)

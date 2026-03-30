@@ -18,6 +18,7 @@ import { useLogs } from '../../hooks/useLogs';
 import { LAYOUT_ACTIVITY, LOG_TYPE_PREFIX, ACTION_LABELS } from './constants';
 import {
 	statusToBadgeIntent,
+	getStatusLabel,
 	formatDate,
 	getContextLabel,
 	getActivityTitle,
@@ -236,10 +237,10 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			{
 				id: 'status',
 				label: __('Status', 'updatronix'),
-				getValue: ({ item }) => item.status || '',
+				getValue: ({ item }) => getStatusLabel(item.status),
 				render: ({ item }) => (
 					<StatusBadge intent={statusToBadgeIntent(item.status)}>
-						{item.status || EMPTY_FALLBACK}
+						{getStatusLabel(item.status)}
 					</StatusBadge>
 				),
 				enableSorting: false,

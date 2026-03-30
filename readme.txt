@@ -4,7 +4,7 @@ Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, maintenance, security, audit-log
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -126,6 +126,11 @@ You can configure a retention policy from 1 to 365 days. A daily background task
 Updatronix is multisite-aware and tracks logs on a per-site basis. Full network-wide management features are planned for future updates.
 
 == Changelog ==
+
+= 1.0.5 =
+* Fix: Wire js script translations for bundled files.
+* i18n: Load theme/plugin descriptions translated into the current admin language for the auto-update panel.
+* i18n: Add translation for "Icon", "Sucess", "Error", "Warning" labels.
 
 = 1.0.4 =
 * Fix: Wire js script translations.

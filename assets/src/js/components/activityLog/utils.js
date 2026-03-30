@@ -24,10 +24,36 @@ export function statusToBadgeIntent(status) {
 	if (s === 'warning' || s === 'warn') {
 		return 'warning';
 	}
-	if (s === 'error' || s === 'failed') {
+	if (s === 'error' || s === 'failed' || s === 'errors') {
 		return 'error';
 	}
 	return 'default';
+}
+
+/**
+ * Localized label for log status. Raw API values remain English keys; UI uses translations.
+ *
+ * @param {string} status Stored status (e.g. success, error, cancelled).
+ * @return {string} Translated label or {@link EMPTY_FALLBACK}.
+ */
+export function getStatusLabel(status) {
+	if (!status) {
+		return EMPTY_FALLBACK;
+	}
+	const s = String(status).toLowerCase();
+	if (s === 'success' || s === 'updated' || s === 'ok') {
+		return __('Success', 'updatronix');
+	}
+	if (s === 'warning' || s === 'warn') {
+		return __('Warning', 'updatronix');
+	}
+	if (s === 'error' || s === 'failed' || s === 'errors') {
+		return __('Error', 'updatronix');
+	}
+	if (s === 'cancelled') {
+		return __('Cancelled', 'updatronix');
+	}
+	return String(status);
 }
 
 /**

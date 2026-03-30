@@ -11,7 +11,7 @@
  *
  * Plugin Name: Updatronix
  * Description: Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places.
- * Version: 1.0.4
+ * Version: 1.0.5
  * Plugin URI: https://wordpress.org/plugins/updatronix/
  * Author: Quentin Le Duff
  * Author URI: https://profiles.wordpress.org/quentinldd/
@@ -39,7 +39,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** Plugin version (must match Version header above; used for DB schema version). */
-define('UPDATRONIX_VERSION', '1.0.4');
+define('UPDATRONIX_VERSION', '1.0.5');
 
 define('updatronix_PLUGIN_FILE', __FILE__);
 define('updatronix_PLUGIN_DIR', plugin_dir_path(__FILE__));

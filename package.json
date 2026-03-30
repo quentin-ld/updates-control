@@ -12,6 +12,7 @@
     "format:fix": "prettier --write 'assets/src/**/*.{js,jsx}'",
     "start": "wp-scripts start assets/src/index.js --output-path=assets/build",
     "build": "wp-scripts build assets/src/index.js --output-path=assets/build",
+    "build:all": "composer run lint:php && composer run lint:pcp && npm run lint && npm run lint:css && npm run format && composer run make:pot && npm run build",
     "zip": "node .config/zip.js"
   },
   "prettier": "@wordpress/prettier-config",

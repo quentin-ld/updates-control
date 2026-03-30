@@ -3,7 +3,7 @@
  */
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { formatDate } from './utils';
+import { formatDate, getStatusLabel } from './utils';
 
 /**
  * @param {Object}   props                 Props.
@@ -59,7 +59,7 @@ export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 			__('Action', 'updatronix'),
 			currentLog.action_type_display || currentLog.action_type,
 		],
-		[__('Status', 'updatronix'), currentLog.status],
+		[__('Status', 'updatronix'), getStatusLabel(currentLog.status)],
 		[__('From version', 'updatronix'), currentLog.version_before],
 		[__('To version', 'updatronix'), currentLog.version_after],
 		[

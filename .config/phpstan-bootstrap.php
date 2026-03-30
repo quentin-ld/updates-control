@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('UPDATRONIX_VERSION', '1.0.4');
+define('UPDATRONIX_VERSION', '1.0.5');
 define('updatronix_PLUGIN_FILE', '');
 define('updatronix_PLUGIN_DIR', '');
 

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Updatronix 1.0.4\n"
+"Project-Id-Version: Updatronix 1.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/updatronix\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-03-27T10:07:31+00:00\n"
+"POT-Creation-Date: 2026-03-30T09:00:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: updatronix\n"
@@ -30,6 +30,7 @@ msgstr ""
 
 #. Description of the plugin
 #: updatronix.php
+#: inc/classes/AutoUpdates.php:99
 msgid "Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places."
 msgstr ""
 
@@ -211,12 +212,12 @@ msgid "Uninstall"
 msgstr ""
 
 #: inc/classes/Settings.php:316
-#: assets/src/js/components/activityLog/utils.js:58
+#: assets/src/js/components/activityLog/utils.js:84
 msgid "Bulk action"
 msgstr ""
 
 #: inc/classes/Settings.php:318
-#: assets/src/js/components/activityLog/utils.js:61
+#: assets/src/js/components/activityLog/utils.js:87
 msgid "Single action"
 msgstr ""
 
@@ -228,21 +229,21 @@ msgstr ""
 
 #. translators: 1: item name, 2: version number
 #: inc/classes/Settings.php:348
-#: assets/src/js/components/activityLog/utils.js:103
+#: assets/src/js/components/activityLog/utils.js:129
 #, php-format,js-format
 msgid "Language pack updated for %1$s %2$s"
 msgstr ""
 
 #: inc/classes/Settings.php:349
 #: inc/classes/Settings.php:357
-#: assets/src/js/components/activityLog/utils.js:104
-#: assets/src/js/components/activityLog/utils.js:112
+#: assets/src/js/components/activityLog/utils.js:130
+#: assets/src/js/components/activityLog/utils.js:138
 msgid "WordPress"
 msgstr ""
 
 #. translators: %s: item name
 #: inc/classes/Settings.php:356
-#: assets/src/js/components/activityLog/utils.js:111
+#: assets/src/js/components/activityLog/utils.js:137
 #, php-format,js-format
 msgid "Language pack updated for %s"
 msgstr ""
@@ -251,22 +252,22 @@ msgstr ""
 #: inc/classes/Settings.php:367
 #: inc/classes/Settings.php:385
 #: inc/classes/Settings.php:393
-#: assets/src/js/components/activityLog/utils.js:120
-#: assets/src/js/components/activityLog/utils.js:136
-#: assets/src/js/components/activityLog/utils.js:143
+#: assets/src/js/components/activityLog/utils.js:146
+#: assets/src/js/components/activityLog/utils.js:162
+#: assets/src/js/components/activityLog/utils.js:169
 #, php-format,js-format
 msgid "v%s"
 msgstr ""
 
 #. translators: 1: previous version number, 2: new version number
 #: inc/classes/Settings.php:376
-#: assets/src/js/components/activityLog/utils.js:128
+#: assets/src/js/components/activityLog/utils.js:154
 #, php-format,js-format
 msgid "v%1$s → v%2$s"
 msgstr ""
 
 #: inc/classes/Settings.php:417
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:285
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:286
 msgid "The log entry could not be deleted. Try again or check your database connection."
 msgstr ""
 
@@ -336,92 +337,92 @@ msgstr ""
 msgid "Updated %1$s to %2$s"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:117
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:118
 msgid "Title"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:125
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:126
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:211
 msgid "Version"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:133
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:134
 msgid "Category"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:143
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:153
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:144
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:154
 #: assets/src/js/components/activityLog/LogDetailsContent.js:57
 msgid "Type"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:170
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:171
 #: assets/src/js/components/activityLog/LogDetailsContent.js:73
 msgid "Date"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:197
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:198
 #: assets/src/js/components/activityLog/LogDetailsContent.js:66
 msgid "Triggered by"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:206
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:207
 #: assets/src/js/components/activityLog/LogDetailsContent.js:70
 msgid "Run type"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:214
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:215
 msgid "User"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:238
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:239
 #: assets/src/js/components/activityLog/LogDetailsContent.js:62
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:191
 msgid "Status"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:257
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:258
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:259
 msgid "View details"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:272
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:273
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:314
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:274
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:315
 msgid "Delete log"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:284
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:285
 msgid "Log deleted."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:300
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:301
 msgid "Delete this log entry permanently? This action cannot be undone."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:307
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:308
 msgid "Cancel"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:356
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:357
 msgid "Update logging is off. Turn it on in Settings to keep a history of updates."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:380
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:381
 #: assets/src/js/pages/SettingsPage.js:112
 #: assets/src/js/pages/SettingsPage.js:115
 msgid "Update logs"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:383
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:384
 msgid "Browse recent WordPress, plugin, theme, and translation updates."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:399
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:400
 msgid "No update logs yet. Logs will appear here after the next update."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:404
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:405
 msgid "Search logs"
 msgstr ""
 
@@ -450,7 +451,7 @@ msgid "Loading log details…"
 msgstr ""
 
 #: assets/src/js/components/activityLog/LogDetailsContent.js:56
-#: assets/src/js/components/activityLog/utils.js:74
+#: assets/src/js/components/activityLog/utils.js:100
 msgid "Item"
 msgstr ""
 
@@ -485,6 +486,22 @@ msgstr ""
 #: assets/src/js/components/activityLog/utils.js:8
 msgctxt "empty value fallback"
 msgid "—"
+msgstr ""
+
+#: assets/src/js/components/activityLog/utils.js:45
+msgid "Success"
+msgstr ""
+
+#: assets/src/js/components/activityLog/utils.js:48
+msgid "Warning"
+msgstr ""
+
+#: assets/src/js/components/activityLog/utils.js:51
+msgid "Error"
+msgstr ""
+
+#: assets/src/js/components/activityLog/utils.js:54
+msgid "Cancelled"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:47
@@ -584,6 +601,10 @@ msgstr ""
 
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:139
 msgid "Enable auto-update"
+msgstr ""
+
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:151
+msgid "Icon"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:196
