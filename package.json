@@ -4,12 +4,12 @@
   "type": "wordpress-plugin",
   "main": "assets/build/index.js",
   "scripts": {
-    "lint": "eslint --config .config/.eslintrc.js assets/src/**/*.js",
-    "lint:fix": "eslint --config .config/.eslintrc.js --fix assets/src/**/*.js",
-    "lint:css": "stylelint --config .config/stylelintrc.json 'assets/src/**/*.scss'",
-    "lint:css:fix": "stylelint --config .config/stylelintrc.json 'assets/src/**/*.scss' --fix",
-    "format": "prettier --check 'assets/src/**/*.{js,jsx}'",
-    "format:fix": "prettier --write 'assets/src/**/*.{js,jsx}'",
+    "lint": "wp-scripts lint-js --config .config/.eslintrc.js assets/src/**/*.js",
+    "lint:fix": "wp-scripts lint-js --config .config/.eslintrc.js assets/src/**/*.js --fix",
+    "lint:css": "wp-scripts lint-style --config .config/stylelintrc.json 'assets/src/**/*.scss'",
+    "lint:css:fix": "wp-scripts lint-style --config .config/stylelintrc.json 'assets/src/**/*.scss' --fix",
+    "format": "wp-scripts format 'assets/src/**/*.{js,jsx}'",
+    "format:fix": "wp-scripts format 'assets/src/**/*.{js,jsx}' --write",
     "start": "wp-scripts start assets/src/index.js --output-path=assets/build",
     "build": "wp-scripts build assets/src/index.js --output-path=assets/build",
     "build:all": "composer run lint:php && composer run lint:pcp && npm run lint && npm run lint:css && npm run format && composer run make:pot && npm run build",
@@ -23,10 +23,7 @@
     "@wordpress/prettier-config": "^4.0.0",
     "@wordpress/scripts": "^30.22.0",
     "@wordpress/stylelint-config": "^23.0.0",
-    "archiver": "^7.0.1",
-    "eslint": "^8.57.1",
-    "prettier": "^3.8.1",
-    "stylelint": "^16.0.0"
+    "archiver": "^7.0.1"
   },
   "dependencies": {
     "@wordpress/components": "^32.2.0",
