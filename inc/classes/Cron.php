@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Manages scheduled tasks for log cleanup.
+ * Manages scheduled tasks for log cleanup
  *
  * @package updatronix
  */
@@ -23,6 +23,8 @@ final class Updatronix_Cron {
 
     /**
      * Transient key: throttle self-healing schedule checks (not autoloaded).
+     *
+     * @var string
      */
     private const SELF_HEAL_TRANSIENT = 'updatronix_cron_self_heal_throttle';
 
@@ -39,7 +41,7 @@ final class Updatronix_Cron {
     /**
      * Re-schedule cleanup if the event was lost (e.g. manual cron table clear), at most once per day.
      *
-     * Activation still calls {@see schedule_if_needed()} directly; this path avoids wp_next_scheduled
+     * Activation still calls {@see Updatronix_Cron::schedule_if_needed()} directly; this path avoids wp_next_scheduled
      * on every init request.
      *
      * @return void

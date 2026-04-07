@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 const UPDATRONIX_I18N_CACHE_GROUP = 'updatronix_i18n';
 
 /**
- * Loads Jed JSON for every script translation file so async webpack chunks receive strings.
+ * Load Jed JSON for every script translation file so async webpack chunks receive strings.
  *
  * WordPress maps one JSON file per script URL hash; split bundles share wp.i18n but only the
  * main entry was registered. Language packs ship one JSON per source path — we merge them all
@@ -121,13 +121,13 @@ function updatronix_enqueue_script_translations_split_bundle(string $handle, str
 }
 
 /**
- * Whether cached split-bundle data is still valid (paths exist, mtimes unchanged).
+ * Check whether cached split-bundle data is still valid (paths exist, mtimes unchanged).
  *
  * New JSON files dropped in without a plugin version bump are not detected until cache
  * invalidation (e.g. version change or object cache flush); same as relying on UPDATRONIX_VERSION.
  *
  * @param mixed $cached Value from wp_cache_get.
- * @return bool
+ * @return bool True if the cache is valid and usable.
  */
 function updatronix_i18n_split_bundle_cache_is_valid($cached): bool {
     if (!is_array($cached) || !isset($cached['manifest'], $cached['inlines'], $cached['glob_empty']) || !is_array($cached['manifest']) || !is_array($cached['inlines']) || !is_bool($cached['glob_empty'])) {
@@ -145,7 +145,7 @@ function updatronix_i18n_split_bundle_cache_is_valid($cached): bool {
         if (!is_readable($entry['path'])) {
             return false;
         }
-        // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+        // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- Same race-condition guard as caller; suppress stat noise.
         $current = @filemtime($entry['path']);
         if ($current === false || (int) $current !== (int) $entry['mtime']) {
             return false;
@@ -156,7 +156,7 @@ function updatronix_i18n_split_bundle_cache_is_valid($cached): bool {
 }
 
 /**
- * Applies cached inline scripts and set_translations for the handle.
+ * Apply cached inline scripts and set_translations for the handle.
  *
  * @param string               $handle         Script handle.
  * @param string               $domain         Text domain.
@@ -184,7 +184,7 @@ function updatronix_i18n_apply_split_bundle_cache(string $handle, string $domain
 }
 
 /**
- * Stores split-bundle cache (long TTL; entries revalidated by file mtime).
+ * Store split-bundle cache (long TTL; entries revalidated by file mtime).
  *
  * @param string              $cache_key Cache key (without group).
  * @param array<int, mixed>   $manifest  Path + mtime entries for known JSON files.
@@ -207,7 +207,7 @@ function updatronix_i18n_store_split_bundle_cache(string $cache_key, array $mani
 
 add_action('admin_enqueue_scripts', 'updatronix_admin_enqueue_scripts');
 /**
- * Enqueues script and style on updatronix settings page only.
+ * Enqueue script and style on the Updatronix settings page only.
  *
  * @param string $admin_page Current admin page hook suffix.
  * @return void
@@ -256,7 +256,7 @@ function updatronix_admin_enqueue_scripts(string $admin_page): void {
 
 add_action('admin_enqueue_scripts', 'updatronix_localize_settings');
 /**
- * Localizes REST URL and nonce for the Updatronix settings page.
+ * Localize REST URL and nonce for the Updatronix settings page.
  *
  * @param string $admin_page Current admin page hook suffix.
  * @return void

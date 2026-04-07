@@ -39,9 +39,9 @@ const DELETE_MODAL_STYLE = {
 };
 
 /**
- * Activity log panel — renders inside a TabPanel.
+ * Render the activity log panel.
  *
- * @param {Object}  props
+ * @param {Object}  props                       Component props.
  * @param {boolean} [props.loggingEnabled=true] Whether update logging is enabled.
  * @return {JSX.Element} The activity log panel UI.
  */

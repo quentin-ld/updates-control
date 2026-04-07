@@ -41,6 +41,8 @@ if ($updatronix_integration === '1' || $updatronix_integration === 'true') {
 
     /**
      * Load the plugin under test (same pattern as WP-CLI scaffold).
+     *
+     * @return void
      */
     function updatronix_tests_load_plugin(): void {
         require dirname(__DIR__) . '/updatronix.php';
@@ -50,6 +52,8 @@ if ($updatronix_integration === '1' || $updatronix_integration === 'true') {
 
     /**
      * Ensure Administrator has the plugin cap in tests (activation migration does not run here).
+     *
+     * @return void
      */
     function updatronix_tests_ensure_admin_cap(): void {
         if (!defined('UPDATRONIX_CAP_MANAGE')) {
@@ -80,7 +84,11 @@ require_once __DIR__ . '/stubs/WP_Error.php';
 
 if (!function_exists('wp_strip_all_tags')) {
     /**
-     * @param string|mixed $text
+     * Stub for wp_strip_all_tags used in unit tests without WordPress loaded.
+     *
+     * @param string|mixed $text    Text to strip.
+     * @param bool         $remove_breaks Whether to remove line breaks.
+     * @return string
      */
     function wp_strip_all_tags($text, bool $remove_breaks = false): string {
         if (!is_string($text)) {

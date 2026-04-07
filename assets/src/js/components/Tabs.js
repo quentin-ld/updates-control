@@ -12,13 +12,13 @@ import { Icon } from '@wordpress/icons';
 const TabsContext = createContext();
 
 /**
- * Custom Tabs component with vertical orientation support
+ * Provide a tabbed interface with vertical orientation support.
  *
- * @param {Object}   props               - Component props.
- * @param {string}   props.selectedTabId - Currently selected tab ID.
- * @param {Function} props.onSelect      - Callback when tab is selected.
- * @param {string}   props.orientation   - Tab orientation ('vertical' or 'horizontal').
- * @param {Object}   props.children      - Child components (TabList and TabPanels).
+ * @param {Object}   props               Component props.
+ * @param {string}   props.selectedTabId Currently selected tab ID.
+ * @param {Function} props.onSelect      Callback when a tab is selected.
+ * @param {string}   props.orientation   Tab orientation ('vertical' or 'horizontal').
+ * @param {Object}   props.children      Child components (TabList and TabPanels).
  * @return {JSX.Element} The tabs container.
  */
 export const Tabs = ({
@@ -78,11 +78,11 @@ export const Tabs = ({
 };
 
 /**
- * TabList component - container for Tab components
+ * Render the tab list navigation container.
  *
- * @param {Object} props          - Component props.
- * @param {Object} props.children - Tab components.
- * @param {string} props.label    - Optional accessible label for the tab navigation.
+ * @param {Object} props          Component props.
+ * @param {Object} props.children Tab components.
+ * @param {string} props.label    Accessible label for the tab navigation.
  * @return {JSX.Element} The tab list container.
  */
 export const TabList = ({ children, label = '' }) => {
@@ -103,15 +103,15 @@ export const TabList = ({ children, label = '' }) => {
 };
 
 /**
- * Tab component - individual tab button
+ * Render an individual tab button with optional icon.
  *
- * @param {Object} props           - Component props.
- * @param {string} props.tabId     - Unique identifier for the tab.
- * @param {string} props.title     - Tab title (optional, uses children if not provided).
- * @param {Object} props.icon      - Optional WordPress icon (e.g. from @wordpress/icons).
- * @param {number} props.iconSize  - Icon size in pixels (default 24).
- * @param {string} props.className - Additional CSS class name.
- * @param {Object} props.children  - Tab content.
+ * @param {Object} props           Component props.
+ * @param {string} props.tabId     Unique identifier for the tab.
+ * @param {string} props.title     Tab title (uses children if not provided).
+ * @param {Object} props.icon      WordPress icon component from @wordpress/icons.
+ * @param {number} props.iconSize  Icon size in pixels (default 24).
+ * @param {string} props.className Additional CSS class name.
+ * @param {Object} props.children  Tab label content.
  * @return {JSX.Element} The tab button.
  */
 export const Tab = ({
@@ -223,13 +223,14 @@ export const Tab = ({
 };
 
 /**
- * TabPanel component - container for tab content.
+ * Render a tab panel container.
+ *
  * Children are always mounted but hidden when not selected, so data hooks
  * (e.g. useAutoUpdates, useLogs) only run once and do not refetch on tab switch.
  *
- * @param {Object} props          - Component props.
- * @param {string} props.tabId    - Unique identifier matching a Tab's tabId.
- * @param {Object} props.children - Panel content.
+ * @param {Object} props          Component props.
+ * @param {string} props.tabId    Unique identifier matching a Tab's tabId.
+ * @param {Object} props.children Panel content.
  * @return {JSX.Element} The tab panel (hidden when not selected).
  */
 export const TabPanel = ({ tabId, children }) => {

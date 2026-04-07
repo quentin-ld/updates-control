@@ -8,6 +8,8 @@ import { __ } from '@wordpress/i18n';
 import { ConstantNotices } from './ConstantNotices';
 
 /**
+ * Check whether a section is locked by a wp-config constant.
+ *
  * @param {Object} constants Map from PHP.
  * @param {string} section   'core' | 'plugins' | 'themes' | 'translations'.
  * @return {boolean} True if the section is locked by a constant.
@@ -22,11 +24,14 @@ function isSectionLocked(constants, section) {
 }
 
 /**
- * @param {Object}   props
- * @param {Object}   props.core        { mode, overridden_by_constant }.
+ * Render the core auto-update mode selector.
+ *
+ * @param {Object}   props             Component props.
+ * @param {Object}   props.core        Core settings: { mode, overridden_by_constant }.
  * @param {Object}   props.constants   Constant info from API.
- * @param {Function} props.setCoreMode (value) => void.
- * @param {boolean}  props.busy
+ * @param {Function} props.setCoreMode Callback to change the core update mode.
+ * @param {boolean}  props.busy        Whether a request is in progress.
+ * @return {JSX.Element}                The core auto-update section.
  */
 export function CoreSection({ core, constants, setCoreMode, busy }) {
 	const locked =

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin path constants and capability name.
+ * Plugin path constants and capability name
  *
  * Loading order: the main plugin file (updatronix.php) defines
  * UPDATRONIX_PLUGIN_FILE/DIR and legacy updatronix_* aliases first, then
@@ -36,5 +36,5 @@ if (!defined('updatronix_PLUGIN_DIR')) {
 }
 
 if (!defined('UPDATRONIX_CAP_MANAGE')) {
-    define('UPDATRONIX_CAP_MANAGE', 'manage_updatronix');
+    define('UPDATRONIX_CAP_MANAGE', 'manage_updatronix'); // Custom capability for plugin admin access.
 }

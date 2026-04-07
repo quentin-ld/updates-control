@@ -41,13 +41,13 @@ if (!defined('ABSPATH')) {
 /** Plugin version (must match Version header above; used for DB schema version). */
 define('UPDATRONIX_VERSION', '1.0.6');
 
-define('UPDATRONIX_PLUGIN_FILE', __FILE__);
-define('UPDATRONIX_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('UPDATRONIX_PLUGIN_FILE', __FILE__); // Absolute path to this file.
+define('UPDATRONIX_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Plugin root directory with trailing slash.
 if (!defined('updatronix_PLUGIN_FILE')) {
-    define('updatronix_PLUGIN_FILE', UPDATRONIX_PLUGIN_FILE);
+    define('updatronix_PLUGIN_FILE', UPDATRONIX_PLUGIN_FILE); // Legacy alias (lowercase prefix).
 }
 if (!defined('updatronix_PLUGIN_DIR')) {
-    define('updatronix_PLUGIN_DIR', UPDATRONIX_PLUGIN_DIR);
+    define('updatronix_PLUGIN_DIR', UPDATRONIX_PLUGIN_DIR); // Legacy alias (lowercase prefix).
 }
 
 require_once __DIR__ . '/inc/core/constants.php';
@@ -63,7 +63,7 @@ add_action('plugins_loaded', ['Updatronix_Bootstrap', 'init']);
 register_activation_hook(__FILE__, 'updatronix_activate');
 
 /**
- * Create log table and schedule cron on activation.
+ * Register capabilities, create the log table, and schedule cron.
  *
  * @return void
  */

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Manages temporary canonical event state for update logging.
+ * Manages temporary canonical event state for update logging
  *
  * @package updatronix
  */
@@ -16,11 +16,15 @@ if (!defined('ABSPATH')) {
 final class Updatronix_UpdateLogState {
     /**
      * Option storing pending update event state.
+     *
+     * @var string
      */
     public const OPTION_STATE = 'updatronix_update_logger_state';
 
     /**
      * Pending state time-to-live in seconds.
+     *
+     * @var int
      */
     private const STATE_TTL = 1800;
 

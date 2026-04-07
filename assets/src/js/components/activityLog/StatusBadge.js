@@ -7,7 +7,7 @@ import { Icon } from '@wordpress/components';
 import { published, caution, error as errorIcon } from '@wordpress/icons';
 
 /**
- * Icon for the given intent (matches Gutenberg Badge context-based icons).
+ * Get the icon for a given intent (matches Gutenberg Badge context-based icons).
  *
  * @param {string} intent success, warning, error, default.
  * @return {Object|null} Icon definition or null for default.
@@ -26,7 +26,9 @@ function intentIcon(intent) {
 }
 
 /**
- * @param {Object} props          Props.
+ * Render a status badge with intent-based styling.
+ *
+ * @param {Object} props          Component props.
  * @param {string} props.intent   Intent: success, warning, error, default.
  * @param {*}      props.children Content.
  * @return {JSX.Element} Span with badge styling and optional icon.

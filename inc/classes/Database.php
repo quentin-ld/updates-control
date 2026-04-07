@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Creates and manages the custom database table for update logs.
+ * Creates and manages the custom database table for update logs
  *
  * Table name is always $wpdb->prefix . self::TABLE_LOGS (plugin-controlled suffix).
  * Use %i in $wpdb->prepare for dynamic table identifiers (WP 6.2+).
@@ -128,7 +128,7 @@ final class Updatronix_Database {
     }
 
     /**
-     * Whether the logs table exists in the database (authoritative check).
+     * Check whether the logs table exists in the database (authoritative check).
      *
      * Uses SHOW TABLES so the result stays correct if the option is missing or stale.
      *

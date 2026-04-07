@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plain-text notes for automatic update results: skin messages plus WP_Error from `result`.
+ * Plain-text notes for automatic update results: skin messages plus WP_Error from `result`
  *
  * @package updatronix
  */
@@ -10,6 +10,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Merge upgrader skin messages with WP_Error data into readable log notes.
+ */
 final class Updatronix_Automatic_Update_Result_Notes {
     /**
      * Combine Automatic_Upgrader_Skin messages with `$result->result` when it is a WP_Error.

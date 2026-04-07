@@ -142,7 +142,7 @@ function updatronix_save_settings_array(array $input): void {
  * Sanitize comma-separated email list.
  *
  * @param mixed $value Raw value.
- * @return string
+ * @return string Sanitized comma-separated email addresses.
  */
 function updatronix_sanitize_emails(mixed $value): string {
     $emails = array_filter(array_map('sanitize_email', explode(',', (string) $value)));
@@ -153,8 +153,8 @@ function updatronix_sanitize_emails(mixed $value): string {
 /**
  * Normalize notify_on for display (REST/localize). Expands legacy 'all' to all allowed keys.
  *
- * @param array<string>|mixed $notify_on Raw option value.
- * @return array<string>
+ * @param mixed $notify_on Raw option value.
+ * @return array<string> Normalized notification type keys.
  */
 function updatronix_normalize_notify_on(mixed $notify_on): array {
     $allowed = ['core', 'plugin_theme', 'debug', 'technical'];

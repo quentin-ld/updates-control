@@ -6,11 +6,13 @@ import { __ } from '@wordpress/i18n';
 import { formatDate, getStatusLabel } from './utils';
 
 /**
- * @param {Object}   props                 Props.
+ * Render message and trace content for a log detail modal.
+ *
+ * @param {Object}   props                 Component props.
  * @param {Object}   props.log             Summary log item.
  * @param {number}   props.logId           Log ID.
  * @param {Function} props.fetchLogDetails Fetch detail payload.
- * @return {JSX.Element} Message and trace sections or empty state.
+ * @return {JSX.Element|null} Message and trace sections, or null when no data.
  */
 export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 	const [detailLog, setDetailLog] = useState(null);

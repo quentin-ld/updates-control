@@ -31,7 +31,7 @@ export function statusToBadgeIntent(status) {
 }
 
 /**
- * Localized label for log status. Raw API values remain English keys; UI uses translations.
+ * Get the localized label for a log status. Raw API values remain English keys; UI uses translations.
  *
  * @param {string} status Stored status (e.g. success, error, cancelled).
  * @return {string} Translated label or {@link EMPTY_FALLBACK}.
@@ -57,7 +57,7 @@ export function getStatusLabel(status) {
 }
 
 /**
- * Human-readable date/time from log.
+ * Format a date string into human-readable date/time.
  *
  * @param {string} dateStr ISO date string.
  * @return {string} Formatted date or fallback.
@@ -74,7 +74,7 @@ export function formatDate(dateStr) {
 }
 
 /**
- * Context label from update_context.
+ * Get the context label from an update_context value.
  *
  * @param {string} updateContext Raw context.
  * @return {string} Label.

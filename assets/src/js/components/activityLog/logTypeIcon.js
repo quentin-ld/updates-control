@@ -17,7 +17,7 @@ const LOG_TYPE_ICONS = {
 };
 
 /**
- * Icon component for a log item based on log_type.
+ * Get the icon component for a log type.
  *
  * @param {string} logType One of: core, theme, plugin, translation.
  * @param {number} size    Icon size in pixels.

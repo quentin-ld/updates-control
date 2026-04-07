@@ -20,7 +20,7 @@ import { ItemsDataViewSection } from './ItemsDataViewSection';
 import { TranslationsSection } from './TranslationsSection';
 
 /**
- * Auto-updates panel — renders inside a TabPanel.
+ * Render the auto-updates panel.
  *
  * @return {JSX.Element} The auto-updates panel UI.
  */

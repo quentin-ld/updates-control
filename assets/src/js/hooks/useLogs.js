@@ -3,7 +3,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
 /**
- * Hook to fetch, delete, and cleanup update logs.
+ * Fetch, delete, and clean up update logs.
  *
  * @return {Object} Logs state and actions.
  */

@@ -3,7 +3,7 @@ import { store as noticesStore } from '@wordpress/notices';
 import { NoticeList } from '@wordpress/components';
 
 /**
- * Notices component to display success/error messages.
+ * Display notices from the WordPress notices store.
  *
  * @return {JSX.Element|null} List of notices or null if none exist.
  */

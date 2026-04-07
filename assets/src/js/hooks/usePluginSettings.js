@@ -5,8 +5,9 @@ import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
 /**
- * Hook to read and save plugin settings (from localize + REST).
- * Dispatches native Notice (success / warning / error) on save.
+ * Read and save plugin settings via localized data and REST.
+ *
+ * Dispatch a notice (success, warning, or error) after each save attempt.
  *
  * @return {Object} Settings state and save action.
  */

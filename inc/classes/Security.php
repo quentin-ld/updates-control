@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ensures secure database interactions and sanitization of inputs.
+ * Ensures secure database interactions and sanitization of inputs
  *
  * @package updatronix
  */
@@ -42,7 +42,11 @@ final class Updatronix_Security {
      */
     public const ALLOWED_PERFORMED_AS = ['manual', 'automatic', 'upload'];
 
-    /** Update context: bulk (e.g. update-core iframe) or single (e.g. Plugins screen). Empty for core/translation/legacy. */
+    /**
+     * Allowed update contexts: bulk, single, or empty for core/translation/legacy.
+     *
+     * @var array<string>
+     */
     public const ALLOWED_UPDATE_CONTEXT = ['bulk', 'single', ''];
 
     /**
@@ -82,7 +86,7 @@ final class Updatronix_Security {
     }
 
     /**
-     * Sanitize performed_as (manual or automatic).
+     * Sanitize performed_as value.
      *
      * @param string $value Raw value.
      * @return string

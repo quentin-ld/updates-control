@@ -11,6 +11,8 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Test version parsing, resolution, and action-type detection for core update logs.
+ *
  * @covers \Updatronix_Core_Update_Log_Versions
  */
 final class CoreUpdateLogVersionsTest extends TestCase {

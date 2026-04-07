@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 add_action('admin_menu', 'updatronix_add_option_page');
 /**
- * Adds Updatronix under Tools and a link under Dashboard > Updatronix.
+ * Add Updatronix under Tools and a link under Dashboard > Updatronix.
  *
  * @return void
  */
@@ -35,7 +35,7 @@ function updatronix_add_option_page(): void {
 }
 
 /**
- * Outputs Updatronix settings page (shell; React app mounts in #updatronix-settings).
+ * Output Updatronix settings page (shell; React app mounts in #updatronix-settings).
  *
  * @return void
  */

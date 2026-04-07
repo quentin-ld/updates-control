@@ -8,6 +8,8 @@
 declare(strict_types=1);
 
 /**
+ * Verify REST API authentication and authorization for the settings and logs routes.
+ *
  * @coversNothing
  */
 final class RestSettingsAuthTest extends WP_UnitTestCase {
@@ -16,6 +18,11 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
      */
     private $rest_test_server_backup = [];
 
+    /**
+     * Restore $_SERVER keys and clean up REST auth globals.
+     *
+     * @return void
+     */
     protected function tearDown(): void {
         foreach ($this->rest_test_server_backup as $key => $value) {
             if ($value === null) {
@@ -31,10 +38,15 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
     }
 
     /**
+     * Simulate cookie-based REST authentication for a given HTTP method.
+     *
      * WordPress only enforces the REST CSRF nonce when cookie authentication is in use
      * (`$GLOBALS['wp_rest_auth_cookie'] === true`). Simulate that for mutation tests.
      *
      * @see rest_cookie_check_errors()
+     *
+     * @param string $method HTTP method to simulate (e.g. 'POST').
+     * @return void
      */
     private function begin_rest_cookie_auth_simulation(string $method): void {
         $this->rest_test_server_backup['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'] ?? null;
@@ -42,7 +54,10 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
     }
 
     /**
+     * Set or unset the X-WP-Nonce server header for REST requests.
+     *
      * @param string|null $nonce Value for X-WP-Nonce, or null to omit the header.
+     * @return void
      */
     private function set_rest_nonce_header(?string $nonce): void {
         $key = 'HTTP_X_WP_NONCE';
@@ -57,10 +72,13 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
     }
 
     /**
+     * Dispatch a REST request after explicitly running cookie authentication.
+     *
      * `rest_do_request()` dispatches without `WP_REST_Server::serve_request()`, so
      * `check_authentication()` (cookie + `X-WP-Nonce`) is skipped unless called explicitly.
      *
-     * @return WP_REST_Response|WP_Error WP_Error only when authentication failed (caller may convert).
+     * @param WP_REST_Request $request REST request to dispatch.
+     * @return WP_REST_Response|WP_Error WP_Error only when authentication failed.
      */
     private function rest_dispatch_with_cookie_auth(WP_REST_Request $request) {
         $auth = rest_get_server()->check_authentication();
@@ -122,6 +140,8 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
     }
 
     /**
+     * Provide roles that lack the manage_updatronix capability.
+     *
      * @return list<array{0: string}>
      */
     public static function low_privilege_roles_without_cap(): array {

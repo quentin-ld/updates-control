@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Redirect native WordPress update notification emails to a custom recipient.
+ * Redirect native WordPress update notification emails to a custom recipient
  *
  * When email notifications are enabled, the native admin update emails
  * (core, plugin, theme) are sent to the configured recipient instead of admin_email.
@@ -47,7 +47,7 @@ final class Updatronix_Notifications {
     }
 
     /**
-     * Whether notifications are enabled and a valid recipient is set.
+     * Check whether notifications are enabled and a valid recipient is set.
      *
      * @return bool
      */
@@ -89,7 +89,7 @@ final class Updatronix_Notifications {
     }
 
     /**
-     * Whether notify_on includes a key.
+     * Check whether notify_on includes a key.
      *
      * @param string $key Setting key.
      * @return bool
@@ -147,7 +147,7 @@ final class Updatronix_Notifications {
      * Redirect core update email to plugin recipient when notifications enabled.
      *
      * @param array<string, string> $email       to, subject, body, headers.
-     * @param string               $type       success, fail, manual, critical.
+     * @param string                $type        success, fail, manual, critical.
      * @param object                $core_update The update offer.
      * @param mixed                 $result      The result.
      * @return array<string, string>

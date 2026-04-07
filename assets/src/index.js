@@ -4,8 +4,9 @@ import { createRoot } from '@wordpress/element';
 import './index.scss';
 
 /**
- * Render the updatronix settings page once the DOM is ready.
- * Notices use the default context wp-data and wp-notices are script dependencies.
+ * Render the Updatronix settings page once the DOM is ready.
+ *
+ * wp-notices is a script dependency so the default store context is available.
  */
 domReady(() => {
 	const rootEl = document.getElementById('updatronix-settings');

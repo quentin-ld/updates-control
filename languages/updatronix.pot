@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-07T09:03:25+00:00\n"
+"POT-Creation-Date: 2026-04-07T09:56:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: updatronix\n"
@@ -30,8 +30,7 @@ msgstr ""
 
 #. Description of the plugin
 #: updatronix.php
-#: inc/classes/AutoUpdates.php:99
-msgid "Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places."
+msgid "Log every WordPress update with version details, manage auto-updates through native settings, and route notification emails to chosen recipients."
 msgstr ""
 
 #. Author of the plugin
@@ -49,9 +48,9 @@ msgid "Open Updatronix settings"
 msgstr ""
 
 #: inc/admin/links.php:26
-#: assets/src/js/components/SettingsPanel.js:82
-#: assets/src/js/pages/SettingsPage.js:89
-#: assets/src/js/pages/SettingsPage.js:92
+#: assets/src/js/components/SettingsPanel.js:84
+#: assets/src/js/pages/SettingsPage.js:90
+#: assets/src/js/pages/SettingsPage.js:93
 msgid "Settings"
 msgstr ""
 
@@ -140,16 +139,20 @@ msgstr ""
 msgid "Loading your Updatronix settings…"
 msgstr ""
 
-#: inc/classes/ErrorHandler.php:53
+#: inc/classes/AutoUpdates.php:103
+msgid "Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places."
+msgstr ""
+
+#: inc/classes/ErrorHandler.php:54
 msgid "Unknown item"
 msgstr ""
 
-#: inc/classes/ErrorHandler.php:97
+#: inc/classes/ErrorHandler.php:98
 msgid "Process:"
 msgstr ""
 
 #. translators: %d: HTTP status code
-#: inc/classes/ErrorHandler.php:288
+#: inc/classes/ErrorHandler.php:289
 #, php-format
 msgid "The core update encountered a redirect error (HTTP %d). Check your server configuration."
 msgstr ""
@@ -283,56 +286,56 @@ msgstr ""
 msgid "This theme was not found on your site. It may have been removed."
 msgstr ""
 
-#: inc/classes/UpdateLogger.php:358
+#: inc/classes/UpdateLogger.php:362
 msgid "This update may not have completed. It was logged when the process ended unexpectedly."
 msgstr ""
 
-#: inc/classes/UpdateLogger.php:1111
+#: inc/classes/UpdateLogger.php:1142
 msgid "Installed from an uploaded file."
 msgstr ""
 
 #. translators: %s: package download URL
-#: inc/classes/UpdateLogger.php:1379
+#: inc/classes/UpdateLogger.php:1411
 #, php-format
 msgid "Downloading the update from %s…"
 msgstr ""
 
-#: inc/classes/UpdateLogger.php:1382
+#: inc/classes/UpdateLogger.php:1414
 msgid "Unpacking the update…"
 msgstr ""
 
 #. translators: %s: WordPress version number
-#: inc/classes/UpdateLogger.php:1389
+#: inc/classes/UpdateLogger.php:1421
 #, php-format
 msgid "Core update to WordPress %s"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1657
+#: inc/classes/UpdateLogger.php:1690
 #, php-format
 msgid "Installed %1$s %2$s"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1661
+#: inc/classes/UpdateLogger.php:1694
 #, php-format
 msgid "Uninstalled %1$s %2$s"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1665
+#: inc/classes/UpdateLogger.php:1698
 #, php-format
 msgid "Rolled back %1$s to %2$s"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1669
+#: inc/classes/UpdateLogger.php:1702
 #, php-format
 msgid "Reinstalled %1$s %2$s (same version)"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1673
+#: inc/classes/UpdateLogger.php:1706
 #, php-format
 msgid "Updated %1$s to %2$s"
 msgstr ""
@@ -342,7 +345,7 @@ msgid "Title"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:126
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:222
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:225
 msgid "Version"
 msgstr ""
 
@@ -352,22 +355,22 @@ msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:144
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:154
-#: assets/src/js/components/activityLog/LogDetailsContent.js:56
+#: assets/src/js/components/activityLog/LogDetailsContent.js:58
 msgid "Type"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:171
-#: assets/src/js/components/activityLog/LogDetailsContent.js:72
+#: assets/src/js/components/activityLog/LogDetailsContent.js:74
 msgid "Date"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:198
-#: assets/src/js/components/activityLog/LogDetailsContent.js:65
+#: assets/src/js/components/activityLog/LogDetailsContent.js:67
 msgid "Triggered by"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:207
-#: assets/src/js/components/activityLog/LogDetailsContent.js:69
+#: assets/src/js/components/activityLog/LogDetailsContent.js:71
 msgid "Run type"
 msgstr ""
 
@@ -376,14 +379,14 @@ msgid "User"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:239
-#: assets/src/js/components/activityLog/LogDetailsContent.js:61
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:202
+#: assets/src/js/components/activityLog/LogDetailsContent.js:63
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:205
 msgid "Status"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:258
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:259
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:265
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:268
 msgid "View details"
 msgstr ""
 
@@ -410,8 +413,8 @@ msgid "Update logging is off. Turn it on in Settings to keep a history of update
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:381
-#: assets/src/js/pages/SettingsPage.js:75
-#: assets/src/js/pages/SettingsPage.js:78
+#: assets/src/js/pages/SettingsPage.js:76
+#: assets/src/js/pages/SettingsPage.js:79
 msgid "Update logs"
 msgstr ""
 
@@ -447,40 +450,40 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:45
+#: assets/src/js/components/activityLog/LogDetailsContent.js:47
 msgid "Loading log details…"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:55
+#: assets/src/js/components/activityLog/LogDetailsContent.js:57
 #: assets/src/js/components/activityLog/utils.js:100
 msgid "Item"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:58
+#: assets/src/js/components/activityLog/LogDetailsContent.js:60
 msgid "Action"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:62
+#: assets/src/js/components/activityLog/LogDetailsContent.js:64
 msgid "From version"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:63
+#: assets/src/js/components/activityLog/LogDetailsContent.js:65
 msgid "To version"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:78
+#: assets/src/js/components/activityLog/LogDetailsContent.js:80
 msgid "Summary"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:100
+#: assets/src/js/components/activityLog/LogDetailsContent.js:102
 msgid "Process details"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:115
+#: assets/src/js/components/activityLog/LogDetailsContent.js:117
 msgid "Advanced details"
 msgstr ""
 
-#: assets/src/js/components/activityLog/LogDetailsContent.js:131
+#: assets/src/js/components/activityLog/LogDetailsContent.js:133
 msgid "No additional details are available for this log entry."
 msgstr ""
 
@@ -510,8 +513,8 @@ msgid "Loading auto-update settings…"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:55
-#: assets/src/js/pages/SettingsPage.js:82
-#: assets/src/js/pages/SettingsPage.js:85
+#: assets/src/js/pages/SettingsPage.js:83
+#: assets/src/js/pages/SettingsPage.js:86
 msgid "Auto-updates"
 msgstr ""
 
@@ -559,90 +562,90 @@ msgstr ""
 msgid "DISABLE_WP_CRON is set to true in your wp-config.php file. Automatic updates use WP-Cron and will not run unless you have set up an external cron job."
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:37
+#: assets/src/js/components/autoUpdates/CoreSection.js:42
 msgid "Minor releases only (default — e.g. 6.4.1 to 6.4.2)"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:44
+#: assets/src/js/components/autoUpdates/CoreSection.js:49
 msgid "All releases — major and minor (e.g. 6.4 to 6.5)"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:51
+#: assets/src/js/components/autoUpdates/CoreSection.js:56
 msgid "Disabled — no automatic core updates"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:60
+#: assets/src/js/components/autoUpdates/CoreSection.js:65
 #: assets/src/js/components/SettingsPanel.js:24
 msgid "Core updates"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:68
+#: assets/src/js/components/autoUpdates/CoreSection.js:73
 msgid "Core auto-update mode"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/CoreSection.js:75
+#: assets/src/js/components/autoUpdates/CoreSection.js:80
 msgid "A constant in your wp-config.php file controls this setting. To change it, edit that file directly."
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:112
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:115
 msgid "Auto-update"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:118
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:121
 msgid "Automatic updates are not available for this item (e.g. not from WordPress.org)."
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:123
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:126
 msgid "Unavailable"
 msgstr ""
 
 #. translators: %s: plugin or theme name
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:137
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:140
 #, js-format
 msgid "Disable auto-update for %s"
 msgstr ""
 
 #. translators: %s: plugin or theme name
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:145
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:148
 #, js-format
 msgid "Enable auto-update for %s"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:162
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:165
 msgid "Icon"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:207
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:210
 msgid "Active"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:211
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:214
 msgid "Inactive"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:235
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:238
 msgid "Description"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:248
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:251
 msgid "Details"
 msgstr ""
 
 #. translators: %s: plugin or theme name
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:258
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:261
 #, js-format
 msgid "View details for %s (opens in a new tab)"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/TranslationsSection.js:43
+#: assets/src/js/components/autoUpdates/TranslationsSection.js:48
 msgid "Translations"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/TranslationsSection.js:52
+#: assets/src/js/components/autoUpdates/TranslationsSection.js:57
 msgid "Automatic translation updates"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/TranslationsSection.js:53
+#: assets/src/js/components/autoUpdates/TranslationsSection.js:58
 msgid "WordPress updates translations automatically by default. Turn this off to stop automatic translation downloads."
 msgstr ""
 
@@ -674,67 +677,67 @@ msgstr ""
 msgid "WordPress recovery mode technical email when the site enters recovery mode."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:85
+#: assets/src/js/components/SettingsPanel.js:87
 msgid "Set up logging, choose how long to keep records, and manage email notifications."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:93
+#: assets/src/js/components/SettingsPanel.js:95
 msgid "Update logging"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:97
+#: assets/src/js/components/SettingsPanel.js:99
 msgid "Record all updates"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:98
+#: assets/src/js/components/SettingsPanel.js:100
 msgid "Keep a record of all core, plugin, theme, and translation updates."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:116
+#: assets/src/js/components/SettingsPanel.js:118
 msgid "Keep logs for (days)"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:117
+#: assets/src/js/components/SettingsPanel.js:119
 msgid "Logs older than this number of days are automatically removed once a day."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:139
+#: assets/src/js/components/SettingsPanel.js:141
 msgid "Update notifications"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:143
+#: assets/src/js/components/SettingsPanel.js:145
 msgid "Manage update notifications"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:144
+#: assets/src/js/components/SettingsPanel.js:146
 msgid "When on, WordPress built-in update emails are sent to the address you choose below. Use the checkboxes to pick which types of updates you want to hear about."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:163
+#: assets/src/js/components/SettingsPanel.js:165
 msgid "Send notifications to"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:164
+#: assets/src/js/components/SettingsPanel.js:166
 msgid "Update emails will go to this address instead of the default admin email."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:176
+#: assets/src/js/components/SettingsPanel.js:178
 msgid "admin@example.com"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:180
+#: assets/src/js/components/SettingsPanel.js:182
 msgid "Notification types"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:183
+#: assets/src/js/components/SettingsPanel.js:185
 msgid "Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behaviour."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:212
+#: assets/src/js/components/SettingsPanel.js:214
 msgid "Saving…"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:213
+#: assets/src/js/components/SettingsPanel.js:215
 msgid "Save settings"
 msgstr ""
 
@@ -774,18 +777,18 @@ msgstr ""
 msgid "Your update logs could not be loaded. Try refreshing the page."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:74
+#: assets/src/js/hooks/usePluginSettings.js:75
 msgid "Settings saved successfully."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:78
+#: assets/src/js/hooks/usePluginSettings.js:79
 msgid "Your settings were saved, but the server did not return the updated values. Refresh the page to confirm."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:87
+#: assets/src/js/hooks/usePluginSettings.js:88
 msgid "Your settings could not be saved. Check your connection and try again."
 msgstr ""
 
-#: assets/src/js/pages/SettingsPage.js:68
+#: assets/src/js/pages/SettingsPage.js:69
 msgid "Updatronix settings sections"
 msgstr ""

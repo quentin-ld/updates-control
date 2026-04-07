@@ -1,10 +1,7 @@
 <?php
 
 /**
- * Centralises detection and mutation of native WordPress auto-update settings.
- *
- * Reads/writes only native WP options and site options — no parallel option structure.
- * Translation preference is stored inside the plugin's existing JSON settings.
+ * Centralises detection and mutation of native WordPress auto-update settings
  *
  * @package updatronix
  */
@@ -13,6 +10,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Native WordPress auto-update settings reader and mutator.
+ *
+ * Reads/writes only native WP options and site options — no parallel option structure.
+ * Translation preference is stored inside the plugin's existing JSON settings.
+ */
 final class Updatronix_AutoUpdates {
     /**
      * Register the translation auto-update filter.
@@ -36,7 +39,7 @@ final class Updatronix_AutoUpdates {
     }
 
     /**
-     * Full payload for the GET /auto-updates endpoint.
+     * Build the full payload for the GET /auto-updates endpoint.
      *
      * @return array{constants: array<string, array{defined: bool, value: mixed, affects: array<string>, locks: bool}>, dismissed_constants: array<string>, core: array{mode: string, major: string, minor: string, dev: string, overridden_by_constant: bool}, plugins: array<int, array{file: string, slug: string, name: string, description: string, version: string, author: string, plugin_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>, themes: array<int, array{stylesheet: string, name: string, description: string, version: string, author: string, theme_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>, translations: array{auto_update: bool}}
      */
@@ -78,11 +81,12 @@ final class Updatronix_AutoUpdates {
     }
 
     /**
-     * Plugin description for the current locale if a language pack / textdomain is available.
+     * Get plugin description for the current locale if a language pack is available.
      *
      * @param string               $file        Plugin basename path (key from get_plugins()).
      * @param string               $slug        Plugin slug.
      * @param array<string, mixed> $plugin_data Row from get_plugins().
+     * @return string Sanitized description.
      */
     private static function get_localized_plugin_description(string $file, string $slug, array $plugin_data): string {
         // Note: Plugin Check forbids translating dynamic strings via low-level
@@ -107,7 +111,10 @@ final class Updatronix_AutoUpdates {
     }
 
     /**
-     * Theme description for the current locale if a language pack is available.
+     * Get theme description for the current locale if a language pack is available.
+     *
+     * @param WP_Theme $theme Theme instance.
+     * @return string Sanitized description.
      */
     private static function get_localized_theme_description(WP_Theme $theme): string {
         $desc = $theme->display('Description', false, true);
@@ -183,7 +190,7 @@ final class Updatronix_AutoUpdates {
     }
 
     /**
-     * Core auto-update configuration.
+     * Get core auto-update configuration.
      *
      * @return array{mode: string, major: string, minor: string, dev: string, overridden_by_constant: bool}
      */
@@ -222,7 +229,7 @@ final class Updatronix_AutoUpdates {
     }
 
     /**
-     * All installed plugins with their auto-update status and metadata.
+     * Get all installed plugins with their auto-update status and metadata.
      *
      * @return array<int, array{file: string, slug: string, name: string, description: string, version: string, author: string, plugin_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>
      */
@@ -288,7 +295,7 @@ final class Updatronix_AutoUpdates {
     }
 
     /**
-     * All installed themes with their auto-update status and metadata.
+     * Get all installed themes with their auto-update status and metadata.
      *
      * @return array<int, array{stylesheet: string, name: string, description: string, version: string, author: string, theme_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>
      */
@@ -328,7 +335,7 @@ final class Updatronix_AutoUpdates {
     }
 
     /**
-     * Translation auto-update config (stored in plugin settings JSON).
+     * Get translation auto-update config (stored in plugin settings JSON).
      *
      * @return array{auto_update: bool}
      */

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Responsible for logging functionalities with specified fields.
+ * CRUD operations for the update log table
  *
  * @package updatronix
  */
@@ -16,11 +16,15 @@ if (!defined('ABSPATH')) {
 final class Updatronix_Logger {
     /**
      * Cache group for individual log lookups.
+     *
+     * @var string
      */
     private const CACHE_GROUP = 'updatronix_logs';
 
     /**
      * Cache key storing the current logs cache version.
+     *
+     * @var string
      */
     private const CACHE_LAST_CHANGED_KEY = 'last_changed';
 
@@ -184,7 +188,8 @@ final class Updatronix_Logger {
     /**
      * Get logs with optional filters and pagination.
      *
-     * @param array<string, mixed> $args Optional. site_id, log_type, status, performed_as, per_page, page, orderby, order.
+     * @param array<string, mixed> $args            Optional. site_id, log_type, status, performed_as, per_page, page, orderby, order.
+     * @param bool                 $include_details Whether to include message and trace columns.
      * @return array<int, object> Array of log row objects.
      */
     public static function get_logs(array $args = [], bool $include_details = true): array {

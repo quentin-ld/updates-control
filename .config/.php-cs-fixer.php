@@ -1,8 +1,11 @@
 <?php
 
 /**
- * PHP CS Fixer configuration for Updatronix: code style and formatting for PHP files.
+ * PHP CS Fixer configuration for code style and formatting.
+ *
+ * @package updatronix
  */
+
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
@@ -69,7 +72,7 @@ $rules = [
     ],
     'native_function_casing' => true,
     'no_alias_functions' => true,
-    'no_alternative_syntax' => true, // Remove des endif & shit
+    'no_alternative_syntax' => true,
     'no_closing_tag' => true,
     'no_empty_phpdoc' => true,
     'no_empty_statement' => true,

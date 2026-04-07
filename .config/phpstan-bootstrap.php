@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * PHPStan bootstrap file defining constants required for static analysis.
+ *
+ * @package updatronix
+ */
+
 if (!defined('ABSPATH')) {
     exit;
 }

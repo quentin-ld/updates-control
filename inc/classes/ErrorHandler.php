@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implements error handling to manage and log issues during updates.
+ * Error handling for update process failures
  *
  * @package updatronix
  */
@@ -26,8 +26,9 @@ final class Updatronix_ErrorHandler {
     }
 
     /**
-     * When an upgrade completes, log failure if the upgrader skin result is WP_Error.
-     * Resolves plugin/theme identity (including upload "destination exists") and appends process messages.
+     * Log upgrader failure if the skin result is a WP_Error.
+     *
+     * Resolve plugin/theme identity (including upload "destination exists") and append process messages.
      *
      * @param WP_Upgrader $upgrader Upgrader instance.
      * @param array<string, mixed> $options Options (type, action, plugins, themes, etc.).

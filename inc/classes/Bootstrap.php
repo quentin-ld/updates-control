@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin bootstrap: loads classes and registers hooks.
+ * Plugin bootstrap: loads classes and registers hooks
  *
  * @package updatronix
  */

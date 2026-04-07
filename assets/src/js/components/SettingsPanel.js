@@ -54,12 +54,14 @@ const NOTIFY_TYPES = [
 ];
 
 /**
- * @param {Object}   props
+ * Render the logging and notification settings form.
+ *
+ * @param {Object}   props              Component props.
  * @param {Object}   props.settings     Current settings.
  * @param {Function} props.setSettings  Setter for settings.
  * @param {Function} props.saveSettings Async save to REST API.
  * @param {boolean}  props.saving       Whether save is in progress.
- * @return {JSX.Element}
+ * @return {JSX.Element} The settings form.
  */
 export const SettingsPanel = memo(function SettingsPanel({
 	settings,

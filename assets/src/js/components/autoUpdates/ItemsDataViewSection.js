@@ -1,6 +1,5 @@
 /**
- * Shared DataViews section for Plugins and Themes.
- * Reduces duplication between PluginsSection and ThemesSection.
+ * Shared DataViews section for plugins and themes.
  */
 
 import { useMemo, useState, useCallback } from '@wordpress/element';
@@ -21,6 +20,8 @@ const FIXED_FIELDS = [
 ];
 
 /**
+ * Check whether a section is locked by a wp-config constant.
+ *
  * @param {Object} constants Map from PHP.
  * @param {string} section   'plugins' | 'themes'.
  * @return {boolean} True if the section is locked by a constant.
@@ -35,7 +36,9 @@ function isSectionLocked(constants, section) {
 }
 
 /**
- * @param {Object}   props
+ * Render a DataViews table section for plugins or themes.
+ *
+ * @param {Object}   props              Component props.
  * @param {Array}    props.items        Plugin or theme items.
  * @param {string}   props.itemIdKey    'file' (plugins) | 'stylesheet' (themes).
  * @param {Object}   props.icon         Icon from @wordpress/icons.
@@ -46,7 +49,7 @@ function isSectionLocked(constants, section) {
  * @param {Object}   props.constants    Constant info from API.
  * @param {string[]} props.sections     e.g. ['plugins'] | ['themes'].
  * @param {Function} props.onToggle     (id, checked) => void.
- * @param {boolean}  props.busy
+ * @param {boolean}  props.busy         Whether a request is in progress.
  * @return {JSX.Element} The items DataView section.
  */
 export function ItemsDataViewSection({

@@ -31,8 +31,9 @@ function setTabInUrl(tabId) {
 }
 
 /**
- * Main settings page for Updatronix.
- * Tabs: Logs and Settings. Active tab is synced with ?tab= URL param for direct links.
+ * Render the main settings page for Updatronix.
+ *
+ * Active tab is synced with the ?tab= URL parameter for direct linking.
  *
  * @return {JSX.Element} The settings page UI.
  */

@@ -4,7 +4,7 @@
  * Optional bootstrap loaded by WP-CLI before `wp plugin check` (Composer `lint:pcp`).
  * Extend if Plugin Check needs extra autoload or environment setup.
  *
- * @package Updatronix
+ * @package updatronix
  */
 
 declare(strict_types=1);

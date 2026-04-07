@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Provides admin interface for viewing logs and configuring settings.
+ * Provides admin interface for viewing logs and configuring settings
  *
  * @package updatronix
  */
@@ -202,7 +202,7 @@ final class Updatronix_Settings {
     }
 
     /**
-     * Permission callback: user can manage Updatronix (see {@see UPDATRONIX_CAP_MANAGE}).
+     * Verify the current user can manage Updatronix ({@see UPDATRONIX_CAP_MANAGE}).
      *
      * @param \WP_REST_Request<array<string, mixed>> $request Request.
      * @return bool

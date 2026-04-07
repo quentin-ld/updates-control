@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Pure helpers for resolving WordPress core versions and update action types for activity logging.
+ * Pure helpers for resolving WordPress core versions and update action types for activity logging
  *
  * Used by Updatronix_Update_Logger so manual and automatic completion paths share one definition
  * of downgrade / same-version / update semantics and post-install version resolution order.
@@ -35,7 +35,7 @@ final class Updatronix_Core_Update_Log_Versions {
     }
 
     /**
-     * Resolved post-update core version: on-disk install first, then transient target, then bootstrap version.
+     * Resolve post-update core version: on-disk install first, then transient target, then bootstrap version.
      *
      * @param string $disk_version        Version read from disk (e.g. wp-includes/version.php), may be empty.
      * @param string $pending_target_version Target from update_core at download time (may be empty).

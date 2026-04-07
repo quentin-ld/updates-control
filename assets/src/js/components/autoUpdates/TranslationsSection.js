@@ -8,6 +8,8 @@ import { __ } from '@wordpress/i18n';
 import { ConstantNotices } from './ConstantNotices';
 
 /**
+ * Check whether a section is locked by a wp-config constant.
+ *
  * @param {Object} constants Map from PHP.
  * @param {string} section   'core' | 'plugins' | 'themes' | 'translations'.
  * @return {boolean} True if the section is locked by a constant.
@@ -22,11 +24,14 @@ function isSectionLocked(constants, section) {
 }
 
 /**
- * @param {Object}   props
- * @param {Object}   props.translations      { auto_update }.
+ * Render the translations auto-update toggle.
+ *
+ * @param {Object}   props                   Component props.
+ * @param {Object}   props.translations      Translation settings: { auto_update }.
  * @param {Object}   props.constants         Constant info from API.
- * @param {Function} props.toggleTranslation (checked) => void.
- * @param {boolean}  props.busy
+ * @param {Function} props.toggleTranslation Callback to toggle translation auto-updates.
+ * @param {boolean}  props.busy              Whether a request is in progress.
+ * @return {JSX.Element}                      The translations auto-update section.
  */
 export function TranslationsSection({
 	translations,

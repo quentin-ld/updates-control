@@ -30,16 +30,16 @@ const CONSTANT_DESCRIPTIONS = {
 };
 
 /**
- * Renders warning notices for wp-config constants that affect auto-updates.
+ * Render warning notices for wp-config constants that affect auto-updates.
  *
- * @param {Object}                        props
- * @param {Object.<string, ConstantInfo>} props.constants         Map of constant name → info.
+ * @param {Object}                        props                   Component props.
+ * @param {Object.<string, ConstantInfo>} props.constants         Map of constant name to info.
  * @param {string[]}                      props.sections          Sections to filter ('core', 'plugins', etc.).
  * @param {boolean}                       [props.lockingOnly]     When true, only show constants with locks=true.
  * @param {boolean}                       [props.dismissibleOnly] When true, only show constants with locks=false (dismissible).
  * @param {string[]}                      [props.dismissed]       List of dismissed constant names.
  * @param {Function}                      [props.onDismiss]       Called with constant name when dismissed.
- * @return {JSX.Element|null}
+ * @return {JSX.Element[]|null} Warning notices, or null if none apply.
  */
 export const ConstantNotices = memo(function ConstantNotices({
 	constants,

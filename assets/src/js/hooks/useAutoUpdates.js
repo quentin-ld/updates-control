@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
 const API_BASE = 'updatronix/v1/auto-updates';
 
 /**
- * Hook to read and mutate native WordPress auto-update settings via REST.
+ * Read and mutate native WordPress auto-update settings via REST.
  *
  * Every mutation returns the full refreshed dataset from the server so the UI
  * stays in sync without a second GET.

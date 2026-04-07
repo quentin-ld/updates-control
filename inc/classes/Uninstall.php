@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Uninstall cleanup (invoked from uninstall.php only).
+ * Uninstall cleanup (invoked from uninstall.php only)
  *
  * Multisite: iterates all sites so per-blog tables, options, and cron entries are cleared.
  *
@@ -65,7 +65,7 @@ final class Updatronix_Uninstall {
     }
 
     /**
-     * All wp_options keys removed on uninstall (excluding updatronix_log_db_version, removed in drop_table()).
+     * Return all wp_options keys removed on uninstall (excluding updatronix_log_db_version, removed in drop_table()).
      *
      * @return list<string>
      */

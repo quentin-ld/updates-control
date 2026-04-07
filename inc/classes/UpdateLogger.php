@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Update logger: observes and logs core/plugin/theme/translation updates. Hooks into
- * WordPress update flow only to add version_before to transients for audit logging
- * when updates complete. It does not modify or block updates.
+ * Update logger: observes and logs core/plugin/theme/translation updates
+ *
+ * Hooks into the WordPress update flow only to add version_before to transients
+ * for audit logging when updates complete. It does not modify or block updates.
  *
  * @package updatronix
  */
@@ -14,6 +15,9 @@ if (!defined('ABSPATH')) {
 
 require_once __DIR__ . '/CoreUpdateLogVersions.php';
 
+/**
+ * Observe WordPress update hooks and write audit log entries.
+ */
 final class Updatronix_Update_Logger {
     /**
      * Register hooks for update events.
@@ -156,7 +160,7 @@ final class Updatronix_Update_Logger {
     }
 
     /**
-     * Whether fallback logging should skip this event because it was already finalized.
+     * Determine whether fallback logging should skip this event because it was already finalized.
      *
      * @param string $event_key Event key.
      * @return bool
@@ -169,7 +173,7 @@ final class Updatronix_Update_Logger {
     }
 
     /**
-     * Whether we are currently in an automatic update context.
+     * Check whether the current request is an automatic update context.
      *
      * @return bool
      */
@@ -178,7 +182,7 @@ final class Updatronix_Update_Logger {
     }
 
     /**
-     * Set automatic-update flag (EUM-style).
+     * Set the automatic-update flag when a pre_auto_update action fires.
      *
      * @return void
      */
@@ -319,7 +323,7 @@ final class Updatronix_Update_Logger {
     }
 
     /**
-     * On shutdown: log any pending updates that were not logged (e.g. fatal error).
+     * Flush any pending updates not logged during normal processing (e.g. after a fatal error).
      *
      * @return void
      */
@@ -521,9 +525,32 @@ final class Updatronix_Update_Logger {
         }
     }
 
+    /**
+     * Option key for storing the core version before an update.
+     *
+     * @var string
+     */
     private const OPTION_CORE_VERSION_BEFORE = 'updatronix_core_version_before';
+
+    /**
+     * Option key for storing plugin versions before an update.
+     *
+     * @var string
+     */
     private const OPTION_PLUGIN_VERSIONS_BEFORE = 'updatronix_plugin_versions_before';
+
+    /**
+     * Option key for plugin versions keyed by main file basename.
+     *
+     * @var string
+     */
     private const OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE = 'updatronix_plugin_versions_before_by_mainfile';
+
+    /**
+     * Option key for storing theme versions before an update.
+     *
+     * @var string
+     */
     private const OPTION_THEME_VERSIONS_BEFORE = 'updatronix_theme_versions_before';
 
     /**
@@ -540,13 +567,17 @@ final class Updatronix_Update_Logger {
         ];
     }
 
-    /** @var array<string> Collected core update feedback (update_feedback filter). */
+    /**
+     * Collected core update feedback (update_feedback filter).
+     *
+     * @var array<string>
+     */
     private static array $core_feedback = [];
 
     /** Package URL for core (to build "Downloading from..." step). */
     private static string $core_package_url = '';
 
-    /** Whether we started an output buffer to capture WordPress feedback (plugin/theme manual flow). */
+    /** Whether an output buffer is active to capture WordPress feedback (plugin/theme manual flow). */
     private static bool $feedback_ob_started = false;
 
     /** Output buffer level of the feedback buffer started by this class. */
@@ -558,19 +589,19 @@ final class Updatronix_Update_Logger {
     /** Captured feedback from WordPress show_message() during the last run (plugin/theme). */
     private static string $captured_feedback = '';
 
-    /** Accumulated output from bulk upgrade runs (bulk skin flushes the OB per item; we capture via callback). */
+    /** Accumulated output from bulk upgrade runs (bulk skin flushes the OB per item; captured via callback). */
     private static string $captured_bulk_feedback = '';
 
-    /** Set by bulk OB callback when skin flushed so we start a new buffer in upgrader_pre_download. */
+    /** Set by bulk OB callback when skin flushed so a new buffer starts in upgrader_pre_download. */
     private static bool $bulk_flush_happened = false;
 
-    /** True when we started an OB in upgrader_pre_download to capture post-flush feedback (Downloading…, etc.). */
+    /** True when an OB started in upgrader_pre_download to capture post-flush feedback (Downloading…, etc.). */
     private static bool $post_flush_ob_started = false;
 
     /** Output buffer level of the post-flush buffer started by this class. */
     private static ?int $post_flush_ob_level = null;
 
-    /** Callable for ob_start used in bulk flow so we can re-start OB after each flush. */
+    /** Callable for ob_start used in bulk flow to re-start OB after each flush. */
     private static ?\Closure $feedback_ob_callback = null;
 
     /**
@@ -1039,10 +1070,10 @@ final class Updatronix_Update_Logger {
     }
 
     /**
-     * Fired when an update process completes.
+     * Handle completion of an update process.
      *
-     * @param WP_Upgrader $upgrader Upgrader instance.
-     * @param array<string, mixed> $options Array of item type, action, etc.
+     * @param WP_Upgrader          $upgrader Upgrader instance.
+     * @param array<string, mixed> $options  Array of item type, action, etc.
      * @return void
      */
     public static function on_upgrader_process_complete(WP_Upgrader $upgrader, array $options): void {
@@ -1354,9 +1385,10 @@ final class Updatronix_Update_Logger {
      * Log WordPress core update or downgrade.
      *
      * @param WP_Upgrader $upgrader        Upgrader instance (for process message).
-     * @param string     $process_message Optional process log (e.g. from skin).
-     * @param string     $trace           Optional call stack trace.
-     * @param string     $performed_as    manual or automatic.
+     * @param string      $process_message Optional process log (e.g. from skin).
+     * @param string      $trace           Optional call stack trace.
+     * @param string      $performed_as    manual or automatic.
+     * @param string      $event_key       Canonical event key for deduplication.
      * @return void
      */
     private static function log_core_update(WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual', string $event_key = ''): void {
@@ -1486,13 +1518,14 @@ final class Updatronix_Update_Logger {
     /**
      * Log plugin update/install/downgrade.
      *
-     * @param string       $plugin_file     Plugin file path.
-     * @param string       $action          update or install.
-     * @param WP_Upgrader  $upgrader        Upgrader instance.
-     * @param string       $process_message Optional process log (e.g. from skin).
-     * @param string       $trace           Optional call stack trace.
-     * @param string       $performed_as    manual or automatic.
-     * @param string       $update_context  bulk or single (empty for legacy).
+     * @param string      $plugin_file     Plugin file path.
+     * @param string      $action          update or install.
+     * @param WP_Upgrader $upgrader        Upgrader instance.
+     * @param string      $process_message Optional process log (e.g. from skin).
+     * @param string      $trace           Optional call stack trace.
+     * @param string      $performed_as    manual or automatic.
+     * @param string      $update_context  bulk or single (empty for legacy).
+     * @param string      $event_key       Canonical event key for deduplication.
      * @return void
      */
     private static function log_plugin_update(string $plugin_file, string $action, WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual', string $update_context = '', string $event_key = ''): void {
@@ -1698,6 +1731,7 @@ final class Updatronix_Update_Logger {
      * @param string      $trace           Optional call stack trace.
      * @param string      $performed_as    manual or automatic.
      * @param string      $update_context  bulk or single (empty for legacy).
+     * @param string      $event_key       Canonical event key for deduplication.
      * @return void
      */
     private static function log_theme_update(string $theme_slug, string $action, WP_Upgrader $upgrader, string $process_message = '', string $trace = '', string $performed_as = 'manual', string $update_context = '', string $event_key = ''): void {

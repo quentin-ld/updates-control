@@ -11,6 +11,8 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Test merging skin messages with WP_Error results in update note output.
+ *
  * @covers \Updatronix_Automatic_Update_Result_Notes
  */
 final class AutomaticUpdateResultNotesTest extends TestCase {

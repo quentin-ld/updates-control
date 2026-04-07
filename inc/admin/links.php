@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 add_filter('plugin_action_links_' . plugin_basename(updatronix_PLUGIN_FILE), 'updatronix_add_settings_link');
 /**
- * Adds "Settings" to plugin action links on Plugins screen.
+ * Add "Settings" to plugin action links on the Plugins screen.
  *
  * @param array<int, string> $links Existing action links.
  * @return array<int, string> Action links with Settings added.
@@ -31,7 +31,7 @@ function updatronix_add_settings_link(array $links): array {
 
 add_filter('plugin_row_meta', 'updatronix_plugin_row_meta', 10, 2);
 /**
- * Adds Changelog, Docs, Support to plugin row meta for Updatronix.
+ * Add Changelog, Docs, and Support links to plugin row meta for Updatronix.
  *
  * @param array<int, string> $links Existing row meta.
  * @param string             $file  Plugin basename.

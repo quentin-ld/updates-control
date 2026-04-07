@@ -57,6 +57,7 @@ Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/
 | `format` / `format:fix` | Prettier on `assets/src/**/*.{js,jsx}` |
 | `start` / `build` | `@wordpress/scripts` bundle |
 | `build:all` | Full verification + build (see **Build** below) |
+| `zip` | Build distributable zip via `.config/zip.js` (uses `archiver`; respects `.distignore`-style exclusions) |
 
 ### Configuration files
 
@@ -73,6 +74,8 @@ Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/
 | `.editorconfig` | Tabs for source; spaces for `package.json` / YAML |
 | `.config/local-wp-cli.sh` | Local WP shell + `wp` for `lint:pcp` / `make:pot` / `integration-test` |
 | `.config/pcp-setup.php` | Loaded by `wp plugin check --require` (CLI only) |
+| `.config/zip.js` | Distributable zip builder (`npm run zip`); excludes dev files via `archiver` globs |
+| `.config/wp-tests-env.example` | Template for integration test DB / path variables (copy to `wp-tests.env`) |
 
 ### PHP — `composer run verify:php`
 
@@ -157,6 +160,7 @@ npm run build
 
 ### Code layout
 
+- `inc/core/` — plugin constants (`UPDATRONIX_PLUGIN_FILE`, `UPDATRONIX_CAP_MANAGE`, legacy aliases)
 - `inc/classes/` — core services (bootstrap, DB, logger, cron, settings, …)
 - `inc/admin/` — admin UI, menus, enqueue
 - `inc/settings/` — options and settings
