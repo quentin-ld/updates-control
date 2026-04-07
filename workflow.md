@@ -24,20 +24,27 @@ Run these before a commit or release, in order:
 
 | Step | Command | What it does |
 |------|---------|----------------|
-| 1 | `composer run lint:php` | PHP CS Fixer + PHPStan on `updatronix.php` and `inc/` |
+| 1 | `composer run verify:php` | **PHP CS Fixer + PHPStan + PHPUnit unit tests** (`updatronix.php`, `inc/`, `tests/Unit/`) |
 | 2 | `composer run lint:pcp` | Plugin Check via WP-CLI (requires **Local** — see below) |
 | 3 | `npm run lint` | ESLint (WordPress preset + Prettier via `@wordpress/eslint-plugin`); `npm run lint:fix` to auto-fix |
 | 4 | `npm run lint:css` | Stylelint on `assets/src/**/*.scss` (`npm run lint:css:fix` to auto-fix) |
 | 5 | `npm run format` | Prettier check on `assets/src/**/*.{js,jsx}` (`npm run format:fix` to write) |
 | 6 | `composer run make:pot` | Regenerate `languages/updatronix.pot` (requires **Local** — see below) |
+| 7 | *(optional)* `bash .config/local-wp-cli.sh integration-test` | **PHPUnit integration tests** (full WordPress + DB; requires Local PHP/mysqli + one-time `bin/install-wp-tests.sh` — see `tests/README.md`) |
 
-WordPress.org suggests using coding standards / static analysis together with [Plugin Check](https://make.wordpress.org/plugins/developers/). This repo uses **PHP CS Fixer** and **PHPStan** for PHP, then Plugin Check for WordPress.org-oriented rules. Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/stylelint-config/scss-stylistic`**; Prettier uses **`@wordpress/prettier-config`** (see `package.json`). SCSS is linted with Stylelint, not Prettier, so formatter commands target JS/JSX only.
+WordPress.org suggests using coding standards / static analysis together with [Plugin Check](https://make.wordpress.org/plugins/developers/). This repo uses **PHP CS Fixer** and **PHPStan** for PHP, then Plugin Check for WordPress.org-oriented rules. **PHPUnit** covers pure helpers in `tests/Unit/`; **integration** tests live in `tests/Integration/` and are run locally when the WordPress test library is installed.
+
+Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/stylelint-config/scss-stylistic`**; Prettier uses **`@wordpress/prettier-config`** (see `package.json`). SCSS is linted with Stylelint, not Prettier, so formatter commands target JS/JSX only.
 
 ### Composer scripts (reference)
 
 | Script | Definition |
 |--------|------------|
 | `lint:php` | PHP CS Fixer then PHPStan (see `composer.json`) |
+| `test` | PHPUnit **unit** suite only (`.config/phpunit.xml.dist` → `tests/Unit/`) |
+| `verify:php` | `lint:php` then `test` — use this before commits and in CI |
+| `test:integration` | PHPUnit **integration** suite (`.config/phpunit.integration.xml.dist` → `tests/Integration/`); needs `WP_TESTS_DIR` + MySQL + mysqli |
+| `test:all` | `test` then `test:integration` |
 | `lint:pcp` | `bash .config/local-wp-cli.sh pcp` |
 | `make:pot` | `bash .config/local-wp-cli.sh pot` |
 
@@ -49,6 +56,7 @@ WordPress.org suggests using coding standards / static analysis together with [P
 | `lint:css` / `lint:css:fix` | Stylelint on `assets/src/**/*.scss` |
 | `format` / `format:fix` | Prettier on `assets/src/**/*.{js,jsx}` |
 | `start` / `build` | `@wordpress/scripts` bundle |
+| `build:all` | Full verification + build (see **Build** below) |
 
 ### Configuration files
 
@@ -57,17 +65,24 @@ WordPress.org suggests using coding standards / static analysis together with [P
 | `.config/.php-cs-fixer.php` | PHP code style |
 | `.config/phpstan.neon` | Static analysis |
 | `.config/phpstan-bootstrap.php` | PHPStan bootstrap |
+| `.config/phpunit.xml.dist` | PHPUnit **unit** tests |
+| `.config/phpunit.integration.xml.dist` | PHPUnit **integration** tests |
 | `.config/.eslintrc.js` | ESLint (`plugin:@wordpress/eslint-plugin/recommended`) |
 | `.config/stylelintrc.json` | Stylelint (`@wordpress/stylelint-config/scss-stylistic` + project overrides) |
 | `package.json` | `"prettier": "@wordpress/prettier-config"` for ESLint / editor Prettier |
 | `.editorconfig` | Tabs for source; spaces for `package.json` / YAML |
-| `.config/local-wp-cli.sh` | Local WP shell + `wp` for `lint:pcp` / `make:pot` |
+| `.config/local-wp-cli.sh` | Local WP shell + `wp` for `lint:pcp` / `make:pot` / `integration-test` |
 | `.config/pcp-setup.php` | Loaded by `wp plugin check --require` (CLI only) |
 
-### PHP — `composer run lint:php`
+### PHP — `composer run verify:php`
 
-- **PHP CS Fixer** — `.config/.php-cs-fixer.php`
-- **PHPStan** — `.config/phpstan.neon`
+Runs, in order:
+
+1. **PHP CS Fixer** — `.config/.php-cs-fixer.php`
+2. **PHPStan** — `.config/phpstan.neon`
+3. **PHPUnit (unit)** — `.config/phpunit.xml.dist` (`tests/Unit/`)
+
+For integration tests only, see **`tests/README.md`** and `bash .config/local-wp-cli.sh integration-test`.
 
 ### Front-end — ESLint, Stylelint, Prettier
 
@@ -94,8 +109,8 @@ No `.env` or extra config files are required for these two commands.
 
 **Plugin Check options** (defined as variables in `.config/local-wp-cli.sh`, edit there to change):
 
-- **Excluded directories:** `.config`, `.github`, `.cursor`
-- **Excluded files:** `workflow.md`, `.distignore`, `.gitignore`, `.gitattributes`, `.editorconfig`
+- **Excluded directories:** `.config`, `.github`, `.cursor`, **`bin`** (dev install script), **`tests`** (PHPUnit — not in release zip per `.distignore`)
+- **Excluded files:** `workflow.md`, `.distignore`, `.gitignore`, `.gitattributes`, `.editorconfig`, **`updatronix.zip`** (artifact from `npm run zip` if present)
 - **Ignored result codes:** `plugin_updater_detected`, `update_modification_detected` (expected for an updates-management plugin using core update APIs)
 
 ```bash
@@ -111,9 +126,9 @@ Run the complete build + verification pipeline in one shot:
 npm run build:all
 ```
 
-This command executes, in order (as documented in `workflow.md`):
+This command executes, in order:
 
-1. `composer run lint:php`
+1. `composer run verify:php` (PHP CS Fixer + PHPStan + **unit** tests)
 2. `composer run lint:pcp`
 3. `npm run lint`
 4. `npm run lint:css`
@@ -122,7 +137,10 @@ This command executes, in order (as documented in `workflow.md`):
 7. `npm run build`
 
 Notes:
+
+- `verify:php` replaces a separate `lint:php` + manual `composer test`: it is the canonical PHP gate before front-end checks.
 - `lint:pcp` and `make:pot` rely on Local by Flywheel (see `workflow.md` / `.config/local-wp-cli.sh`).
+- **Integration tests** are **not** part of `build:all` (they need DB + `wordpress-tests-lib`). Run them separately when needed: `bash .config/local-wp-cli.sh integration-test` (see `tests/README.md`).
 - `npm run build` uses `@wordpress/scripts` to bundle JS (and compile SCSS imports via the entry `assets/src/index.js`) into `assets/build/`.
 
 ## Development workflow

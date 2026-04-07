@@ -25,6 +25,23 @@ const UPDATRONIX_SETTINGS_DEFAULTS = [
 ];
 
 add_action('init', 'updatronix_register_settings');
+add_action('init', 'updatronix_maybe_grant_manage_cap', 1);
+
+/**
+ * Grant {@see UPDATRONIX_CAP_MANAGE} to the administrator role on existing installs (activation hook does not run on upgrade).
+ *
+ * @return void
+ */
+function updatronix_maybe_grant_manage_cap(): void {
+    if (get_option('updatronix_cap_migrated', '') === '1') {
+        return;
+    }
+    $role = get_role('administrator');
+    if ($role && !$role->has_cap(UPDATRONIX_CAP_MANAGE)) {
+        $role->add_cap(UPDATRONIX_CAP_MANAGE);
+    }
+    update_option('updatronix_cap_migrated', '1', false);
+}
 
 /**
  * Register the single plugin option (JSON-encoded settings).
@@ -109,6 +126,16 @@ function updatronix_sanitize_settings_json(mixed $value): string {
     $encoded = wp_json_encode($out);
 
     return $encoded !== false ? $encoded : '{}';
+}
+
+/**
+ * Persist settings using the same sanitization as the Settings API and register_setting callback.
+ *
+ * @param array<string, mixed> $input Raw settings (same shape as {@see updatronix_get_settings()} keys).
+ * @return void
+ */
+function updatronix_save_settings_array(array $input): void {
+    update_option(UPDATRONIX_OPTION_SETTINGS, updatronix_sanitize_settings_json($input));
 }
 
 /**

@@ -1,0 +1,25 @@
+# Copy to `.config/wp-tests.env` and adjust for your Local site (Database tab).
+# Usage: `source .config/wp-tests.env` before `composer run test:integration`
+# Or use: `bash .config/local-wp-cli.sh integration-test`
+#
+# If the plugin path contains spaces (e.g. "Local Sites"), set WP_CORE_DIR / WP_TESTS_DIR /
+# TMPDIR to a path *without* spaces (see below — default uses $HOME/.cache).
+
+PLUGIN_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export UPDATRONIX_WP_TESTS_CACHE="${HOME}/.cache/updatronix-wp-tests"
+mkdir -p "${UPDATRONIX_WP_TESTS_CACHE}/tmp"
+export TMPDIR="${UPDATRONIX_WP_TESTS_CACHE}/tmp"
+export WP_CORE_DIR="${UPDATRONIX_WP_TESTS_CACHE}/wordpress"
+export WP_TESTS_DIR="${UPDATRONIX_WP_TESTS_CACHE}/wordpress-tests-lib"
+
+# Match Local → Database (or wp-config.php).
+export WP_TEST_DB_NAME="local"
+export WP_TEST_DB_USER="root"
+export WP_TEST_DB_PASSWORD="root"
+export WP_TEST_DB_HOST="localhost"
+
+# One-time install (existing DB: last arg `true` skips CREATE DATABASE):
+#   source .config/wp-tests.env
+#   bash bin/install-wp-tests.sh "$WP_TEST_DB_NAME" "$WP_TEST_DB_USER" "$WP_TEST_DB_PASSWORD" "$WP_TEST_DB_HOST" latest true
+#
+# PHPUnit uses table prefix `wptests_` in wp-tests-config.php — it does not use your site’s `wp_` tables.

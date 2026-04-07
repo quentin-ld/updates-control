@@ -12,23 +12,28 @@
     "format:fix": "wp-scripts format 'assets/src/**/*.{js,jsx}' --write",
     "start": "wp-scripts start assets/src/index.js --output-path=assets/build",
     "build": "wp-scripts build assets/src/index.js --output-path=assets/build",
-    "build:all": "composer run lint:php && composer run lint:pcp && npm run lint && npm run lint:css && npm run format && composer run make:pot && npm run build",
+    "build:all": "composer run verify:php && composer run lint:pcp && npm run lint && npm run lint:css && npm run format && composer run make:pot && npm run build",
     "zip": "node .config/zip.js"
   },
   "prettier": "@wordpress/prettier-config",
   "author": "Quentin Le Duff",
   "license": "GPL-2.0-or-later",
   "devDependencies": {
-    "@wordpress/eslint-plugin": "^22.22.0",
-    "@wordpress/prettier-config": "^4.0.0",
-    "@wordpress/scripts": "^30.22.0",
-    "@wordpress/stylelint-config": "^23.0.0",
+    "@wordpress/eslint-plugin": "^24.5.0",
+    "@wordpress/prettier-config": "^4.43.0",
+    "@wordpress/scripts": "^31.8.0",
+    "@wordpress/stylelint-config": "^23.35.0",
     "archiver": "^7.0.1"
   },
   "dependencies": {
-    "@wordpress/components": "^32.2.0",
-    "@wordpress/dataviews": "^12.0.0",
-    "@wordpress/icons": "^11.0.0",
-    "clipboard": "^2.0.11"
+    "@wordpress/api-fetch": "^7.43.0",
+    "@wordpress/components": "^32.5.0",
+    "@wordpress/data": "^10.43.0",
+    "@wordpress/dataviews": "^14.0.0",
+    "@wordpress/dom-ready": "^4.43.0",
+    "@wordpress/element": "^6.43.0",
+    "@wordpress/i18n": "^6.16.0",
+    "@wordpress/icons": "^12.1.0",
+    "@wordpress/notices": "^5.43.0"
   }
 }

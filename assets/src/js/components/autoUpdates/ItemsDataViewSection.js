@@ -6,7 +6,7 @@
 import { useMemo, useState, useCallback } from '@wordpress/element';
 import { ToggleControl, Icon } from '@wordpress/components';
 import { DataViews, filterSortAndPaginate } from '@wordpress/dataviews';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { StatusBadge } from '../activityLog/StatusBadge';
 import { ConstantNotices } from './ConstantNotices';
 
@@ -132,11 +132,22 @@ export function ItemsDataViewSection({
 								disabled={locked || busy}
 								aria-label={
 									item.auto_update
-										? __(
-												'Disable auto-update',
-												'updatronix'
+										? sprintf(
+												/* translators: %s: plugin or theme name */
+												__(
+													'Disable auto-update for %s',
+													'updatronix'
+												),
+												item.name
 											)
-										: __('Enable auto-update', 'updatronix')
+										: sprintf(
+												/* translators: %s: plugin or theme name */
+												__(
+													'Enable auto-update for %s',
+													'updatronix'
+												),
+												item.name
+											)
 								}
 							/>
 						)}
@@ -242,8 +253,16 @@ export function ItemsDataViewSection({
 							href={item[uriKey]}
 							target="_blank"
 							rel="noopener noreferrer"
+							aria-label={sprintf(
+								/* translators: %s: plugin or theme name */
+								__(
+									'View details for %s (opens in a new tab)',
+									'updatronix'
+								),
+								item.name
+							)}
 						>
-							{__('View', 'updatronix')}
+							{__('View details', 'updatronix')}
 						</a>
 					) : (
 						<span className="updatronix-autoupdates__details-empty">

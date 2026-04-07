@@ -314,6 +314,16 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,archive,node,composer,visualstudiocode,sublimetext
 
+# PHPUnit / local caches (also under `.config/` when PHPUnit writes there)
+.phpunit.cache/
+.phpunit.result.cache
+.config/.phpunit.result.cache
+**/.phpunit.result.cache
+
+# WordPress test stack under repo, Parcel/Vite-style `.cache`, etc.
+.cache/
+**/.cache/
+
 # NPM #
 ##########
 # Ignore all directories called node_modules in current folder and any subfolders.

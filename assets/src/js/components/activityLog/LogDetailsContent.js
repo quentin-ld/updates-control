@@ -13,13 +13,12 @@ import { formatDate, getStatusLabel } from './utils';
  * @return {JSX.Element} Message and trace sections or empty state.
  */
 export function LogDetailsContent({ log, logId, fetchLogDetails }) {
-	const [detailLog, setDetailLog] = useState(log || null);
-	const [loading, setLoading] = useState(Boolean(logId && fetchLogDetails));
+	const [detailLog, setDetailLog] = useState(null);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		let isMounted = true;
 		if (!logId || !fetchLogDetails) {
-			setDetailLog(log || null);
 			setLoading(false);
 			return undefined;
 		}
@@ -40,7 +39,7 @@ export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 		return () => {
 			isMounted = false;
 		};
-	}, [fetchLogDetails, log, logId]);
+	}, [fetchLogDetails, logId]);
 
 	if (loading) {
 		return <p>{__('Loading log details…', 'updatronix')}</p>;

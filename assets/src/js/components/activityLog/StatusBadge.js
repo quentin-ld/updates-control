@@ -41,8 +41,6 @@ export const StatusBadge = memo(function StatusBadge({
 	return (
 		<span
 			className={`components-badge is-${intent}${hasIcon ? ' has-icon' : ''}`}
-			role="status"
-			aria-label={typeof children === 'string' ? children : undefined}
 		>
 			<span className="components-badge__flex-wrapper">
 				{hasIcon && (

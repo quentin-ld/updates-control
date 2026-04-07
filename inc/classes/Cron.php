@@ -22,13 +22,35 @@ final class Updatronix_Cron {
     public const HOOK_CLEANUP = 'updatronix_cleanup_logs';
 
     /**
+     * Transient key: throttle self-healing schedule checks (not autoloaded).
+     */
+    private const SELF_HEAL_TRANSIENT = 'updatronix_cron_self_heal_throttle';
+
+    /**
      * Register cron schedule and hook.
      *
      * @return void
      */
     public static function register(): void {
         add_action(self::HOOK_CLEANUP, [self::class, 'run_cleanup']);
-        add_action('init', [self::class, 'schedule_if_needed']);
+        add_action('shutdown', [self::class, 'maybe_schedule_if_needed'], 999);
+    }
+
+    /**
+     * Re-schedule cleanup if the event was lost (e.g. manual cron table clear), at most once per day.
+     *
+     * Activation still calls {@see schedule_if_needed()} directly; this path avoids wp_next_scheduled
+     * on every init request.
+     *
+     * @return void
+     */
+    public static function maybe_schedule_if_needed(): void {
+        if (get_transient(self::SELF_HEAL_TRANSIENT)) {
+            return;
+        }
+
+        set_transient(self::SELF_HEAL_TRANSIENT, '1', DAY_IN_SECONDS);
+        self::schedule_if_needed();
     }
 
     /**
@@ -65,5 +87,14 @@ final class Updatronix_Cron {
      */
     public static function unschedule(): void {
         wp_clear_scheduled_hook(self::HOOK_CLEANUP);
+    }
+
+    /**
+     * Remove plugin transients (e.g. on uninstall).
+     *
+     * @return void
+     */
+    public static function delete_plugin_transients(): void {
+        delete_transient(self::SELF_HEAL_TRANSIENT);
     }
 }

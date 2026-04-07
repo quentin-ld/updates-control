@@ -3,6 +3,9 @@
 /**
  * Creates and manages the custom database table for update logs.
  *
+ * Table name is always $wpdb->prefix . self::TABLE_LOGS (plugin-controlled suffix).
+ * Use %i in $wpdb->prepare for dynamic table identifiers (WP 6.2+).
+ *
  * @package updatronix
  */
 
@@ -36,6 +39,13 @@ final class Updatronix_Database {
     public const TABLE_LOGS = 'updatronix_logs';
 
     /**
+     * Request-level cache for {@see self::table_exists()}.
+     *
+     * @var bool|null
+     */
+    private static $table_exists_cache = null;
+
+    /**
      * Get full table name including prefix.
      *
      * @return string
@@ -44,6 +54,15 @@ final class Updatronix_Database {
         global $wpdb;
 
         return $wpdb->prefix . self::TABLE_LOGS;
+    }
+
+    /**
+     * Invalidate cached table existence (after schema changes).
+     *
+     * @return void
+     */
+    public static function clear_table_exists_cache(): void {
+        self::$table_exists_cache = null;
     }
 
     /**
@@ -88,6 +107,7 @@ final class Updatronix_Database {
         dbDelta($sql);
 
         update_option(self::OPTION_DB_VERSION, self::DB_VERSION);
+        self::$table_exists_cache = true;
 
         return true;
     }
@@ -104,14 +124,36 @@ final class Updatronix_Database {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- Uninstall; no WP API for dropping custom tables; table name from get_table_name(), passed to prepare() %i.
         $wpdb->query($wpdb->prepare('DROP TABLE IF EXISTS %i', $table_name));
         delete_option(self::OPTION_DB_VERSION);
+        self::$table_exists_cache = false;
     }
 
     /**
-     * Table existence tracked via option (no information_schema query).
+     * Whether the logs table exists in the database (authoritative check).
+     *
+     * Uses SHOW TABLES so the result stays correct if the option is missing or stale.
      *
      * @return bool
      */
     public static function table_exists(): bool {
-        return get_option(self::OPTION_DB_VERSION, false) !== false;
+        if (self::$table_exists_cache !== null) {
+            return self::$table_exists_cache;
+        }
+
+        global $wpdb;
+        $table = self::get_table_name();
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-time per request; custom table check.
+        $found = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table));
+        $exists = ($found === $table);
+
+        if ($exists && get_option(self::OPTION_DB_VERSION, false) === false) {
+            update_option(self::OPTION_DB_VERSION, self::DB_VERSION);
+        } elseif (!$exists && get_option(self::OPTION_DB_VERSION, false) !== false) {
+            delete_option(self::OPTION_DB_VERSION);
+        }
+
+        self::$table_exists_cache = $exists;
+
+        return $exists;
     }
 }

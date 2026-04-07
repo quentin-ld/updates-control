@@ -1,4 +1,4 @@
-import { useState, useCallback } from '@wordpress/element';
+import { useState, useCallback, useRef } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
@@ -12,7 +12,7 @@ export function useLogs() {
 	const [total, setTotal] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
-	const [detailsCache, setDetailsCache] = useState({});
+	const detailsCacheRef = useRef({});
 
 	const fetchLogs = useCallback(async (params = {}) => {
 		setLoading(true);
@@ -42,28 +42,22 @@ export function useLogs() {
 		}
 	}, []);
 
-	const fetchLogDetails = useCallback(
-		async (id) => {
-			const cacheKey = String(id);
-			if (detailsCache[cacheKey]) {
-				return detailsCache[cacheKey];
-			}
+	const fetchLogDetails = useCallback(async (id) => {
+		const cacheKey = String(id);
+		if (detailsCacheRef.current[cacheKey]) {
+			return detailsCacheRef.current[cacheKey];
+		}
 
-			const response = await apiFetch({
-				path: `updatronix/v1/logs/${id}`,
-			});
-			const log = response?.log || null;
-			if (log) {
-				setDetailsCache((prev) => ({
-					...prev,
-					[cacheKey]: log,
-				}));
-			}
+		const response = await apiFetch({
+			path: `updatronix/v1/logs/${id}`,
+		});
+		const log = response?.log || null;
+		if (log) {
+			detailsCacheRef.current[cacheKey] = log;
+		}
 
-			return log;
-		},
-		[detailsCache]
-	);
+		return log;
+	}, []);
 
 	const deleteLog = useCallback(async (id) => {
 		try {
@@ -74,11 +68,7 @@ export function useLogs() {
 			setLogs((prev) =>
 				prev.filter((log) => Number(log.id) !== Number(id))
 			);
-			setDetailsCache((prev) => {
-				const next = { ...prev };
-				delete next[String(id)];
-				return next;
-			});
+			delete detailsCacheRef.current[String(id)];
 			setTotal((prev) => Math.max(0, prev - 1));
 			return true;
 		} catch (e) {

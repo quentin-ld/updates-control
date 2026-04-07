@@ -169,11 +169,11 @@ final class Updatronix_Security {
     }
 
     /**
-     * Check if current user can manage update logs.
+     * Check if current user can manage update logs and REST settings.
      *
      * @return bool
      */
     public static function user_can_manage_logs(): bool {
-        return current_user_can('manage_options');
+        return current_user_can(UPDATRONIX_CAP_MANAGE);
     }
 }

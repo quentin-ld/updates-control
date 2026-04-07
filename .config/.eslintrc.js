@@ -3,4 +3,7 @@ module.exports = {
 	env: {
 		browser: true,
 	},
+	rules: {
+		'jsdoc/no-undefined-types': 'off',
+	},
 };

@@ -341,7 +341,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 	if (error) {
 		return (
 			<div
-				className="updatronix-logs-error notice notice-error is-dismissible"
+				className="updatronix-logs-error notice notice-error"
 				aria-live="assertive"
 				role="alert"
 			>

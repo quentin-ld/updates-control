@@ -20,7 +20,7 @@ function updatronix_add_option_page(): void {
     add_management_page(
         __('Updatronix', 'updatronix'),
         __('Updatronix', 'updatronix'),
-        'manage_options',
+        UPDATRONIX_CAP_MANAGE,
         'updatronix',
         'updatronix_options_page'
     );
@@ -28,7 +28,7 @@ function updatronix_add_option_page(): void {
         'index.php',
         __('Updatronix', 'updatronix'),
         __('Updates log', 'updatronix'),
-        'manage_options',
+        UPDATRONIX_CAP_MANAGE,
         'updatronix',
         'updatronix_options_page'
     );

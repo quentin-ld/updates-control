@@ -33,6 +33,10 @@ final class Updatronix_Settings {
     /**
      * Register REST routes for logs and settings.
      *
+     * Mutating routes (POST, PUT, PATCH, DELETE) require an authenticated user with
+     * {@see UPDATRONIX_CAP_MANAGE}. For cookie-based admin sessions, send the REST nonce in the
+     * `X-WP-Nonce` header (WordPress core validates it; `apiFetch` adds it automatically).
+     *
      * @return void
      */
     public static function register_rest_routes(): void {
@@ -198,7 +202,7 @@ final class Updatronix_Settings {
     }
 
     /**
-     * Permission callback: user can manage options.
+     * Permission callback: user can manage Updatronix (see {@see UPDATRONIX_CAP_MANAGE}).
      *
      * @param \WP_REST_Request<array<string, mixed>> $request Request.
      * @return bool
@@ -452,10 +456,7 @@ final class Updatronix_Settings {
             'auto_update_translations' => $current['auto_update_translations'],
             'dismissed_constants' => $current['dismissed_constants'],
         ];
-        $json = wp_json_encode($next);
-        if ($json !== false) {
-            update_option(UPDATRONIX_OPTION_SETTINGS, $json);
-        }
+        updatronix_save_settings_array($next);
 
         return new WP_REST_Response(['options' => updatronix_get_settings()], 200);
     }

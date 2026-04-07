@@ -2,6 +2,7 @@
 /.git export-ignore
 /.config export-ignore
 /.github export-ignore
+/.cursor export-ignore
 /.vscode export-ignore
 /.wordpress-org export-ignore
 /bin export-ignore

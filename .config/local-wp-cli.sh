@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 # Runs WP-CLI with Local by Flywheel’s site environment (same as “Open Site Shell”).
 # Requires: site created in Local, ssh-entry scripts under ~/.config/Local/ssh-entry/
-# Usage: bash .config/local-wp-cli.sh pcp|pot
+# Usage: bash .config/local-wp-cli.sh pcp|pot|integration-test [phpunit args...]
 
 set -euo pipefail
 
 MODE="${1:-}"
-if [[ "$MODE" != "pcp" && "$MODE" != "pot" ]]; then
-	echo "Usage: bash .config/local-wp-cli.sh pcp|pot" >&2
+if [[ "$MODE" != "pcp" && "$MODE" != "pot" && "$MODE" != "integration-test" ]]; then
+	echo "Usage: bash .config/local-wp-cli.sh pcp|pot|integration-test [phpunit args...]" >&2
 	exit 1
 fi
+shift || true
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -66,8 +67,10 @@ source <(awk '/^export / { print } /^cd "/ { print } /^unset NODE_ENV$/ { print 
 REQUIRE_FILE="${PLUGIN_ROOT}/.config/pcp-setup.php"
 
 # Paths and files not part of the distributable plugin (dev / repo tooling).
-PCP_EXCLUDE_DIRS=".config,.github,.cursor"
-PCP_EXCLUDE_FILES="workflow.md,.distignore,.gitignore,.gitattributes,.editorconfig"
+# - tests/: PHPUnit bootstraps + integration tests (not shipped in the zip from .distignore).
+# - bin/: install-wp-tests.sh triggers application_detected in PCP.
+PCP_EXCLUDE_DIRS=".config,.github,.cursor,bin,tests"
+PCP_EXCLUDE_FILES="workflow.md,.distignore,.gitignore,.gitattributes,.editorconfig,updatronix.zip"
 
 # Legitimate use of core update APIs for an updates-management plugin (not a bundled updater).
 PCP_IGNORE_CODES="plugin_updater_detected,update_modification_detected"
@@ -82,5 +85,17 @@ case "$MODE" in
 		;;
 	pot)
 		wp i18n make-pot "$PLUGIN_ROOT" "${PLUGIN_ROOT}/languages/updatronix.pot" --exclude=assets/build
+		;;
+	integration-test)
+		if [[ -f "${PLUGIN_ROOT}/.config/wp-tests.env" ]]; then
+			# shellcheck disable=SC1090
+			source "${PLUGIN_ROOT}/.config/wp-tests.env"
+		fi
+		if [[ -z "${WP_TESTS_DIR:-}" ]] || [[ ! -f "${WP_TESTS_DIR}/includes/functions.php" ]]; then
+			echo "WP_TESTS_DIR must point to wordpress-tests-lib. Copy .config/wp-tests-env.example to .config/wp-tests.env, run bin/install-wp-tests.sh once, then retry." >&2
+			exit 1
+		fi
+		cd "$PLUGIN_ROOT" || exit 1
+		exec "${PLUGIN_ROOT}/vendor/bin/phpunit" --configuration="${PLUGIN_ROOT}/.config/phpunit.integration.xml.dist" "$@"
 		;;
 esac

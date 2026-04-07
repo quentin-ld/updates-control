@@ -10,8 +10,8 @@
  * @license   GPL v2 or later
  *
  * Plugin Name: Updatronix
- * Description: Manage your WordPress updates with confidence. Control auto-updates, capture technical logs, and route alerts to the right places.
- * Version: 1.0.5
+ * Description: Log every WordPress update with version details, manage auto-updates through native settings, and route notification emails to chosen recipients.
+ * Version: 1.0.6
  * Plugin URI: https://wordpress.org/plugins/updatronix/
  * Author: Quentin Le Duff
  * Author URI: https://profiles.wordpress.org/quentinldd/
@@ -39,10 +39,16 @@ if (!defined('ABSPATH')) {
 }
 
 /** Plugin version (must match Version header above; used for DB schema version). */
-define('UPDATRONIX_VERSION', '1.0.5');
+define('UPDATRONIX_VERSION', '1.0.6');
 
-define('updatronix_PLUGIN_FILE', __FILE__);
-define('updatronix_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('UPDATRONIX_PLUGIN_FILE', __FILE__);
+define('UPDATRONIX_PLUGIN_DIR', plugin_dir_path(__FILE__));
+if (!defined('updatronix_PLUGIN_FILE')) {
+    define('updatronix_PLUGIN_FILE', UPDATRONIX_PLUGIN_FILE);
+}
+if (!defined('updatronix_PLUGIN_DIR')) {
+    define('updatronix_PLUGIN_DIR', UPDATRONIX_PLUGIN_DIR);
+}
 
 require_once __DIR__ . '/inc/core/constants.php';
 require_once __DIR__ . '/inc/classes/Bootstrap.php';
@@ -62,6 +68,12 @@ register_activation_hook(__FILE__, 'updatronix_activate');
  * @return void
  */
 function updatronix_activate(): void {
+    $role = get_role('administrator');
+    if ($role) {
+        $role->add_cap(UPDATRONIX_CAP_MANAGE);
+    }
+    update_option('updatronix_cap_migrated', '1', false);
+
     require_once __DIR__ . '/inc/classes/Database.php';
     Updatronix_Database::create_table();
     require_once __DIR__ . '/inc/classes/Cron.php';
