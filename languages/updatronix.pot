@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-07T09:56:34+00:00\n"
+"POT-Creation-Date: 2026-04-07T10:17:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: updatronix\n"
@@ -60,11 +60,13 @@ msgid "View Updatronix changelog on WordPress.org (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/links.php:47
+#: inc/admin/menu.php:85
 msgid "Changelog"
 msgstr ""
 
 #: inc/admin/links.php:52
-msgid "Read Updatronix documentation (opens in a new tab)"
+#: inc/admin/menu.php:95
+msgid "Read the Updatronix documentation (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/links.php:53
@@ -72,7 +74,8 @@ msgid "Docs"
 msgstr ""
 
 #: inc/admin/links.php:58
-msgid "Support the development of Updatronix (opens in a new tab)"
+#: inc/admin/menu.php:125
+msgid "Support Updatronix development (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/links.php:59
@@ -80,7 +83,10 @@ msgid "Support"
 msgstr ""
 
 #: inc/admin/menu.php:30
-msgid "Updates log"
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:381
+#: assets/src/js/pages/SettingsPage.js:76
+#: assets/src/js/pages/SettingsPage.js:79
+msgid "Update logs"
 msgstr ""
 
 #: inc/admin/menu.php:69
@@ -91,14 +97,6 @@ msgstr ""
 #: inc/admin/menu.php:76
 #, php-format
 msgid "Version %s"
-msgstr ""
-
-#: inc/admin/menu.php:85
-msgid "What's new?"
-msgstr ""
-
-#: inc/admin/menu.php:95
-msgid "Read the Updatronix documentation (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/menu.php:96
@@ -125,10 +123,6 @@ msgstr ""
 #: inc/admin/menu.php:115
 #, php-format
 msgid "Made with %1$s by %2$s"
-msgstr ""
-
-#: inc/admin/menu.php:125
-msgid "Support development (opens in a new tab)"
 msgstr ""
 
 #: inc/admin/menu.php:126
@@ -345,18 +339,23 @@ msgid "Title"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:126
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:225
-msgid "Version"
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:251
+msgid "Details"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:134
+#: assets/src/js/components/activityLog/LogDetailsContent.js:58
 msgid "Category"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:144
+#: assets/src/js/components/activityLog/LogDetailsContent.js:60
+msgid "Action"
+msgstr ""
+
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:154
-#: assets/src/js/components/activityLog/LogDetailsContent.js:58
-msgid "Type"
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:165
+msgid "Icon"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:171
@@ -412,12 +411,6 @@ msgstr ""
 msgid "Update logging is off. Turn it on in Settings to keep a history of updates."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:381
-#: assets/src/js/pages/SettingsPage.js:76
-#: assets/src/js/pages/SettingsPage.js:79
-msgid "Update logs"
-msgstr ""
-
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:384
 msgid "Browse recent WordPress, plugin, theme, and translation updates."
 msgstr ""
@@ -457,10 +450,6 @@ msgstr ""
 #: assets/src/js/components/activityLog/LogDetailsContent.js:57
 #: assets/src/js/components/activityLog/utils.js:100
 msgid "Item"
-msgstr ""
-
-#: assets/src/js/components/activityLog/LogDetailsContent.js:60
-msgid "Action"
 msgstr ""
 
 #: assets/src/js/components/activityLog/LogDetailsContent.js:64
@@ -563,15 +552,15 @@ msgid "DISABLE_WP_CRON is set to true in your wp-config.php file. Automatic upda
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/CoreSection.js:42
-msgid "Minor releases only (default — e.g. 6.4.1 to 6.4.2)"
+msgid "Minor releases only (e.g. 6.4.1 to 6.4.2)"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/CoreSection.js:49
-msgid "All releases — major and minor (e.g. 6.4 to 6.5)"
+msgid "All releases, including major (e.g. 6.4 to 6.5)"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/CoreSection.js:56
-msgid "Disabled — no automatic core updates"
+msgid "Disabled (no core auto-updates)"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/CoreSection.js:65
@@ -592,7 +581,7 @@ msgid "Auto-update"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:121
-msgid "Automatic updates are not available for this item (e.g. not from WordPress.org)."
+msgid "Auto-updates are not available for this item (e.g. not hosted on WordPress.org)."
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:126
@@ -611,10 +600,6 @@ msgstr ""
 msgid "Enable auto-update for %s"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:165
-msgid "Icon"
-msgstr ""
-
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:210
 msgid "Active"
 msgstr ""
@@ -623,12 +608,12 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:238
-msgid "Description"
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:225
+msgid "Version"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:251
-msgid "Details"
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:238
+msgid "Description"
 msgstr ""
 
 #. translators: %s: plugin or theme name
@@ -642,7 +627,7 @@ msgid "Translations"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/TranslationsSection.js:57
-msgid "Automatic translation updates"
+msgid "Translation auto-updates"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/TranslationsSection.js:58
@@ -674,7 +659,7 @@ msgid "Recovery mode (technical email)"
 msgstr ""
 
 #: assets/src/js/components/SettingsPanel.js:49
-msgid "WordPress recovery mode technical email when the site enters recovery mode."
+msgid "Sent when your site enters recovery mode after a fatal error."
 msgstr ""
 
 #: assets/src/js/components/SettingsPanel.js:87
@@ -710,15 +695,15 @@ msgid "Manage update notifications"
 msgstr ""
 
 #: assets/src/js/components/SettingsPanel.js:146
-msgid "When on, WordPress built-in update emails are sent to the address you choose below. Use the checkboxes to pick which types of updates you want to hear about."
+msgid "When enabled, WordPress sends update notification emails to the address below. Use the checkboxes to choose which update types trigger a notification."
 msgstr ""
 
 #: assets/src/js/components/SettingsPanel.js:165
-msgid "Send notifications to"
+msgid "Send notification emails to"
 msgstr ""
 
 #: assets/src/js/components/SettingsPanel.js:166
-msgid "Update emails will go to this address instead of the default admin email."
+msgid "Update notification emails are sent to this address instead of the default admin email."
 msgstr ""
 
 #: assets/src/js/components/SettingsPanel.js:178
@@ -730,7 +715,7 @@ msgid "Notification types"
 msgstr ""
 
 #: assets/src/js/components/SettingsPanel.js:185
-msgid "Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behaviour."
+msgid "Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behavior."
 msgstr ""
 
 #: assets/src/js/components/SettingsPanel.js:214
@@ -777,15 +762,15 @@ msgstr ""
 msgid "Your update logs could not be loaded. Try refreshing the page."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:75
-msgid "Settings saved successfully."
+#: assets/src/js/hooks/usePluginSettings.js:74
+msgid "Settings saved."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:79
+#: assets/src/js/hooks/usePluginSettings.js:77
 msgid "Your settings were saved, but the server did not return the updated values. Refresh the page to confirm."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:88
+#: assets/src/js/hooks/usePluginSettings.js:86
 msgid "Your settings could not be saved. Check your connection and try again."
 msgstr ""
 

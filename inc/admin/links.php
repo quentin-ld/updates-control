@@ -49,13 +49,13 @@ function updatronix_plugin_row_meta(array $links, string $file): array {
             sprintf(
                 '<a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>',
                 esc_url('https://holdmywp.com/en/plugins/updatronix/'),
-                esc_attr__('Read Updatronix documentation (opens in a new tab)', 'updatronix'),
+                esc_attr__('Read the Updatronix documentation (opens in a new tab)', 'updatronix'),
                 esc_html__('Docs', 'updatronix')
             ),
             sprintf(
                 '<a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>',
                 esc_url('https://buymeacoffee.com/quentinld'),
-                esc_attr__('Support the development of Updatronix (opens in a new tab)', 'updatronix'),
+                esc_attr__('Support Updatronix development (opens in a new tab)', 'updatronix'),
                 esc_html__('Support', 'updatronix') . ' ☕'
             )
         ];

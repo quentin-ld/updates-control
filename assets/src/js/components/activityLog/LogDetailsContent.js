@@ -55,7 +55,7 @@ export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 
 	const summaryRows = [
 		[__('Item', 'updatronix'), currentLog.item_name],
-		[__('Type', 'updatronix'), currentLog.log_type],
+		[__('Category', 'updatronix'), currentLog.log_type],
 		[
 			__('Action', 'updatronix'),
 			currentLog.action_type_display || currentLog.action_type,

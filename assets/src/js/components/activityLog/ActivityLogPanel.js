@@ -123,7 +123,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			},
 			{
 				id: 'description',
-				label: __('Version', 'updatronix'),
+				label: __('Details', 'updatronix'),
 				getValue: ({ item }) => getActivityDescription(item),
 				enableSorting: false,
 				enableHiding: false,
@@ -141,7 +141,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			},
 			{
 				id: 'actionType',
-				label: __('Type', 'updatronix'),
+				label: __('Action', 'updatronix'),
 				getValue: ({ item }) => item.action_type || '',
 				enableSorting: false,
 				enableHiding: false,
@@ -151,7 +151,7 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 			},
 			{
 				id: 'icon',
-				label: __('Type', 'updatronix'),
+				label: __('Icon', 'updatronix'),
 				getValue: ({ item }) => item.log_type || '',
 				render: ({ item, config }) => {
 					const size =

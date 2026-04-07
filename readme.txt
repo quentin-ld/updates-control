@@ -162,6 +162,7 @@ basis. A future release will add network-wide management features.
 * Fix: Automatic update failures now record the real WP_Error (e.g. filesystem unavailable) in log details, not only generic upgrader messages.
 * Change: Update component dependencies and remove hardcoded values in style to use design-token.css instead.
 * Change: Update readme.txt content, ton and voice.
+* i18n: Align plugin interface to WordPress interface ton and voice improving accessibility.
 
 = 1.0.5 =
 * Fix: Wire js script translations for bundled files.

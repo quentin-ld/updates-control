@@ -27,7 +27,7 @@ function updatronix_add_option_page(): void {
     add_submenu_page(
         'index.php',
         __('Updatronix', 'updatronix'),
-        __('Updates log', 'updatronix'),
+        __('Update logs', 'updatronix'),
         UPDATRONIX_CAP_MANAGE,
         'updatronix',
         'updatronix_options_page'
@@ -82,7 +82,7 @@ function updatronix_options_page(): void {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="<?php echo esc_attr__('View Updatronix changelog on WordPress.org (opens in a new tab)', 'updatronix'); ?>">
-                                    <?php echo esc_html__('What\'s new?', 'updatronix'); ?>
+                                    <?php echo esc_html__('Changelog', 'updatronix'); ?>
                                 </a>
                             </p>
                         <?php } ?>
@@ -122,7 +122,7 @@ function updatronix_options_page(): void {
                         target="_blank"
                         rel="noopener noreferrer"
                         class="components-button is-next-40px-default-size is-primary is-small"
-                        aria-label="<?php echo esc_attr__('Support development (opens in a new tab)', 'updatronix'); ?>">
+                        aria-label="<?php echo esc_attr__('Support Updatronix development (opens in a new tab)', 'updatronix'); ?>">
                             <?php echo esc_html__('Support development', 'updatronix'); ?> <span aria-hidden="true">☕</span>
                         </a>
                     </p>

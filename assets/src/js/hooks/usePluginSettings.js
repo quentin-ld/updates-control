@@ -71,9 +71,7 @@ export function usePluginSettings() {
 				const { notify_on: notifyOnFromApi, ...rest } =
 					response.options;
 				setSettings({ ...rest, notifyOn: notifyOnFromApi });
-				createSuccessNotice(
-					__('Settings saved successfully.', 'updatronix')
-				);
+				createSuccessNotice(__('Settings saved.', 'updatronix'));
 			} else {
 				createWarningNotice(
 					__(

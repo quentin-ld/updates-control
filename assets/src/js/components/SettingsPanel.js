@@ -47,7 +47,7 @@ const NOTIFY_TYPES = [
 		key: 'technical',
 		label: __('Recovery mode (technical email)', 'updatronix'),
 		help: __(
-			'WordPress recovery mode technical email when the site enters recovery mode.',
+			'Sent when your site enters recovery mode after a fatal error.',
 			'updatronix'
 		),
 	},
@@ -144,7 +144,7 @@ export const SettingsPanel = memo(function SettingsPanel({
 					__nextHasNoMarginBottom
 					label={__('Manage update notifications', 'updatronix')}
 					help={__(
-						'When on, WordPress built-in update emails are sent to the address you choose below. Use the checkboxes to pick which types of updates you want to hear about.',
+						'When enabled, WordPress sends update notification emails to the address below. Use the checkboxes to choose which update types trigger a notification.',
 						'updatronix'
 					)}
 					checked={settings.notify_enabled}
@@ -162,9 +162,9 @@ export const SettingsPanel = memo(function SettingsPanel({
 					<TextControl
 						__nextHasNoMarginBottom
 						__next40pxDefaultSize
-						label={__('Send notifications to', 'updatronix')}
+						label={__('Send notification emails to', 'updatronix')}
 						help={__(
-							'Update emails will go to this address instead of the default admin email.',
+							'Update notification emails are sent to this address instead of the default admin email.',
 							'updatronix'
 						)}
 						type="email"
@@ -183,7 +183,7 @@ export const SettingsPanel = memo(function SettingsPanel({
 						</h4>
 						<p className="updatronix-settings-help">
 							{__(
-								'Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behaviour.',
+								'Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behavior.',
 								'updatronix'
 							)}
 						</p>

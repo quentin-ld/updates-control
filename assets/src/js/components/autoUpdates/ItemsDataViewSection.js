@@ -119,7 +119,7 @@ export function ItemsDataViewSection({
 							<span
 								className="updatronix-autoupdates__unavailable"
 								title={__(
-									'Automatic updates are not available for this item (e.g. not from WordPress.org).',
+									'Auto-updates are not available for this item (e.g. not hosted on WordPress.org).',
 									'updatronix'
 								)}
 							>
