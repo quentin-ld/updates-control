@@ -12,10 +12,14 @@ if (!defined('ABSPATH')) {
 
 /**
  * Bootstraps the Updatronix plugin.
+ *
+ * @since 1.0.0
  */
 final class Updatronix_Bootstrap {
     /**
-     * Initialize the plugin: load classes and register hooks.
+     * Loads dependent classes and registers hooks on `plugins_loaded`.
+     *
+     * @since 1.0.0
      *
      * @return void
      */
@@ -26,8 +30,15 @@ final class Updatronix_Bootstrap {
         Updatronix_Update_Logger::register();
         Updatronix_ErrorHandler::register();
         Updatronix_Settings::register();
+        Updatronix_Export::register();
         Updatronix_Notifications::register();
         Updatronix_AutoUpdates::register();
+        Updatronix_AutoUpdateDelay::register();
+
+        // Network-global log table: purge a deleted subsite's rows so stale site_id tags don't linger.
+        if (is_multisite()) {
+            add_action('wp_delete_site', ['Updatronix_Logger', 'on_delete_site']);
+        }
     }
 
     /**
@@ -50,6 +61,15 @@ final class Updatronix_Bootstrap {
             'Notifications.php',
             'Settings.php',
             'AutoUpdates.php',
+            'AutoUpdateDelay.php',
+            'Export.php',
+            'ExportRequestSchema.php',
+            'ExportQueryBuilder.php',
+            'ExportBodyBuilder.php',
+            'ExportTransientManager.php',
+            'ExportRateLimiter.php',
+            'ExportCursor.php',
+            'ExportAudit.php',
         ];
         foreach ($classes as $file) {
             $path = $dir . '/' . $file;
@@ -65,7 +85,7 @@ final class Updatronix_Bootstrap {
      * @return void
      */
     private static function on_activation_create_table(): void {
-        $version = get_option(Updatronix_Database::OPTION_DB_VERSION, '');
+        $version = updatronix_get_plugin_option(Updatronix_Database::OPTION_DB_VERSION, '');
         if ($version === Updatronix_Database::DB_VERSION && Updatronix_Database::table_exists()) {
             return;
         }

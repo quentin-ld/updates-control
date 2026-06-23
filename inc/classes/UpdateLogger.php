@@ -469,6 +469,8 @@ final class Updatronix_Update_Logger {
                             continue;
                         }
                         $name = 'WordPress';
+                        // Align with manual core logs (`log_core_update`) so `item_slug` is never empty.
+                        $slug = 'core';
                         if (isset(self::$pending_logs['core']['core'])) {
                             $pending_core = self::$pending_logs['core']['core'];
                             $event_key = (string) ($pending_core['event_key'] ?? $event_key);
@@ -786,8 +788,8 @@ final class Updatronix_Update_Logger {
      */
     public static function store_core_version_before(bool $result, array $hook_extra = []): bool {
         $type = $hook_extra['type'] ?? '';
-        if ($type === 'core' && get_option(self::OPTION_CORE_VERSION_BEFORE, '') === '') {
-            update_option(self::OPTION_CORE_VERSION_BEFORE, get_bloginfo('version'));
+        if ($type === 'core' && updatronix_get_plugin_option(self::OPTION_CORE_VERSION_BEFORE, '') === '') {
+            updatronix_update_plugin_option(self::OPTION_CORE_VERSION_BEFORE, get_bloginfo('version'));
         }
         if (!empty($hook_extra['plugin']) && is_string($hook_extra['plugin'])) {
             $file = $hook_extra['plugin'];
@@ -797,9 +799,9 @@ final class Updatronix_Update_Logger {
             $all = get_plugins();
             $version = isset($all[$file]['Version']) ? (string) $all[$file]['Version'] : '';
             if ($version !== '') {
-                $stored = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
+                $stored = (array) updatronix_get_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
                 $stored[$file] = $version;
-                update_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, $stored);
+                updatronix_update_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, $stored);
             }
         }
         if (!empty($hook_extra['theme']) && is_string($hook_extra['theme'])) {
@@ -807,9 +809,9 @@ final class Updatronix_Update_Logger {
             $themes = wp_get_themes();
             $version = isset($themes[$slug]) ? (string) $themes[$slug]->get('Version') : '';
             if ($version !== '') {
-                $stored = (array) get_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
+                $stored = (array) updatronix_get_plugin_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
                 $stored[$slug] = $version;
-                update_option(self::OPTION_THEME_VERSIONS_BEFORE, $stored);
+                updatronix_update_plugin_option(self::OPTION_THEME_VERSIONS_BEFORE, $stored);
             }
         }
 
@@ -849,10 +851,10 @@ final class Updatronix_Update_Logger {
         $current_version = get_bloginfo('version');
         // Only set version_before on the first step of a (possibly multi-step) core update,
         // so automatic partial+full updates log as "6.9.1 → 6.9.2" instead of "Reinstall 6.9.2".
-        if (get_option(self::OPTION_CORE_VERSION_BEFORE, '') === '') {
-            update_option(self::OPTION_CORE_VERSION_BEFORE, $current_version);
+        if (updatronix_get_plugin_option(self::OPTION_CORE_VERSION_BEFORE, '') === '') {
+            updatronix_update_plugin_option(self::OPTION_CORE_VERSION_BEFORE, $current_version);
         }
-        $version_before = get_option(self::OPTION_CORE_VERSION_BEFORE, $current_version);
+        $version_before = updatronix_get_plugin_option(self::OPTION_CORE_VERSION_BEFORE, $current_version);
         self::$core_feedback = [];
         self::$core_package_url = $package;
         $version_after = '';
@@ -1000,12 +1002,12 @@ final class Updatronix_Update_Logger {
         }
 
         if ($plugin_file !== null && $plugin_file !== '' && $version !== '') {
-            $stored = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
+            $stored = (array) updatronix_get_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
             $stored[$plugin_file] = $version;
-            update_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, $stored);
-            $by_mainfile = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, []);
+            updatronix_update_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, $stored);
+            $by_mainfile = (array) updatronix_get_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, []);
             $by_mainfile[basename($plugin_file)] = $version;
-            update_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, $by_mainfile);
+            updatronix_update_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, $by_mainfile);
         }
 
         return $source;
@@ -1061,9 +1063,9 @@ final class Updatronix_Update_Logger {
         }
 
         if ($theme_slug !== null && $version !== '') {
-            $stored = (array) get_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
+            $stored = (array) updatronix_get_plugin_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
             $stored[$theme_slug] = $version;
-            update_option(self::OPTION_THEME_VERSIONS_BEFORE, $stored);
+            updatronix_update_plugin_option(self::OPTION_THEME_VERSIONS_BEFORE, $stored);
         }
 
         return $source;
@@ -1177,8 +1179,8 @@ final class Updatronix_Update_Logger {
             if (empty($plugins) && $action === 'install' && $upgrader instanceof \Plugin_Upgrader) {
                 $plugin_file = $upgrader->plugin_info();
                 if (is_string($plugin_file) && $plugin_file !== '') {
-                    $stored = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
-                    $by_mainfile = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, []);
+                    $stored = (array) updatronix_get_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
+                    $by_mainfile = (array) updatronix_get_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, []);
                     $has_version_before = isset($stored[$plugin_file]) || isset($by_mainfile[basename($plugin_file)]);
                     $log_action = $has_version_before ? 'update' : 'install';
                     $plugin_performed_as = $has_version_before ? 'upload' : $performed_as;
@@ -1203,7 +1205,7 @@ final class Updatronix_Update_Logger {
                 if ($theme_info) {
                     $theme_slug = $theme_info->get_stylesheet();
                     if ($theme_slug !== '') {
-                        $stored = (array) get_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
+                        $stored = (array) updatronix_get_plugin_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
                         $log_action = isset($stored[$theme_slug]) ? 'update' : 'install';
                         $theme_performed_as = isset($stored[$theme_slug]) ? 'upload' : $performed_as;
                         self::log_theme_update($theme_slug, $log_action, $upgrader, $process_message, $trace, $theme_performed_as, $update_context, self::get_pending_event_key('theme', $theme_slug));
@@ -1331,7 +1333,7 @@ final class Updatronix_Update_Logger {
             if (isset(self::$pending_logs['core']['core']['version_after'])) {
                 $pending_after = (string) self::$pending_logs['core']['core']['version_after'];
             }
-            $version_before = (string) get_option(self::OPTION_CORE_VERSION_BEFORE, '');
+            $version_before = (string) updatronix_get_plugin_option(self::OPTION_CORE_VERSION_BEFORE, '');
             $version_after = self::resolve_core_version_after_for_log($pending_after);
 
             return [
@@ -1341,7 +1343,7 @@ final class Updatronix_Update_Logger {
             ];
         }
 
-        $version_before = (string) get_option(self::OPTION_CORE_VERSION_BEFORE, '');
+        $version_before = (string) updatronix_get_plugin_option(self::OPTION_CORE_VERSION_BEFORE, '');
         $version_after = (string) get_bloginfo('version');
         if (isset(self::$pending_logs['core']['core'])) {
             $pending_core = self::$pending_logs['core']['core'];
@@ -1458,7 +1460,7 @@ final class Updatronix_Update_Logger {
         if (!$scheduled) {
             $scheduled = true;
             register_shutdown_function(static function (): void {
-                delete_option(self::OPTION_CORE_VERSION_BEFORE);
+                updatronix_delete_plugin_option(self::OPTION_CORE_VERSION_BEFORE);
             });
         }
     }
@@ -1532,8 +1534,8 @@ final class Updatronix_Update_Logger {
         if ($event_key === '') {
             $event_key = self::build_event_key('plugin', dirname($plugin_file) === '.' ? $plugin_file : dirname($plugin_file));
         }
-        $stored = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
-        $by_mainfile = (array) get_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, []);
+        $stored = (array) updatronix_get_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, []);
+        $by_mainfile = (array) updatronix_get_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, []);
         $version_before = isset($stored[$plugin_file]) ? (string) $stored[$plugin_file] : '';
         if ($version_before === '' && isset($by_mainfile[basename($plugin_file)])) {
             $version_before = (string) $by_mainfile[basename($plugin_file)];
@@ -1584,8 +1586,8 @@ final class Updatronix_Update_Logger {
         unset($stored[$plugin_file]);
         unset($by_mainfile[basename($plugin_file)]);
         self::finalize_pending_log($event_key, 'plugin', $plugin_file);
-        update_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, $stored);
-        update_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, $by_mainfile);
+        updatronix_update_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE, $stored);
+        updatronix_update_plugin_option(self::OPTION_PLUGIN_VERSIONS_BEFORE_BY_MAINFILE, $by_mainfile);
     }
 
     /**
@@ -1738,7 +1740,7 @@ final class Updatronix_Update_Logger {
         if ($event_key === '') {
             $event_key = self::build_event_key('theme', $theme_slug);
         }
-        $stored = (array) get_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
+        $stored = (array) updatronix_get_plugin_option(self::OPTION_THEME_VERSIONS_BEFORE, []);
         $version_before = isset($stored[$theme_slug]) ? (string) $stored[$theme_slug] : '';
         $themes = wp_get_themes();
         $theme = $themes[$theme_slug] ?? null;
@@ -1771,6 +1773,6 @@ final class Updatronix_Update_Logger {
 
         unset($stored[$theme_slug]);
         self::finalize_pending_log($event_key, 'theme', $theme_slug);
-        update_option(self::OPTION_THEME_VERSIONS_BEFORE, $stored);
+        updatronix_update_plugin_option(self::OPTION_THEME_VERSIONS_BEFORE, $stored);
     }
 }

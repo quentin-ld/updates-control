@@ -4,112 +4,176 @@ Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, maintenance, security, audit-log
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 1.0.6.1
+Stable tag: 1.1
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Log every WordPress update with version details, manage auto-updates through native settings, and route notification emails to chosen recipients.
+Enhanced Update Manager for WordPress. Monitor every change, control all updates, and fine-tune your website maintenance flow.
 
 == Description ==
 
-Updatronix logs every core, plugin, theme, and translation update that WordPress processes. It records version snapshots, trigger types, and technical details, and stores everything in your site's database.
+Core, plugins, and themes need regular updates, but WordPress forgets they ever happened. Updatronix remembers. It keeps a running record of every update on your website, and hands you more control over the update process: what updates, when, and how.
 
-The plugin also provides auto-update controls that save directly to native WordPress options, email routing for built-in notification emails, and detection of `wp-config.php` constants that override update behavior. It does not replace the WordPress update engine, perform rollbacks, or connect to external services.
+Updatronix is a precision plugin built on the native WordPress update engine instead of swapping it out. Your settings are written to WordPress's own options, your auto-update choices keep working even if you remove the plugin one day. I built it for the people who look after WordPress sites for a living, it fits the way you already work.
 
-= Update logging =
+= Built for every user in their diversity of needs =
 
-* Record the name, slug, type, and status of every update.
-* Store version-before and version-after snapshots for each event.
-* See what triggered each update — a manual action, the automatic update system, or a file upload.
-* Review the technical process messages that WordPress generates during the upgrade.
+* **Solo site owners:** Keep your site up to date and sleep at night. You'll always know what changed.
+* **Freelancers:** When a client asks what you've been up to, the answer is right there.
+* **Developers:** Real control over auto-updates and scheduling, plus the full detail behind every event.
+* **Agencies:** The same update policy you trust, running on every client site, each with its own log.
 
-= Auto-update controls =
+== Features ==
 
-* Set core updates to apply all versions, minor releases only, or manual-only mode.
-* Toggle auto-updates for individual plugins and themes using the same options WordPress reads natively.
-* View `wp-config.php` constants (such as `WP_AUTO_UPDATE_CORE`) that override your settings, so you can spot configuration conflicts.
+Four tabs, one per concern.
 
-= Email routing =
+= Update logs 📑=
 
-Updatronix filters the notification emails WordPress sends — it does not create a separate notification system.
+Every core, plugin, theme, and translation update is logged with full details. If something breaks after updates, you have a trusty starting point instead of a guess.
 
-* Redirect core update alerts, auto-update notices, and recovery mode emails to the recipients you choose.
-* Select which event types trigger a notification.
+* The before and after version, what set it off, and how it ended.
+* Filter by category, date, action, or user when the list gets long.
+* Open any entry to read the details, including the exact error WordPress threw.
 
-= Failure tracking =
+Need to hand it off? Export the log just as you've filtered it. Handy for briefing your team when something breaks, sending a maintenance report for a client, or sharing context with someone you've called in to help.
 
-* View log entries even when an update fails due to a server timeout or fatal error.
-* Review error details that the shutdown handler captures for manual recovery.
+= Auto-updates 🔄=
 
-== Privacy Statement ==
+WordPress 5.5 made auto-updates available across the dashboard. The controls then got scattered across half a dozen screens. This tab pulls them onto one page: how core updates itself, which plugins and themes update on their own, whether translations come along.
 
-Updatronix does not collect, store, or transmit personal data to third parties. There are no external service dependencies or telemetry. All update logs stay in your site's own WordPress database.
+* Set core to every release, security and minor only, or fully manual.
+* A switch for each plugin and theme, and one for translations.
+* If a `wp-config.php` constant is overriding something, you'll see which one.
 
-== Accessibility Statement ==
+= Schedule 📅=
 
-Updatronix aims to be fully accessible to all of its users.
+WordPress checks for updates twice a day. Usually that's fine. When it isn't, this feature hands you the timing, and lets a new release age a little before it reaches you.
+
+* Pick how often WordPress checks (hourly, twice daily, daily, or weekly) and the time of day.
+* Hold automatic installs after a release shows up.
+* Skip the bad ones. If a plugin ships a broken update and then a quick fix, a short hold means you get the fix and miss the mess.
+* A notice appears on the Updates, Plugins, and Themes screens whenever a hold is active.
+
+= Settings ⚙️=
+
+How long the log sticks around, who gets the update emails WordPress sends, and the master switch for those emails when you'd rather not see them at all.
+
+* Set up log retention policy.
+* Send WordPress update emails to the desired recipient.
+* Per-event filters: core, plugin and theme, debug summary, technical alerts.
+* One switch silences every WordPress update notification email, recovery mode excepted, to prevent self-lockout.
+
+== Updatronix 3000 ==
+
+Somewhere in a neon-lit server room, the next version is booting.
+
+**Updatronix 3000** is the Pro edition coming soon. Extending Updatronix, with additional features for developers, power users, and agencies.
+
+* **Developer tools.** Hooks, functions, and a REST API to plug Updatronix into your own pipeline. Push events to your own dashboards, trigger backups, automate maintenance reports, imagine whatever you want, and improve your workflow with a solid foundation. 
+* **Update Shield.** Checks PHP compatibility, flags abandoned plugins, version control protection.
+* **Update Flow.** You are the expert, you know your stack: set the exact order your plugins update in.
+* **White Label.** Your name on it, not mine. Clients see your agency, and the engine stays out of sight.
+
+**Coming soon.** One payment, one license, one site, with updates for life. I'm not a fan of subscriptions, so there won't be one. You buy it, you own it.
+
+== Privacy ==
+
+Nothing leaves your site. No analytics, no telemetry, no third-party calls. Updatronix reads from WordPress, writes to your site's storage, and that's the whole network footprint. Delete the plugin and the log table goes with it, along with the settings.
+
+== Accessibility ==
+
+Updatronix aims to be fully accessible to all of its users. If you run into a problem open a support thread on the plugin page and it'll get fixed.
+
+== Multisite Support ==
+
+Updatronix supports multisite networks. Network-activate it once, and a Super Admin manages settings, update history, schedule, and email controls from the Network Admin dashboard: everything shared across every site, with one unified update log.
 
 == Screenshots ==
 
-1. Update log list showing change history, trigger types, and statuses.
-2. Log filtering controls on the update log panel.
-3. Detailed view of a single log entry.
-4. Log deletion actions on the update log panel.
-5. Auto-update controls for core, plugins, themes, and translations.
-6. Settings for log retention, cleanup scheduling, and email routing.
+1. Update logs: The chronological view, with status, trigger, and version change for every entry.
+2. Update logs: Filtering controls in action, with active filter tags and a reset option.
+3. Update logs: The export modal — filter summary, merge option, column selection, and generated report.
+4. Update logs: The export modal — plain-text report output with copy options.
+5. Update logs: A single entry expanded to show its full detail.
+6. Update logs: The delete confirmation dialog for a single log entry.
+7. Auto-updates: Core update mode, translation toggle, and per-theme controls with status, version, and description columns.
+8. Auto-updates: Per-plugin controls with status, version, and description columns.
+9. Schedule: Recurrence, preferred time of day, next run preview, and the delay duration setting.
+10. Settings: Logging toggle, retention period, and email notification routing.
+11. Settings: Disable-all-emails option.
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/updatronix/` directory, or install the plugin through the WordPress Plugins screen.
-2. Activate the plugin through the Plugins screen.
-3. Go to **Tools → Updatronix** (or **Dashboard → Updates log**) to view logs and configure settings.
+1. Search for "Updatronix" in **Plugins → Add New**, or upload the plugin files to `/wp-content/plugins/updatronix/`.
+2. Activate the plugin from the Plugins screen.
+3. Open **Tools → Updatronix** (or **Dashboard → Update logs**) to see the history and adjust the settings.
 
-**On activation**, Updatronix creates a dedicated database table for logs and schedules a daily cleanup task through WP-Cron.
-
-**On deactivation**, Updatronix removes the cleanup task. Your log data and settings remain in the database.
-
-**On deletion**, Updatronix removes the log table, plugin settings, and all related options. On multisite installations, this cleanup runs for each site.
+Activation creates the log table and schedules a daily cleanup. Deactivation cancels the cleanup but leaves your data alone. Deletion removes everything: the log table and the settings. On multisite, network-activate the plugin from the Network Admin Plugins screen; its data lives at the network level, and deletion clears it once for the whole network (including any leftover per-site data from earlier versions).
 
 == Frequently Asked Questions ==
 
-= How do I enable logging? =
+= Where do I see the history of updates on my site? =
 
-Logging starts automatically when you activate the plugin. To change this, go to **Tools → Updatronix** (or **Dashboard → Updates log**), open the **Settings** tab, and toggle "Enable update logging." When enabled, the plugin records every core, plugin, theme, and translation update with version-before and version-after values, trigger type, and technical process messages.
+Open **Tools → Updatronix**. The first tab is the log: date, item, version change, outcome. Click any row to drill into a single entry. Logging is on by default after activation; if you've turned it off in the past, only events recorded while it was on will show up.
 
-= How do I change where WordPress sends update emails? =
+= Can I export my update log? =
 
-Go to **Tools → Updatronix** → **Settings**, enable "Email notifications," enter one or more recipient addresses separated by commas, and select which event types trigger an email: core updates, plugin and theme auto-updates, debug emails, and recovery mode. Updatronix filters the same emails WordPress sends — it does not create a separate notification system.
+Yes. Filter the log how you like, then click the **Export logs** button. You get a clean report you can drop into an email to your team, a maintenance summary for a client, or a note to whoever you've called in to help.
 
-= Does Updatronix work with third-party plugins and themes? =
+= How do I send WordPress update emails to a different address? =
 
-Yes. Updatronix hooks into the native WordPress update process. The plugin logs any item that updates through **Dashboard → Updates**, WP-CLI, or the automatic update flow, whether it comes from the WordPress.org directory or a third-party source.
+In **Settings**, turn on **Manage update notifications** and put the address in the recipient field. A comma-separated list works if you want to send the emails to several inboxes. Pick which event types should trigger an email (core, plugin and theme, debug summary, technical alert) then save. WordPress keeps sending the same emails it always sends; they just go to the address you picked instead of the site admin.
 
-= Can Updatronix roll back a failed update? =
+= Can I turn off WordPress update notification emails completely? =
 
-No. Updatronix records updates but does not perform rollbacks or repairs. If an update fails, the shutdown handler attempts to capture the error. This gives you diagnostic data — such as version snapshots and error traces — to help you recover manually.
+Yes. In **Settings**, turn on **Disable all update notification emails**. That suppresses the core, plugin, theme, and debug summary emails WordPress would normally send. Recovery mode emails, the ones that arrive after a fatal error so you can log back in, are deliberately exempt. Disabling those would lock you out of your own site, which is the opposite of helpful.
 
-= Does this plugin work with older WordPress versions? =
+= Can I delay automatic updates? =
 
-Updatronix requires WordPress 6.2 or newer and PHP 8.1 or newer. The plugin does not support or test against older versions.
+Yes. In **Schedule**, enable **Delay Updates** and set the number of days WordPress should wait after a release appears. The countdown is per release, not per check, so a 7-day hold means an offer is at least 7 days old before it installs. While anything is on hold, the Updates, Plugins, and Themes screens display a notice explaining what's happening.
 
-= Does this plugin send data to external servers? =
+= Does Updatronix work with my plugins, themes, and host? =
 
-No. All logs and settings stay in your site's own database. Updatronix does not connect to external services.
+It hooks into the same update pipeline WordPress already runs, so anything that updates through **Dashboard → Updates** or the automatic update system gets logged, whether the package comes from WordPress.org, a private source, or your host's mirror. If your host or `wp-config.php` locks a setting from outside the dashboard, Updatronix surfaces a notice explaining what's locked, so you don't waste time wondering why a toggle isn't responding.
 
-= Is Updatronix compatible with managed hosting? =
+= Can Updatronix undo a failed update? =
 
-Yes. Updatronix reads the constants and restrictions that managed hosts set. If the hosting provider locks a setting at the server level, the plugin detects it and displays the active value.
+No. Rolling updates back is a different problem with different tradeoffs and Updatronix deliberately stays out of it. What it does instead: when an update fails, the plugin captures the WordPress error and the version snapshot before WordPress moves on. That's the data you need to recover by hand, or hand to your host's support so they can.
 
-= How does log cleanup work? =
+= Where does my data go? =
 
-You set a retention period from one to 365 days in the Settings tab. A daily WP-Cron task removes entries older than that limit.
+Nowhere. Logs and settings live on your site. The plugin makes zero outbound network calls of its own: every API it touches is one WordPress was already going to call without it.
 
-= Does this plugin work on multisite? =
+= How long are log entries kept? =
 
-Yes. Updatronix is multisite-aware and tracks logs on a per-site basis. A future release will add network-wide management features.
+Up to you. In **Settings**, set the retention window between 1 and 365 days. A daily cleanup task drops anything older. The default is 90 days, which works for most sites; raise it if you need a longer audit trail, or lower it if your hosting is tight on storage.
+
+= Does Updatronix work on multisite? =
+
+Yes. Network-activate Updatronix for the whole network and manage everything as a Super Admin from the Network Admin dashboard. Settings, schedule, email controls, and update history are shared across every site in one unified log. Single-site installs work the same as before.
+
+= How to support Updatronix developpment ? =
+
+You can buy the pro version if it fit your needs.
+
+Also, [I am accepting sponsorships via the GitHub Sponsors program](https://github.com/sponsors/quentin-ld/dashboard). If you work at an agency that develops with WordPress, ask your company to provide sponsorship in order to invest in its supply chain. The tools that I maintain probably save your company time and money, and GitHub sponsorship can now be done at the organisation level.
+
+In addition, if you like the plugin then I'd love for you to [leave a review](https://wordpress.org/plugins/updatronix/#reviews). Tell all your friends about it too!
+
+= I have suggestion =
+
+I welcome your ideas! If you have a suggestion for the roadmap, please visit the official support forum. If you are a developer, you can also contribute directly to the project on GitHub.
 
 == Changelog ==
+
+= 1.1 =
+* New: Schedule tab, set how often WordPress checks for updates (hourly, twice daily, daily, or weekly), pick a preferred time of day, and hold automatic installs for a chosen number of days. Active holds show a notice on the Updates, Plugins, and Themes screens, and WordPress schedule messaging stays in sync with your settings.
+* New: Export update logs, generate merged or flat reports from your current filters, copy formatted or plain-text output to the clipboard, and access export from the activity log toolbar.
+* New: One-click switch in Settings to turn off all WordPress update notification emails (recovery mode emails stay on).
+* New: Multisite support, network-activate Updatronix and manage settings, update history, schedule, and email controls as a Super Admin from the Network Admin dashboard. Everything is shared across every site on the network, with one unified log. Single-site installs are unchanged.
+* Improvement: Cleaner copy, smoother flow, and accessibility improvements across every tab, including keyboard focus in activity log modals.
+* i18n: Save buttons use "Save Changes" to match native WordPress settings screens.
 
 = 1.0.6.1 =
 * Fix: Readme.txt text is now naturally wrapped.
@@ -152,6 +216,9 @@ Yes. Updatronix is multisite-aware and tracks logs on a per-site basis. A future
 * Add: Initial release of Updatronix.
 
 == Upgrade Notice ==
+
+= 1.1 =
+Adds the Schedule tab, update log export, a switch to silence WordPress update emails, and multisite support, plus accessibility improvements across every tab.
 
 = 1.0.6 =
 Improves uninstall cleanup, accessibility, and error logging for failed auto-updates.

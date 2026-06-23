@@ -111,6 +111,9 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
         self::assertIsArray($data);
         self::assertArrayHasKey('options', $data);
         self::assertIsArray($data['options']);
+        self::assertArrayHasKey('schedule', $data['options']);
+        self::assertArrayHasKey('schedule_meta', $data);
+        self::assertIsArray($data['schedule_meta']);
     }
 
     /**

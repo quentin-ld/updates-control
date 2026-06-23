@@ -2,24 +2,26 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Updatronix 1.0.6.1\n"
+"Project-Id-Version: Updatronix 1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/updatronix\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-07T10:32:13+00:00\n"
+"POT-Creation-Date: 2026-06-23T12:50:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: updatronix\n"
 
 #. Plugin Name of the plugin
 #: updatronix.php
-#: inc/admin/menu.php:21
-#: inc/admin/menu.php:22
+#: inc/admin/menu.php:28
 #: inc/admin/menu.php:29
-#: inc/admin/menu.php:67
+#: inc/admin/menu.php:36
+#: inc/admin/menu.php:57
+#: inc/admin/menu.php:58
+#: inc/admin/menu.php:113
 msgid "Updatronix"
 msgstr ""
 
@@ -30,7 +32,7 @@ msgstr ""
 
 #. Description of the plugin
 #: updatronix.php
-msgid "Log every WordPress update with version details, manage auto-updates through native settings, and route notification emails to chosen recipients."
+msgid "Enhanced Update Manager for WordPress. Monitor every change, control all updates, and fine-tune your website maintenance flow."
 msgstr ""
 
 #. Author of the plugin
@@ -43,94 +45,177 @@ msgstr ""
 msgid "https://profiles.wordpress.org/quentinldd/"
 msgstr ""
 
-#: inc/admin/links.php:25
+#: inc/admin/links.php:34
 msgid "Open Updatronix settings"
 msgstr ""
 
-#: inc/admin/links.php:26
-#: assets/src/js/components/SettingsPanel.js:84
-#: assets/src/js/pages/SettingsPage.js:90
-#: assets/src/js/pages/SettingsPage.js:93
+#: inc/admin/links.php:35
+#: assets/src/js/components/SettingsPanel.js:88
+#: assets/src/js/pages/SettingsPage.js:118
+#: assets/src/js/pages/SettingsPage.js:121
 msgid "Settings"
 msgstr ""
 
-#: inc/admin/links.php:46
-#: inc/admin/menu.php:84
+#: inc/admin/links.php:55
+#: inc/admin/menu.php:130
 msgid "View Updatronix changelog on WordPress.org (opens in a new tab)"
 msgstr ""
 
-#: inc/admin/links.php:47
-#: inc/admin/menu.php:85
+#: inc/admin/links.php:56
+#: inc/admin/menu.php:131
 msgid "Changelog"
 msgstr ""
 
-#: inc/admin/links.php:52
-#: inc/admin/menu.php:95
+#: inc/admin/links.php:61
+#: inc/admin/menu.php:141
 msgid "Read the Updatronix documentation (opens in a new tab)"
 msgstr ""
 
-#: inc/admin/links.php:53
+#: inc/admin/links.php:62
 msgid "Docs"
 msgstr ""
 
-#: inc/admin/links.php:58
-#: inc/admin/menu.php:125
+#: inc/admin/links.php:67
+#: inc/admin/menu.php:171
 msgid "Support Updatronix development (opens in a new tab)"
 msgstr ""
 
-#: inc/admin/links.php:59
+#: inc/admin/links.php:68
 msgid "Support"
 msgstr ""
 
-#: inc/admin/menu.php:30
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:381
-#: assets/src/js/pages/SettingsPage.js:76
-#: assets/src/js/pages/SettingsPage.js:79
+#: inc/admin/menu.php:37
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:352
+#: assets/src/js/pages/SettingsPage.js:97
+#: assets/src/js/pages/SettingsPage.js:100
 msgid "Update logs"
 msgstr ""
 
-#: inc/admin/menu.php:69
+#. translators: URL to the plugin changelog page.
+#: inc/admin/menu.php:85
+msgid "https://wordpress.org/plugins/updatronix/#developers"
+msgstr ""
+
+#. translators: URL to plugin documentation.
+#: inc/admin/menu.php:87
+msgid "https://holdmywp.com/en/documents/"
+msgstr ""
+
+#. translators: URL to source code repository.
+#: inc/admin/menu.php:89
+msgid "https://github.com/quentin-ld/updatronix/"
+msgstr ""
+
+#. translators: URL to the plugin reviews page.
+#: inc/admin/menu.php:91
+msgid "https://wordpress.org/plugins/updatronix/#reviews"
+msgstr ""
+
+#. translators: URL to support plugin development.
+#: inc/admin/menu.php:93
+msgid "https://buymeacoffee.com/quentinld"
+msgstr ""
+
+#: inc/admin/menu.php:115
 msgid "Manage your WordPress updates."
 msgstr ""
 
 #. translators: %s: plugin version number
-#: inc/admin/menu.php:76
+#: inc/admin/menu.php:122
 #, php-format
 msgid "Version %s"
 msgstr ""
 
-#: inc/admin/menu.php:96
+#: inc/admin/menu.php:142
 msgid "Documentation"
 msgstr ""
 
-#: inc/admin/menu.php:101
+#: inc/admin/menu.php:147
 msgid "View the source code on GitHub (opens in a new tab)"
 msgstr ""
 
-#: inc/admin/menu.php:102
+#: inc/admin/menu.php:148
 msgid "Source code"
 msgstr ""
 
-#: inc/admin/menu.php:107
+#: inc/admin/menu.php:153
 msgid "Leave a review for Updatronix on WordPress.org (opens in a new tab)"
 msgstr ""
 
-#: inc/admin/menu.php:108
+#: inc/admin/menu.php:154
 msgid "Leave a review"
 msgstr ""
 
 #. translators: 1: decorative heart emoji, 2: author name
-#: inc/admin/menu.php:115
+#: inc/admin/menu.php:161
 #, php-format
 msgid "Made with %1$s by %2$s"
 msgstr ""
 
-#: inc/admin/menu.php:126
+#: inc/admin/menu.php:172
 msgid "Support development"
 msgstr ""
 
-#: inc/admin/menu.php:135
+#: inc/admin/menu.php:181
 msgid "Loading your Updatronix settings…"
+msgstr ""
+
+#. translators: %d: full days to wait after WordPress first sees an update (1–365).
+#: inc/admin/native-update-delay-notice.php:48
+#, php-format
+msgid "Delayed updates are on in Updatronix: WordPress waits %d full day after it first sees an update before installing it automatically."
+msgid_plural "Delayed updates are on in Updatronix: WordPress waits %d full days after it first sees an update before installing it automatically."
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/admin/native-update-delay-notice.php:58
+msgid "Countdowns on this screen show when the next automatic update check may run, not when a delayed install happens. Each update keeps its own timer. Details stay in Update logs."
+msgstr ""
+
+#. translators: %1$s: Schedule tab URL. %2$s: Update logs URL.
+#: inc/admin/native-update-delay-notice.php:74
+#, php-format
+msgid "Change delay settings on the <a href=\"%1$s\">Schedule tab</a> or open <a href=\"%2$s\">Update logs</a> for details."
+msgstr ""
+
+#: inc/admin/native-update-delay-notice.php:85
+msgid "Ask a site administrator who can open Tools → Updatronix to change delay settings or review Update logs."
+msgstr ""
+
+#. translators: 1: number of soak days configured, 2: datetime string when eligibility starts if the update is still offered.
+#: inc/classes/AutoUpdateDelay.php:416
+#, php-format
+msgid "Updatronix deferred this automatic update: soak is %1$d full day(s) after first detection; eligible no earlier than %2$s."
+msgstr ""
+
+#: inc/classes/AutoUpdateDelay.php:452
+msgid "Unknown plugin"
+msgstr ""
+
+#: inc/classes/AutoUpdateDelay.php:472
+msgid "Unknown theme"
+msgstr ""
+
+#: inc/classes/AutoUpdateDelay.php:492
+#: inc/classes/Settings.php:383
+#: inc/classes/Settings.php:391
+#: assets/src/js/components/activityLog/utils.js:130
+#: assets/src/js/components/activityLog/utils.js:138
+msgid "WordPress"
+msgstr ""
+
+#: inc/classes/AutoUpdateDelay.php:502
+msgid "unknown-project"
+msgstr ""
+
+#: inc/classes/AutoUpdateDelay.php:503
+msgid "locale-unknown"
+msgstr ""
+
+#. translators: 1: project slug or id, 2: locale code
+#: inc/classes/AutoUpdateDelay.php:507
+#, php-format
+msgid "Translation update (%1$s · %2$s)"
 msgstr ""
 
 #: inc/classes/AutoUpdates.php:103
@@ -151,104 +236,238 @@ msgstr ""
 msgid "The core update encountered a redirect error (HTTP %d). Check your server configuration."
 msgstr ""
 
-#: inc/classes/Settings.php:269
-#: inc/classes/Settings.php:415
-msgid "The requested log entry could not be found."
+#. translators: 1: Rows included in the export. 2: Rows matched before truncation.
+#: inc/classes/ExportBodyBuilder.php:237
+#, php-format
+msgid "— Truncated: %1$d of %2$d rows. Narrow your filters to include the rest. —"
 msgstr ""
 
-#: inc/classes/Settings.php:289
+#: inc/classes/ExportBodyBuilder.php:510
+msgid "Core"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:511
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:110
+msgid "Plugin"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:512
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:96
+msgid "Theme"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:513
+msgid "Translation"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:551
+#: inc/classes/Settings.php:319
 msgid "System"
 msgstr ""
 
 #. translators: %d: WordPress user ID when display name is not available
-#: inc/classes/Settings.php:294
+#: inc/classes/ExportBodyBuilder.php:561
+#: inc/classes/Settings.php:324
 #, php-format
 msgid "User #%d"
 msgstr ""
 
-#: inc/classes/Settings.php:300
-msgid "Automatic"
+#: inc/classes/ExportBodyBuilder.php:637
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:115
+#: assets/src/js/components/activityLog/ExportLogsModal.js:53
+#: assets/src/js/components/activityLog/LogDetailsContent.js:58
+#: assets/src/js/components/activityLog/logFilters.js:177
+msgid "Category"
 msgstr ""
 
-#: inc/classes/Settings.php:302
-msgid "File upload"
+#: inc/classes/ExportBodyBuilder.php:638
+msgid "Element"
 msgstr ""
 
-#: inc/classes/Settings.php:304
-msgid "Manual"
+#: inc/classes/ExportBodyBuilder.php:639
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:124
+#: assets/src/js/components/activityLog/ExportLogsModal.js:37
+#: assets/src/js/components/activityLog/LogDetailsContent.js:60
+msgid "Action"
 msgstr ""
 
-#: inc/classes/Settings.php:309
+#: inc/classes/ExportBodyBuilder.php:640
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:225
+msgid "Version"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:641
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:150
+#: assets/src/js/components/activityLog/LogDetailsContent.js:74
+#: assets/src/js/components/activityLog/logFilters.js:241
+#: assets/src/js/components/activityLog/logFilters.js:406
+msgid "Date"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:642
+#: assets/src/js/components/activityLog/ExportLogsModal.js:41
+msgid "Run context"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:643
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:183
+#: assets/src/js/components/activityLog/ExportLogsModal.js:45
+#: assets/src/js/components/activityLog/logFilters.js:216
+msgid "User"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:644
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:206
+#: assets/src/js/components/activityLog/ExportLogsModal.js:49
+#: assets/src/js/components/activityLog/LogDetailsContent.js:63
+#: assets/src/js/components/activityLog/logFilters.js:203
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:205
+msgid "Status"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:750
+#: assets/src/js/components/activityLog/logFilters.js:208
+#: assets/src/js/components/activityLog/utils.js:51
+msgid "Error"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:751
+#: assets/src/js/components/activityLog/logFilters.js:209
+#: assets/src/js/components/activityLog/utils.js:54
+msgid "Cancelled"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:752
+#: assets/src/js/components/activityLog/logFilters.js:207
+#: assets/src/js/components/activityLog/utils.js:45
+msgid "Success"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:879
+msgid "manual"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:880
+msgid "automatic"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:881
+msgid "upload"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:899
+msgid "bulk"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:900
+msgid "single"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:928
+#: inc/classes/Settings.php:339
 #: assets/src/js/components/activityLog/constants.js:19
 msgid "Update"
 msgstr ""
 
-#: inc/classes/Settings.php:310
+#: inc/classes/ExportBodyBuilder.php:929
+#: inc/classes/Settings.php:340
 #: assets/src/js/components/activityLog/constants.js:20
 msgid "Rollback"
 msgstr ""
 
-#: inc/classes/Settings.php:311
+#: inc/classes/ExportBodyBuilder.php:930
+#: inc/classes/Settings.php:341
 #: assets/src/js/components/activityLog/constants.js:21
 msgid "Install"
 msgstr ""
 
-#: inc/classes/Settings.php:312
+#: inc/classes/ExportBodyBuilder.php:931
+#: inc/classes/Settings.php:342
 #: assets/src/js/components/activityLog/constants.js:22
 msgid "Reinstall"
 msgstr ""
 
-#: inc/classes/Settings.php:313
+#: inc/classes/ExportBodyBuilder.php:932
+#: inc/classes/Settings.php:343
 #: assets/src/js/components/activityLog/constants.js:23
 msgid "Failed"
 msgstr ""
 
-#: inc/classes/Settings.php:314
+#: inc/classes/ExportBodyBuilder.php:933
+#: inc/classes/Settings.php:344
 #: assets/src/js/components/activityLog/constants.js:24
 msgid "Uninstall"
 msgstr ""
 
-#: inc/classes/Settings.php:320
+#: inc/classes/ExportBodyBuilder.php:946
+msgid "CORE"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:947
+msgid "PLUGINS"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:948
+msgid "THEMES"
+msgstr ""
+
+#: inc/classes/ExportBodyBuilder.php:949
+msgid "TRANSLATIONS"
+msgstr ""
+
+#: inc/classes/Settings.php:299
+#: inc/classes/Settings.php:446
+msgid "The requested log entry could not be found."
+msgstr ""
+
+#: inc/classes/Settings.php:330
+msgid "Automatic"
+msgstr ""
+
+#: inc/classes/Settings.php:332
+msgid "File upload"
+msgstr ""
+
+#: inc/classes/Settings.php:334
+msgid "Manual"
+msgstr ""
+
+#: inc/classes/Settings.php:350
+#: assets/src/js/components/activityLog/logFilters.js:81
 #: assets/src/js/components/activityLog/utils.js:84
 msgid "Bulk action"
 msgstr ""
 
-#: inc/classes/Settings.php:322
+#: inc/classes/Settings.php:352
+#: assets/src/js/components/activityLog/logFilters.js:85
 #: assets/src/js/components/activityLog/utils.js:87
 msgid "Single action"
 msgstr ""
 
-#: inc/classes/Settings.php:324
-#: inc/classes/Settings.php:374
-#: inc/classes/Settings.php:402
+#: inc/classes/Settings.php:354
+#: inc/classes/Settings.php:404
+#: inc/classes/Settings.php:432
 msgid "—"
 msgstr ""
 
 #. translators: 1: item name, 2: version number
-#: inc/classes/Settings.php:352
+#: inc/classes/Settings.php:382
 #: assets/src/js/components/activityLog/utils.js:129
 #, php-format,js-format
 msgid "Language pack updated for %1$s %2$s"
 msgstr ""
 
-#: inc/classes/Settings.php:353
-#: inc/classes/Settings.php:361
-#: assets/src/js/components/activityLog/utils.js:130
-#: assets/src/js/components/activityLog/utils.js:138
-msgid "WordPress"
-msgstr ""
-
 #. translators: %s: item name
-#: inc/classes/Settings.php:360
+#: inc/classes/Settings.php:390
 #: assets/src/js/components/activityLog/utils.js:137
 #, php-format,js-format
 msgid "Language pack updated for %s"
 msgstr ""
 
 #. translators: %s: version number
-#: inc/classes/Settings.php:371
-#: inc/classes/Settings.php:389
-#: inc/classes/Settings.php:397
+#: inc/classes/Settings.php:401
+#: inc/classes/Settings.php:419
+#: inc/classes/Settings.php:427
 #: assets/src/js/components/activityLog/utils.js:146
 #: assets/src/js/components/activityLog/utils.js:162
 #: assets/src/js/components/activityLog/utils.js:169
@@ -257,170 +476,155 @@ msgid "v%s"
 msgstr ""
 
 #. translators: 1: previous version number, 2: new version number
-#: inc/classes/Settings.php:380
+#: inc/classes/Settings.php:410
 #: assets/src/js/components/activityLog/utils.js:154
 #, php-format,js-format
 msgid "v%1$s → v%2$s"
 msgstr ""
 
-#: inc/classes/Settings.php:421
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:286
+#: inc/classes/Settings.php:452
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:257
 msgid "The log entry could not be deleted. Try again or check your database connection."
 msgstr ""
 
-#: inc/classes/Settings.php:486
+#: inc/classes/Settings.php:541
 msgid "The core auto-update setting is controlled by a constant in your wp-config.php file and cannot be changed here."
 msgstr ""
 
-#: inc/classes/Settings.php:506
+#: inc/classes/Settings.php:561
 msgid "This plugin was not found on your site. It may have been removed."
 msgstr ""
 
-#: inc/classes/Settings.php:526
+#: inc/classes/Settings.php:581
 msgid "This theme was not found on your site. It may have been removed."
+msgstr ""
+
+#: inc/classes/Settings.php:616
+msgid "That constant is not recognised by Updatronix."
 msgstr ""
 
 #: inc/classes/UpdateLogger.php:362
 msgid "This update may not have completed. It was logged when the process ended unexpectedly."
 msgstr ""
 
-#: inc/classes/UpdateLogger.php:1142
+#: inc/classes/UpdateLogger.php:1144
 msgid "Installed from an uploaded file."
 msgstr ""
 
 #. translators: %s: package download URL
-#: inc/classes/UpdateLogger.php:1411
+#: inc/classes/UpdateLogger.php:1413
 #, php-format
 msgid "Downloading the update from %s…"
 msgstr ""
 
-#: inc/classes/UpdateLogger.php:1414
+#: inc/classes/UpdateLogger.php:1416
 msgid "Unpacking the update…"
 msgstr ""
 
 #. translators: %s: WordPress version number
-#: inc/classes/UpdateLogger.php:1421
+#: inc/classes/UpdateLogger.php:1423
 #, php-format
 msgid "Core update to WordPress %s"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1690
+#: inc/classes/UpdateLogger.php:1692
 #, php-format
 msgid "Installed %1$s %2$s"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1694
+#: inc/classes/UpdateLogger.php:1696
 #, php-format
 msgid "Uninstalled %1$s %2$s"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1698
+#: inc/classes/UpdateLogger.php:1700
 #, php-format
 msgid "Rolled back %1$s to %2$s"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1702
+#: inc/classes/UpdateLogger.php:1704
 #, php-format
 msgid "Reinstalled %1$s %2$s (same version)"
 msgstr ""
 
 #. translators: 1: item name (plugin or theme), 2: version number
-#: inc/classes/UpdateLogger.php:1706
+#: inc/classes/UpdateLogger.php:1708
 #, php-format
 msgid "Updated %1$s to %2$s"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:118
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:99
 msgid "Title"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:126
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:107
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:251
 msgid "Details"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:134
-#: assets/src/js/components/activityLog/LogDetailsContent.js:58
-msgid "Category"
-msgstr ""
-
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:144
-#: assets/src/js/components/activityLog/LogDetailsContent.js:60
-msgid "Action"
-msgstr ""
-
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:154
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:133
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:165
 msgid "Icon"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:171
-#: assets/src/js/components/activityLog/LogDetailsContent.js:74
-msgid "Date"
-msgstr ""
-
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:198
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:166
 #: assets/src/js/components/activityLog/LogDetailsContent.js:67
+#: assets/src/js/components/activityLog/logFilters.js:250
 msgid "Triggered by"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:207
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:175
 #: assets/src/js/components/activityLog/LogDetailsContent.js:71
+#: assets/src/js/components/activityLog/logFilters.js:262
 msgid "Run type"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:215
-msgid "User"
-msgstr ""
-
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:239
-#: assets/src/js/components/activityLog/LogDetailsContent.js:63
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:205
-msgid "Status"
-msgstr ""
-
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:258
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:259
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:227
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:228
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:268
 msgid "View details"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:273
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:274
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:315
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:244
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:245
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:286
 msgid "Delete log"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:285
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:256
 msgid "Log deleted."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:301
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:272
 msgid "Delete this log entry permanently? This action cannot be undone."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:308
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:279
 msgid "Cancel"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:357
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:328
 msgid "Update logging is off. Turn it on in Settings to keep a history of updates."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:384
-msgid "Browse recent WordPress, plugin, theme, and translation updates."
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:355
+msgid "Review recent updates to WordPress core, plugins, themes, and translations."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:400
-msgid "No update logs yet. Logs will appear here after the next update."
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:371
+msgid "No update logs yet. Entries appear after WordPress runs an update."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:405
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:397
 msgid "Search logs"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:408
+msgid "Export logs"
 msgstr ""
 
 #: assets/src/js/components/activityLog/constants.js:12
@@ -441,6 +645,104 @@ msgstr ""
 
 #: assets/src/js/components/activityLog/constants.js:25
 msgid "Delete"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:33
+msgid "Column headings"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:149
+msgid "Too many exports started recently. Wait a minute, and then try again."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:156
+msgid "This export session has expired. Start a new export."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:162
+msgid "The export could not be generated. Try again, or adjust your filters and try again."
+msgstr ""
+
+#. translators: 1: Rows included in export. 2: Rows matched before truncation.
+#: assets/src/js/components/activityLog/ExportLogsModal.js:234
+#, js-format
+msgid "The export was truncated to %1$d of %2$d rows. Narrow your filters to include the rest."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:248
+msgid "No logs match the current filters. The export is empty."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:255
+msgid "Export ready. Copy the report to save it. It expires after 15 minutes."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:291
+msgid "Plain export copied to the clipboard."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:295
+msgid "Formatted export copied to the clipboard."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:303
+msgid "Could not copy to the clipboard. Select the export output and copy it manually."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:322
+msgid "Export update logs"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:329
+msgid "Generate a plain-text summary of the logs that match your current filters and sort. Filters you have not set include all values."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:337
+msgid "Filters applied"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:341
+msgid "No filters applied — all logs in the current view are included."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:372
+msgid "Merge logs for the same item"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:373
+msgid "Combine repeated updates of the same plugin, theme, core release, or translation into a single line with the earliest and latest versions."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:384
+msgid "Report columns"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:386
+msgid "Choose which parts of the report to include. Element, version, and date columns are always shown."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:416
+msgid "Generating the export…"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:417
+msgid "Generate export"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:439
+msgid "Export output"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:440
+msgid "Copy the report to save it. It expires after 15 minutes."
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:456
+msgid "Copy with formatting"
+msgstr ""
+
+#: assets/src/js/components/activityLog/ExportLogsModal.js:463
+msgid "Copy without formatting"
 msgstr ""
 
 #: assets/src/js/components/activityLog/LogDetailsContent.js:47
@@ -476,62 +778,72 @@ msgstr ""
 msgid "No additional details are available for this log entry."
 msgstr ""
 
+#: assets/src/js/components/activityLog/logFilters.js:190
+msgid "Action type"
+msgstr ""
+
+#: assets/src/js/components/activityLog/logFilters.js:352
+msgid "Search"
+msgstr ""
+
+#: assets/src/js/components/activityLog/logFilters.js:392
+msgid "Page"
+msgstr ""
+
+#. translators: 1: Current page number, 2: Items per page.
+#: assets/src/js/components/activityLog/logFilters.js:395
+#, js-format
+msgid "Page %1$d (%2$d per page)"
+msgstr ""
+
+#: assets/src/js/components/activityLog/logFilters.js:410
+msgid "oldest first"
+msgstr ""
+
+#: assets/src/js/components/activityLog/logFilters.js:411
+msgid "newest first"
+msgstr ""
+
+#: assets/src/js/components/activityLog/logFilters.js:414
+msgid "Sort"
+msgstr ""
+
 #: assets/src/js/components/activityLog/utils.js:8
 msgctxt "empty value fallback"
 msgid "—"
-msgstr ""
-
-#: assets/src/js/components/activityLog/utils.js:45
-msgid "Success"
 msgstr ""
 
 #: assets/src/js/components/activityLog/utils.js:48
 msgid "Warning"
 msgstr ""
 
-#: assets/src/js/components/activityLog/utils.js:51
-msgid "Error"
-msgstr ""
-
-#: assets/src/js/components/activityLog/utils.js:54
-msgid "Cancelled"
-msgstr ""
-
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:47
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:53
 msgid "Loading auto-update settings…"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:55
-#: assets/src/js/pages/SettingsPage.js:83
-#: assets/src/js/pages/SettingsPage.js:86
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:61
+#: assets/src/js/pages/SettingsPage.js:104
+#: assets/src/js/pages/SettingsPage.js:107
 msgid "Auto-updates"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:58
-msgid "Choose which parts of your site update automatically: core, plugins, themes, and translations."
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:64
+msgid "Choose what updates automatically on your site: WordPress core, plugins, themes, and translations."
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:89
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:95
 msgid "Themes"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:90
-msgid "Theme"
-msgstr ""
-
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:91
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:97
 msgid "Search themes"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:103
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:109
 msgid "Plugins"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:104
-msgid "Plugin"
-msgstr ""
-
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:105
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:111
 msgid "Search plugins"
 msgstr ""
 
@@ -548,7 +860,7 @@ msgid "DISALLOW_FILE_MODS is set to true in your wp-config.php file. WordPress c
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/ConstantNotices.js:26
-msgid "DISABLE_WP_CRON is set to true in your wp-config.php file. Automatic updates use WP-Cron and will not run unless you have set up an external cron job."
+msgid "WordPress does not run scheduled tasks during normal visits. Ask your host to call wp-cron.php on a timer, often with a system cron job, so automatic updates and other schedules keep working."
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/CoreSection.js:42
@@ -564,7 +876,7 @@ msgid "Disabled (no core auto-updates)"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/CoreSection.js:65
-#: assets/src/js/components/SettingsPanel.js:24
+#: assets/src/js/components/SettingsPanel.js:26
 msgid "Core updates"
 msgstr ""
 
@@ -573,7 +885,7 @@ msgid "Core auto-update mode"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/CoreSection.js:80
-msgid "A constant in your wp-config.php file controls this setting. To change it, edit that file directly."
+msgid "This choice is set in your wp-config.php file. Edit that file to change it."
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:115
@@ -581,7 +893,7 @@ msgid "Auto-update"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:121
-msgid "Auto-updates are not available for this item (e.g. not hosted on WordPress.org)."
+msgid "Automatic updates are not available for this item (for example, it is not hosted on WordPress.org)."
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:126
@@ -608,10 +920,6 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:225
-msgid "Version"
-msgstr ""
-
 #: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:238
 msgid "Description"
 msgstr ""
@@ -631,130 +939,225 @@ msgid "Translation auto-updates"
 msgstr ""
 
 #: assets/src/js/components/autoUpdates/TranslationsSection.js:58
-msgid "WordPress updates translations automatically by default. Turn this off to stop automatic translation downloads."
+msgid "WordPress downloads translation updates automatically by default. Turn this off to skip automatic downloads."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:25
+#: assets/src/js/components/schedule/SchedulePanel.js:104
+msgid "Use WordPress default schedule"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:115
+msgid "Preferred time"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:116
+msgid "Uses your site timezone from Settings, General."
+msgstr ""
+
+#. translators: %s: localized date/time of the next scheduled automatic update check
+#: assets/src/js/components/schedule/SchedulePanel.js:132
+#, js-format
+msgid "Next automatic update check: %s"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:136
+msgid "WordPress picks when update checks and automatic updates run."
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:141
+msgid "Save your changes to see the next scheduled time."
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:150
+#: assets/src/js/pages/SettingsPage.js:111
+#: assets/src/js/pages/SettingsPage.js:114
+msgid "Schedule"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:153
+msgid "Pick how often WordPress checks for updates and whether automatic installs wait."
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:162
+msgid "Update checks"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:174
+msgid "How often"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:175
+msgid "Sets how often WordPress checks for updates and runs automatic updates. WordPress default keeps Core timing. Daily, twice daily, and weekly schedules use the preferred time below."
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:213
+msgid "Hour"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:255
+msgid "Minute"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:293
+msgid "Recurring runs may shift by up to one hour after daylight saving transitions, since WordPress recurrences are fixed-length intervals."
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:299
+msgid "Next automatic update schedule"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:319
+#: assets/src/js/components/schedule/SchedulePanel.js:323
+msgid "Delay updates"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:324
+msgid "When enabled, installs wait your chosen full days after WordPress first sees each update. Core, plugins, themes, and translations count separately. Countdowns on Updates, Plugins, and Themes show the next check, not the install moment. See Update logs."
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:358
+msgid "Days to wait"
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:359
+msgid "Enter a number from 1 to 365."
+msgstr ""
+
+#: assets/src/js/components/schedule/SchedulePanel.js:404
+#: assets/src/js/components/SettingsPanel.js:255
+msgid "Save Changes"
+msgstr ""
+
+#: assets/src/js/components/SettingsPanel.js:27
 msgid "WordPress core update emails: success, failure, manual, and critical."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:32
+#: assets/src/js/components/SettingsPanel.js:34
 msgid "Plugin and theme updates"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:33
-msgid "WordPress sends one combined email for plugin and theme auto-updates (success, fail, or mixed)."
+#: assets/src/js/components/SettingsPanel.js:35
+msgid "WordPress sends one combined email for plugin and theme auto-updates (success, failure, or mixed)."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:40
+#: assets/src/js/components/SettingsPanel.js:42
 msgid "Debug email (detailed report)"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:41
+#: assets/src/js/components/SettingsPanel.js:43
 msgid "Development-style report with core, plugin, theme, and translation results. WordPress normally sends this only on development versions; enable here to receive it on any site."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:48
+#: assets/src/js/components/SettingsPanel.js:50
 msgid "Recovery mode (technical email)"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:49
+#: assets/src/js/components/SettingsPanel.js:51
 msgid "Sent when your site enters recovery mode after a fatal error."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:87
+#: assets/src/js/components/SettingsPanel.js:91
 msgid "Set up logging, choose how long to keep records, and manage email notifications."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:95
+#: assets/src/js/components/SettingsPanel.js:99
 msgid "Update logging"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:99
+#: assets/src/js/components/SettingsPanel.js:103
 msgid "Record all updates"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:100
+#: assets/src/js/components/SettingsPanel.js:104
 msgid "Keep a record of all core, plugin, theme, and translation updates."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:118
+#: assets/src/js/components/SettingsPanel.js:122
 msgid "Keep logs for (days)"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:119
+#: assets/src/js/components/SettingsPanel.js:123
 msgid "Logs older than this number of days are automatically removed once a day."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:141
+#: assets/src/js/components/SettingsPanel.js:145
 msgid "Update notifications"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:145
+#: assets/src/js/components/SettingsPanel.js:149
 msgid "Manage update notifications"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:146
-msgid "When enabled, WordPress sends update notification emails to the address below. Use the checkboxes to choose which update types trigger a notification."
+#: assets/src/js/components/SettingsPanel.js:150
+msgid "When enabled, WordPress sends notification emails to the address below. Use the boxes to choose which update types send mail."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:165
+#: assets/src/js/components/SettingsPanel.js:170
 msgid "Send notification emails to"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:166
+#: assets/src/js/components/SettingsPanel.js:171
 msgid "Update notification emails are sent to this address instead of the default admin email."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:178
+#: assets/src/js/components/SettingsPanel.js:183
 msgid "admin@example.com"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:182
+#: assets/src/js/components/SettingsPanel.js:187
 msgid "Notification types"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:185
-msgid "Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behavior."
+#: assets/src/js/components/SettingsPanel.js:190
+msgid "Choose which kinds of updates trigger email. For each run, WordPress sends one email: the detailed report when available, otherwise the usual summary. These options mirror WordPress’s default behavior."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:214
+#: assets/src/js/components/SettingsPanel.js:217
+msgid "Disable all update notification emails"
+msgstr ""
+
+#: assets/src/js/components/SettingsPanel.js:221
+msgid "Only enable this option if you actively monitor this site's updates elsewhere and do not want WordPress to send update notification emails. Recovery mode is not affected."
+msgstr ""
+
+#: assets/src/js/components/SettingsPanel.js:236
+msgid "Recovery mode still emails the site administrator after a fatal error so you can regain access."
+msgstr ""
+
+#: assets/src/js/components/SettingsPanel.js:254
 msgid "Saving…"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:215
-msgid "Save settings"
-msgstr ""
-
-#: assets/src/js/hooks/useAutoUpdates.js:33
+#: assets/src/js/hooks/useAutoUpdates.js:34
 msgid "Your auto-update settings could not be loaded. Try refreshing the page."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:58
+#: assets/src/js/hooks/useAutoUpdates.js:59
 msgid "Core auto-update setting saved."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:63
+#: assets/src/js/hooks/useAutoUpdates.js:64
 msgid "The core auto-update setting could not be saved. Check your connection and try again."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:88
+#: assets/src/js/hooks/useAutoUpdates.js:89
 msgid "The plugin auto-update setting could not be changed. Try again."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:113
+#: assets/src/js/hooks/useAutoUpdates.js:114
 msgid "The theme auto-update setting could not be changed. Try again."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:136
+#: assets/src/js/hooks/useAutoUpdates.js:137
 msgid "Translation auto-update setting saved."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:141
+#: assets/src/js/hooks/useAutoUpdates.js:142
 msgid "The translation auto-update setting could not be changed. Try again."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:165
+#: assets/src/js/hooks/useAutoUpdates.js:169
+#: assets/src/js/hooks/usePluginSettings.js:234
 msgid "The notice could not be dismissed. Try again."
 msgstr ""
 
@@ -762,18 +1165,18 @@ msgstr ""
 msgid "Your update logs could not be loaded. Try refreshing the page."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:74
+#: assets/src/js/hooks/usePluginSettings.js:187
 msgid "Settings saved."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:77
+#: assets/src/js/hooks/usePluginSettings.js:190
 msgid "Your settings were saved, but the server did not return the updated values. Refresh the page to confirm."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:86
+#: assets/src/js/hooks/usePluginSettings.js:199
 msgid "Your settings could not be saved. Check your connection and try again."
 msgstr ""
 
-#: assets/src/js/pages/SettingsPage.js:69
+#: assets/src/js/pages/SettingsPage.js:90
 msgid "Updatronix settings sections"
 msgstr ""

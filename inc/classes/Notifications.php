@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Redirect native WordPress update notification emails to a custom recipient
+ * Redirect native WordPress update notification emails to a custom recipient,
+ * or suppress those emails when {@see updatronix_get_settings()} `notifications_mode`
+ * is `disabled`. Recovery-mode technical email is not suppressed in that mode.
  *
  * When email notifications are enabled, the native admin update emails
  * (core, plugin, theme) are sent to the configured recipient instead of admin_email.
@@ -47,11 +49,25 @@ final class Updatronix_Notifications {
     }
 
     /**
+     * Whether update notification emails are fully disabled (no core/plugin/theme/debug mails).
+     *
+     * Recovery-mode technical email is not affected.
+     *
+     * @return bool
+     */
+    private static function is_notifications_disabled(): bool {
+        return updatronix_get_settings()['notifications_mode'] === 'disabled';
+    }
+
+    /**
      * Check whether notifications are enabled and a valid recipient is set.
      *
      * @return bool
      */
     private static function should_redirect(): bool {
+        if (self::is_notifications_disabled()) {
+            return false;
+        }
         $s = updatronix_get_settings();
         if (!$s['notify_enabled']) {
             return false;
@@ -103,12 +119,17 @@ final class Updatronix_Notifications {
      * Suppress standard core email when the detailed (debug) email was already sent this run.
      *
      * @param bool   $send        Whether to send. Default true.
-     * @param string $type        success, fail, manual, critical.
+     * @param string $type        Background event type: `success`, `fail`, or `critical`. Core's `WP_Automatic_Updater::send_email()`
+     *                            does not run this filter for `manual` mails — those flow through `send_core_update_notification_email`.
      * @param object $core_update The update offer.
      * @param mixed  $result      The result.
      * @return bool
      */
     public static function filter_core_send_email(bool $send, string $type, mixed $core_update, mixed $result): bool {
+        if (self::is_notifications_disabled()) {
+            return false;
+        }
+
         if (!updatronix_get_settings()['notify_enabled']) {
             return $send;
         }
@@ -132,6 +153,10 @@ final class Updatronix_Notifications {
      * @return bool
      */
     public static function filter_send_core_update_notification_email(bool $notify, mixed $item): bool {
+        if (self::is_notifications_disabled()) {
+            return false;
+        }
+
         if (!updatronix_get_settings()['notify_enabled']) {
             return $notify;
         }
@@ -170,6 +195,10 @@ final class Updatronix_Notifications {
      * @return bool
      */
     public static function filter_plugin_send_email(bool $enabled, array $update_results): bool {
+        if (self::is_notifications_disabled()) {
+            return false;
+        }
+
         if (!updatronix_get_settings()['notify_enabled']) {
             return $enabled;
         }
@@ -195,6 +224,10 @@ final class Updatronix_Notifications {
      * @return bool
      */
     public static function filter_theme_send_email(bool $enabled, array $update_results): bool {
+        if (self::is_notifications_disabled()) {
+            return false;
+        }
+
         if (!updatronix_get_settings()['notify_enabled']) {
             return $enabled;
         }
@@ -235,6 +268,10 @@ final class Updatronix_Notifications {
      * @return bool
      */
     public static function filter_should_send_debug_email(bool $development_version): bool {
+        if (self::is_notifications_disabled()) {
+            return false;
+        }
+
         if (!self::should_redirect()) {
             return $development_version;
         }
@@ -279,6 +316,9 @@ final class Updatronix_Notifications {
      * @return array<string, mixed>
      */
     public static function filter_recovery_mode_email_to(array $email, string $url): array {
+        if (self::is_notifications_disabled()) {
+            return $email;
+        }
         if (!self::should_redirect()) {
             return $email;
         }

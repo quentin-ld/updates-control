@@ -22,6 +22,17 @@ final class Updatronix_Logger {
     private const CACHE_GROUP = 'updatronix_logs';
 
     /**
+     * Run a callback against the main-site logs table on Multisite.
+     *
+     * @template T
+     * @param callable(): T $callback Callback.
+     * @return T
+     */
+    private static function with_logs_table(callable $callback) {
+        return updatronix_with_main_site($callback);
+    }
+
+    /**
      * Cache key storing the current logs cache version.
      *
      * @var string
@@ -87,69 +98,98 @@ final class Updatronix_Logger {
         $user_id = (int) get_current_user_id();
         $performed_by = $user_id > 0 ? 'user' : 'system';
 
-        global $wpdb;
-        $table = Updatronix_Database::get_table_name();
-        $insert_data = [
-            'site_id' => $site_id,
-            'log_type' => $log_type,
-            'action_type' => $action_type,
-            'item_name' => $item_name,
-            'item_slug' => $item_slug,
-            'version_before' => $version_before,
-            'version_after' => $version_after,
-            'status' => $status,
-            'message' => $message,
-            'trace' => $trace,
-            'user_id' => $user_id,
-            'performed_by' => $performed_by,
-            'performed_as' => $performed_as,
-            'update_context' => $update_context,
-            'created_at' => current_time('mysql'),
-        ];
-        $format = ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s'];
+        return self::with_logs_table(static function () use (
+            $log_type,
+            $action_type,
+            $item_name,
+            $item_slug,
+            $version_before,
+            $version_after,
+            $status,
+            $message,
+            $trace,
+            $performed_as,
+            $update_context,
+            $event_key,
+            $site_id,
+            $user_id,
+            $performed_by
+        ): int|false {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
+            $insert_data = [
+                'site_id' => $site_id,
+                'log_type' => $log_type,
+                'action_type' => $action_type,
+                'item_name' => $item_name,
+                'item_slug' => $item_slug,
+                'version_before' => $version_before,
+                'version_after' => $version_after,
+                'status' => $status,
+                'message' => $message,
+                'trace' => $trace,
+                'user_id' => $user_id,
+                'performed_by' => $performed_by,
+                'performed_as' => $performed_as,
+                'update_context' => $update_context,
+                'created_at' => current_time('mysql'),
+            ];
+            $format = ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s'];
 
-        if ($event_key !== '') {
-            $insert_data['event_key'] = $event_key;
-            $format[] = '%s';
-        }
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; $wpdb->insert is the correct API, prepared internally.
-        $result = $wpdb->insert(
-            $table,
-            $insert_data,
-            $format
-        );
-
-        if ($result === false) {
             if ($event_key !== '') {
-                $existing_id = self::get_log_id_by_event_key($event_key);
-                if ($existing_id > 0) {
-                    return $existing_id;
-                }
+                $insert_data['event_key'] = $event_key;
+                $format[] = '%s';
             }
 
-            return false;
-        }
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; $wpdb->insert is the correct API, prepared internally.
+            $result = $wpdb->insert(
+                $table,
+                $insert_data,
+                $format
+            );
 
-        $log_id = (int) $wpdb->insert_id;
-        $data = [
-            'log_type' => $log_type,
-            'action_type' => $action_type,
-            'item_name' => $item_name,
-            'item_slug' => $item_slug,
-            'version_before' => $version_before,
-            'version_after' => $version_after,
-            'status' => $status,
-            'message' => $message,
-            'trace' => $trace,
-            'update_context' => $update_context,
-            'event_key' => $event_key,
-            'created_at' => current_time('mysql'),
-        ];
-        self::bump_logs_cache_last_changed();
-        do_action('updatronix_after_log', $log_id, $data);
+            if ($result === false) {
+                if ($event_key !== '') {
+                    $existing_id = self::get_log_id_by_event_key($event_key);
+                    if ($existing_id > 0) {
+                        return $existing_id;
+                    }
+                }
 
-        return $log_id;
+                return false;
+            }
+
+            $log_id = (int) $wpdb->insert_id;
+            $data = [
+                'log_type' => $log_type,
+                'action_type' => $action_type,
+                'item_name' => $item_name,
+                'item_slug' => $item_slug,
+                'version_before' => $version_before,
+                'version_after' => $version_after,
+                'status' => $status,
+                'message' => $message,
+                'trace' => $trace,
+                'update_context' => $update_context,
+                'event_key' => $event_key,
+                'created_at' => current_time('mysql'),
+            ];
+            self::bump_logs_cache_last_changed();
+
+            /**
+             * Fires after a log entry is stored in the custom audit log table.
+             *
+             * Hook for integrations that should react when a new row is persisted.
+             *
+             * @since 1.0.0
+             *
+             * @param int                    $log_id New log row ID.
+             * @param array<string, mixed>   $data   Snapshot of stored fields (log_type, action_type, item_name, item_slug, version_before, version_after, status, message, trace, update_context, event_key, created_at).
+             */
+            do_action('updatronix_after_log', $log_id, $data);
+
+            return $log_id;
+        });
     }
 
     /**
@@ -162,7 +202,9 @@ final class Updatronix_Logger {
         $where = ['1=1'];
         $values = [];
         $site_id = $args['site_id'] ?? null;
-        if ($site_id !== null) {
+        // A site_id of 0 (or negative) is the network-global sentinel: no scope filter,
+        // so a Super Admin sees every originating site's rows. See Updatronix_Settings::resolve_site_id().
+        if ($site_id !== null && (int) $site_id > 0) {
             $where[] = 'site_id = %d';
             $values[] = (int) $site_id;
         }
@@ -197,44 +239,46 @@ final class Updatronix_Logger {
             return [];
         }
 
-        global $wpdb;
-        $table = Updatronix_Database::get_table_name();
+        return self::with_logs_table(static function () use ($args, $include_details): array {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
 
-        $defaults = [
-            'site_id' => null,
-            'log_type' => null,
-            'status' => null,
-            'performed_as' => null,
-            'per_page' => 50,
-            'page' => 1,
-            'orderby' => 'created_at',
-            'order' => 'DESC',
-        ];
-        $args = wp_parse_args($args, $defaults);
+            $defaults = [
+                'site_id' => null,
+                'log_type' => null,
+                'status' => null,
+                'performed_as' => null,
+                'per_page' => 50,
+                'page' => 1,
+                'orderby' => 'created_at',
+                'order' => 'DESC',
+            ];
+            $args = wp_parse_args($args, $defaults);
 
-        $built = self::build_logs_where($args);
-        $orderby = in_array($args['orderby'], ['id', 'created_at', 'log_type', 'status', 'item_name', 'performed_as'], true)
-            ? $args['orderby']
-            : 'created_at';
-        $order = strtoupper($args['order']) === 'ASC' ? 'ASC' : 'DESC';
-        $per_page = max(1, min(200, (int) $args['per_page']));
-        $offset = max(0, ((int) $args['page']) - 1) * $per_page;
-        $select = $include_details
-            ? '*'
-            : "id, site_id, log_type, action_type, item_name, item_slug, version_before, version_after, status, user_id, performed_by, performed_as, update_context, created_at, event_key, CASE WHEN COALESCE(message, '') <> '' OR COALESCE(trace, '') <> '' THEN 1 ELSE 0 END AS detail_available";
+            $built = self::build_logs_where($args);
+            $orderby = in_array($args['orderby'], ['id', 'created_at', 'log_type', 'status', 'item_name', 'performed_as'], true)
+                ? $args['orderby']
+                : 'created_at';
+            $order = strtoupper($args['order']) === 'ASC' ? 'ASC' : 'DESC';
+            $per_page = max(1, min(200, (int) $args['per_page']));
+            $offset = max(0, ((int) $args['page']) - 1) * $per_page;
+            $select = $include_details
+                ? '*'
+                : "id, site_id, log_type, action_type, item_name, item_slug, version_before, version_after, status, user_id, performed_by, performed_as, update_context, created_at, event_key, CASE WHEN COALESCE(message, '') <> '' OR COALESCE(trace, '') <> '' THEN 1 ELSE 0 END AS detail_available";
 
-        $values = array_merge([$table], $built['values'], [$per_page, $offset]);
+            $values = array_merge([$table], $built['values'], [$per_page, $offset]);
 
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- Table/orderby via %i; user input only in $values.
-        $prepared = $wpdb->prepare(
-            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $where_sql and $order are whitelisted (literal fragments and ASC/DESC).
-            "SELECT {$select} FROM %i WHERE {$built['where_sql']} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
-            $values
-        );
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $prepared from prepare() above; user input only in bound $values.
-        $results = $wpdb->get_results($prepared);
+            // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- Table/orderby via %i; user input only in $values.
+            $prepared = $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $where_sql and $order are whitelisted (literal fragments and ASC/DESC).
+                "SELECT {$select} FROM %i WHERE {$built['where_sql']} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
+                $values
+            );
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $prepared from prepare() above; user input only in bound $values.
+            $results = $wpdb->get_results($prepared);
 
-        return is_array($results) ? $results : [];
+            return is_array($results) ? $results : [];
+        });
     }
 
     /**
@@ -248,21 +292,23 @@ final class Updatronix_Logger {
             return 0;
         }
 
-        global $wpdb;
-        $table = Updatronix_Database::get_table_name();
+        return self::with_logs_table(static function () use ($args): int {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
 
-        $built = self::build_logs_where($args);
-        $values = array_merge([$table], $built['values']);
+            $built = self::build_logs_where($args);
+            $values = array_merge([$table], $built['values']);
 
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- Table via %i; user input only in $values.
-        $prepared = $wpdb->prepare(
-            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_sql is whitelisted literal fragments only.
-            "SELECT COUNT(*) FROM %i WHERE {$built['where_sql']}",
-            $values
-        );
+            // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- Table via %i; user input only in $values.
+            $prepared = $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where_sql is whitelisted literal fragments only.
+                "SELECT COUNT(*) FROM %i WHERE {$built['where_sql']}",
+                $values
+            );
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $prepared from prepare() above; user input only in bound $values.
-        return (int) $wpdb->get_var($prepared);
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $prepared from prepare() above; user input only in bound $values.
+            return (int) $wpdb->get_var($prepared);
+        });
     }
 
     /**
@@ -277,40 +323,42 @@ final class Updatronix_Logger {
             return null;
         }
 
-        global $wpdb;
-        $table = Updatronix_Database::get_table_name();
-        $id = absint($id);
-        $cache_key = self::get_log_cache_key($id, $include_details);
-        $found = false;
-        $cached = wp_cache_get($cache_key, self::CACHE_GROUP, false, $found);
+        return self::with_logs_table(static function () use ($id, $include_details): ?object {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
+            $id = absint($id);
+            $cache_key = self::get_log_cache_key($id, $include_details);
+            $found = false;
+            $cached = wp_cache_get($cache_key, self::CACHE_GROUP, false, $found);
 
-        if ($found) {
-            return is_object($cached) ? $cached : null;
-        }
+            if ($found) {
+                return is_object($cached) ? $cached : null;
+            }
 
-        if ($include_details) {
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Prepared below; custom table read for plugin-owned table, cached via wp_cache_*.
-            $row = $wpdb->get_row(
-                $wpdb->prepare(
-                    'SELECT * FROM %i WHERE id = %d LIMIT 1',
-                    $table,
-                    $id
-                )
-            );
-        } else {
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Prepared below; custom table read for plugin-owned table, cached via wp_cache_*.
-            $row = $wpdb->get_row(
-                $wpdb->prepare(
-                    "SELECT id, site_id, log_type, action_type, item_name, item_slug, version_before, version_after, status, user_id, performed_by, performed_as, update_context, created_at, event_key, CASE WHEN COALESCE(message, '') <> '' OR COALESCE(trace, '') <> '' THEN 1 ELSE 0 END AS detail_available FROM %i WHERE id = %d LIMIT 1",
-                    $table,
-                    $id
-                )
-            );
-        }
+            if ($include_details) {
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Prepared below; custom table read for plugin-owned table, cached via wp_cache_*.
+                $row = $wpdb->get_row(
+                    $wpdb->prepare(
+                        'SELECT * FROM %i WHERE id = %d LIMIT 1',
+                        $table,
+                        $id
+                    )
+                );
+            } else {
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Prepared below; custom table read for plugin-owned table, cached via wp_cache_*.
+                $row = $wpdb->get_row(
+                    $wpdb->prepare(
+                        "SELECT id, site_id, log_type, action_type, item_name, item_slug, version_before, version_after, status, user_id, performed_by, performed_as, update_context, created_at, event_key, CASE WHEN COALESCE(message, '') <> '' OR COALESCE(trace, '') <> '' THEN 1 ELSE 0 END AS detail_available FROM %i WHERE id = %d LIMIT 1",
+                        $table,
+                        $id
+                    )
+                );
+            }
 
-        wp_cache_set($cache_key, is_object($row) ? $row : null, self::CACHE_GROUP, MINUTE_IN_SECONDS * 5);
+            wp_cache_set($cache_key, is_object($row) ? $row : null, self::CACHE_GROUP, MINUTE_IN_SECONDS * 5);
 
-        return is_object($row) ? $row : null;
+            return is_object($row) ? $row : null;
+        });
     }
 
     /**
@@ -334,18 +382,20 @@ final class Updatronix_Logger {
             return false;
         }
 
-        global $wpdb;
-        $table = Updatronix_Database::get_table_name();
+        return self::with_logs_table(static function () use ($id): bool {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; $wpdb->delete is the correct API, prepared.
-        $result = $wpdb->delete($table, ['id' => $id], ['%d']);
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; $wpdb->delete is the correct API, prepared.
+            $result = $wpdb->delete($table, ['id' => $id], ['%d']);
 
-        if ($result !== false) {
-            self::delete_log_cache(absint($id));
-            self::bump_logs_cache_last_changed();
-        }
+            if ($result !== false) {
+                self::delete_log_cache(absint($id));
+                self::bump_logs_cache_last_changed();
+            }
 
-        return $result !== false;
+            return $result !== false;
+        });
     }
 
     /**
@@ -359,18 +409,59 @@ final class Updatronix_Logger {
             return 0;
         }
 
-        global $wpdb;
-        $table = Updatronix_Database::get_table_name();
-        $date = gmdate('Y-m-d H:i:s', strtotime("-{$days} days"));
+        return self::with_logs_table(static function () use ($days): int {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
+            $date = gmdate('Y-m-d H:i:s', strtotime("-{$days} days"));
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; table and date via prepare(); no WP API for bulk delete by date.
-        $result = $wpdb->query($wpdb->prepare('DELETE FROM %i WHERE created_at < %s', $table, $date));
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; table and date via prepare(); no WP API for bulk delete by date.
+            $result = $wpdb->query($wpdb->prepare('DELETE FROM %i WHERE created_at < %s', $table, $date));
 
-        if (is_numeric($result) && (int) $result > 0) {
-            self::bump_logs_cache_last_changed();
+            if (is_numeric($result) && (int) $result > 0) {
+                self::bump_logs_cache_last_changed();
+            }
+
+            return is_numeric($result) ? (int) $result : 0;
+        });
+    }
+
+    /**
+     * Drop every log row that originated on a now-deleted subsite.
+     *
+     * Hooked to `wp_delete_site` on Multisite so the network-global table does not accumulate
+     * rows tagged with a `site_id` that no longer maps to a real site.
+     *
+     * @param \WP_Site $old_site The site being deleted.
+     * @return void
+     */
+    public static function on_delete_site(\WP_Site $old_site): void {
+        self::delete_logs_for_site((int) $old_site->blog_id);
+    }
+
+    /**
+     * Delete all log rows for a given originating site.
+     *
+     * @param int $site_id Originating site ID.
+     * @return int Number of rows deleted.
+     */
+    public static function delete_logs_for_site(int $site_id): int {
+        if ($site_id < 1 || !Updatronix_Database::table_exists()) {
+            return 0;
         }
 
-        return is_numeric($result) ? (int) $result : 0;
+        return self::with_logs_table(static function () use ($site_id): int {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
+
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; $wpdb->delete is the correct API, prepared.
+            $result = $wpdb->delete($table, ['site_id' => $site_id], ['%d']);
+
+            if (is_numeric($result) && (int) $result > 0) {
+                self::bump_logs_cache_last_changed();
+            }
+
+            return is_numeric($result) ? (int) $result : 0;
+        });
     }
 
     /**
@@ -384,19 +475,21 @@ final class Updatronix_Logger {
             return 0;
         }
 
-        global $wpdb;
-        $table = Updatronix_Database::get_table_name();
+        return self::with_logs_table(static function () use ($event_key): int {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared below; custom table access is required here.
-        $existing_id = $wpdb->get_var(
-            $wpdb->prepare(
-                'SELECT id FROM %i WHERE event_key = %s LIMIT 1',
-                $table,
-                $event_key
-            )
-        );
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared below; custom table access is required here.
+            $existing_id = $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT id FROM %i WHERE event_key = %s LIMIT 1',
+                    $table,
+                    $event_key
+                )
+            );
 
-        return (int) $existing_id;
+            return (int) $existing_id;
+        });
     }
 
     /**

@@ -10,7 +10,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-add_filter('plugin_action_links_' . plugin_basename(updatronix_PLUGIN_FILE), 'updatronix_add_settings_link');
+if (is_multisite()) {
+    add_filter('network_admin_plugin_action_links_' . plugin_basename(updatronix_PLUGIN_FILE), 'updatronix_add_settings_link');
+} else {
+    add_filter('plugin_action_links_' . plugin_basename(updatronix_PLUGIN_FILE), 'updatronix_add_settings_link');
+}
+
 /**
  * Add "Settings" to plugin action links on the Plugins screen.
  *
@@ -18,7 +23,11 @@ add_filter('plugin_action_links_' . plugin_basename(updatronix_PLUGIN_FILE), 'up
  * @return array<int, string> Action links with Settings added.
  */
 function updatronix_add_settings_link(array $links): array {
-    $url = add_query_arg(['page' => 'updatronix', 'tab' => 'settings'], admin_url('tools.php'));
+    if (is_multisite()) {
+        $url = add_query_arg(['page' => 'updatronix', 'tab' => 'settings'], network_admin_url('admin.php'));
+    } else {
+        $url = add_query_arg(['page' => 'updatronix', 'tab' => 'settings'], admin_url('tools.php'));
+    }
     $links[] = sprintf(
         '<a href="%s" aria-label="%s">%s</a>',
         esc_url($url),

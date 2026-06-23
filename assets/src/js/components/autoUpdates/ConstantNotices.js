@@ -24,7 +24,7 @@ const CONSTANT_DESCRIPTIONS = {
 		'updatronix'
 	),
 	DISABLE_WP_CRON: __(
-		'DISABLE_WP_CRON is set to true in your wp-config.php file. Automatic updates use WP-Cron and will not run unless you have set up an external cron job.',
+		'WordPress does not run scheduled tasks during normal visits. Ask your host to call wp-cron.php on a timer, often with a system cron job, so automatic updates and other schedules keep working.',
 		'updatronix'
 	),
 };

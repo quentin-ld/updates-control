@@ -6,6 +6,8 @@
 import { memo } from '@wordpress/element';
 import {
 	Button,
+	Card,
+	CardBody,
 	Icon,
 	ToggleControl,
 	TextControl,
@@ -31,7 +33,7 @@ const NOTIFY_TYPES = [
 		key: 'plugin_theme',
 		label: __('Plugin and theme updates', 'updatronix'),
 		help: __(
-			'WordPress sends one combined email for plugin and theme auto-updates (success, fail, or mixed).',
+			'WordPress sends one combined email for plugin and theme auto-updates (success, failure, or mixed).',
 			'updatronix'
 		),
 	},
@@ -77,6 +79,8 @@ export const SettingsPanel = memo(function SettingsPanel({
 				: prev.notifyOn.filter((x) => x !== key),
 		}));
 	};
+
+	const emailsFullyDisabled = settings.notificationsMode === 'disabled';
 
 	return (
 		<div className="updatronix-settings-form">
@@ -144,10 +148,11 @@ export const SettingsPanel = memo(function SettingsPanel({
 					__nextHasNoMarginBottom
 					label={__('Manage update notifications', 'updatronix')}
 					help={__(
-						'When enabled, WordPress sends update notification emails to the address below. Use the checkboxes to choose which update types trigger a notification.',
+						'When enabled, WordPress sends notification emails to the address below. Use the boxes to choose which update types send mail.',
 						'updatronix'
 					)}
 					checked={settings.notify_enabled}
+					disabled={emailsFullyDisabled}
 					onChange={(value) =>
 						setSettings((prev) => ({
 							...prev,
@@ -156,7 +161,7 @@ export const SettingsPanel = memo(function SettingsPanel({
 					}
 				/>
 				<fieldset
-					disabled={!settings.notify_enabled}
+					disabled={!settings.notify_enabled || emailsFullyDisabled}
 					className="updatronix-settings-fieldset"
 				>
 					<TextControl
@@ -183,7 +188,7 @@ export const SettingsPanel = memo(function SettingsPanel({
 						</h4>
 						<p className="updatronix-settings-help">
 							{__(
-								'Choose which update types trigger emails. You receive one email per run: the detailed report when available, otherwise the standard WordPress summary. Options match WordPress’s own update email behavior.',
+								'Choose which kinds of updates trigger email. For each run, WordPress sends one email: the detailed report when available, otherwise the usual summary. These options mirror WordPress’s default behavior.',
 								'updatronix'
 							)}
 						</p>
@@ -201,6 +206,41 @@ export const SettingsPanel = memo(function SettingsPanel({
 						))}
 					</div>
 				</fieldset>
+				<Card
+					className="updatronix-notifications-disable-card"
+					isBorderless
+				>
+					<CardBody>
+						<div className="updatronix-notifications-disable-card__inner">
+							<ToggleControl
+								__nextHasNoMarginBottom
+								label={__(
+									'Disable all update notification emails',
+									'updatronix'
+								)}
+								help={__(
+									"Only enable this option if you actively monitor this site's updates elsewhere and do not want WordPress to send update notification emails. Recovery mode is not affected.",
+									'updatronix'
+								)}
+								checked={emailsFullyDisabled}
+								onChange={(value) =>
+									setSettings((prev) => ({
+										...prev,
+										notificationsMode: value
+											? 'disabled'
+											: 'default',
+									}))
+								}
+							/>
+							<Text as="p">
+								{__(
+									'Recovery mode still emails the site administrator after a fatal error so you can regain access.',
+									'updatronix'
+								)}
+							</Text>
+						</div>
+					</CardBody>
+				</Card>
 			</div>
 			<div className="updatronix-actions">
 				<Button
@@ -212,7 +252,7 @@ export const SettingsPanel = memo(function SettingsPanel({
 				>
 					{saving
 						? __('Saving…', 'updatronix')
-						: __('Save settings', 'updatronix')}
+						: __('Save Changes', 'updatronix')}
 				</Button>
 			</div>
 		</div>

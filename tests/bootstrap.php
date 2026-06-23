@@ -99,5 +99,34 @@ if (!function_exists('wp_strip_all_tags')) {
     }
 }
 
+if (!function_exists('__')) {
+    /**
+     * Identity stub for the i18n `__()` function (unit suite has no WordPress).
+     *
+     * @param string $text   Text to translate.
+     * @param string $domain Text domain (ignored).
+     * @return string The text unchanged.
+     */
+    function __(string $text, string $domain = 'default'): string {
+        return $text;
+    }
+}
+
+if (!function_exists('sanitize_key')) {
+    /**
+     * Minimal stub mirroring WordPress `sanitize_key()` for unit tests.
+     *
+     * @param string $key Raw key.
+     * @return string Lowercased key limited to `a-z0-9_-`.
+     */
+    function sanitize_key($key): string {
+        $key = strtolower((string) $key);
+
+        return (string) preg_replace('/[^a-z0-9_\-]/', '', $key);
+    }
+}
+
 require_once dirname(__DIR__) . '/inc/classes/CoreUpdateLogVersions.php';
 require_once dirname(__DIR__) . '/inc/classes/AutomaticUpdateResultNotes.php';
+require_once dirname(__DIR__) . '/inc/classes/Export.php';
+require_once dirname(__DIR__) . '/inc/classes/ExportBodyBuilder.php';

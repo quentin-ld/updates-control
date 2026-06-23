@@ -32,3 +32,131 @@
 .updatronix-activitylog-panel .dataviews-wrapper {
 	max-width: $max-width-content;
 }
+
+.updatronix-export-modal {
+
+	// Drive the vertical rhythm from a single section gap on the scroll
+	// container instead of the per-element default margins, so every block in
+	// the modal is evenly spaced. Child margins are zeroed so only the gap
+	// contributes to the spacing.
+	.components-modal__content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--wpds-dimension-gap-lg, 24px);
+
+		> * {
+			margin-bottom: 0;
+			margin-top: 0;
+		}
+	}
+
+	// The "Filters applied" group is a single section: the title, the chips (or
+	// the empty-state line), and the sort line sit close together, while the
+	// section as a whole keeps the larger gap from its neighbors.
+	&__filters-section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--wpds-dimension-gap-xs, 8px);
+
+		> * {
+			margin-bottom: 0;
+			margin-top: 0;
+		}
+	}
+
+	&__section-title {
+		font-weight: 600;
+	}
+
+	// Read-only mirror of the DataViews "has-values" filter chip
+	// (.dataviews-filters__summary-chip.has-values). These caps only report the
+	// active filters; they are intentionally non-interactive (no hover, focus,
+	// or remove affordance) so the view cannot be edited from the modal.
+	&__filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--wpds-dimension-gap-xs, 8px);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	&__filter-chip {
+		align-items: center;
+		background: rgba(var(--wp-admin-theme-color--rgb, 34, 113, 177), 0.04);
+		border: 1px solid transparent;
+		border-radius: 16px;
+		box-sizing: border-box;
+		color: var(--wp-admin-theme-color, #2271b1);
+		display: flex;
+		gap: 4px;
+		min-height: 32px;
+		padding: 4px 12px;
+	}
+
+	&__filter-chip-name {
+		font-weight: 500;
+	}
+
+	&__output {
+
+		textarea {
+			font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+			font-size: 13px;
+			line-height: 1.5;
+			tab-size: 4;
+			white-space: pre;
+			overflow-x: auto;
+		}
+	}
+
+	&__copy-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--wpds-dimension-gap-sm);
+		margin-top: var(--wpds-dimension-gap-md, 16px);
+	}
+
+	&__columns {
+		border: 0;
+		margin: 0;
+		padding: 0;
+
+		legend {
+			font-weight: 600;
+			margin-bottom: var(--wpds-dimension-gap-xs, 8px);
+			padding: 0;
+		}
+	}
+
+	&__columns-help {
+		color: var(--wpds-color-fg-content-neutral-weak);
+		margin: 0 0 var(--wpds-dimension-gap-sm, 12px);
+	}
+
+	&__columns-grid {
+		align-items: flex-start;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--wpds-dimension-gap-xs, 8px) var(--wpds-dimension-gap-md, 16px);
+		margin: 0;
+
+		> * {
+			flex: 0 0 calc((100% - 2 * var(--wpds-dimension-gap-md, 16px)) / 3);
+			margin: 0;
+			max-width: calc((100% - 2 * var(--wpds-dimension-gap-md, 16px)) / 3);
+		}
+
+		@media screen and (min-width: 783px) {
+
+			> * {
+				flex: 0 0 calc((100% - 5 * var(--wpds-dimension-gap-md, 16px)) / 6);
+				max-width: calc((100% - 5 * var(--wpds-dimension-gap-md, 16px)) / 6);
+			}
+		}
+	}
+
+	&__actions {
+		margin: var(--wpds-dimension-gap-md, 16px) 0;
+	}
+}

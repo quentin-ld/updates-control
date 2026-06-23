@@ -12,9 +12,10 @@ const API_BASE = 'updatronix/v1/auto-updates';
  * Every mutation returns the full refreshed dataset from the server so the UI
  * stays in sync without a second GET.
  *
+ * @param {(dismissed: string[]) => void} [onDismissedConstantsChange] Called after a wp-config notice is dismissed so parent state can stay in sync.
  * @return {Object} Auto-update state and mutation helpers.
  */
-export function useAutoUpdates() {
+export function useAutoUpdates(onDismissedConstantsChange) {
 	const { createSuccessNotice, createErrorNotice } =
 		useDispatch(noticesStore);
 
@@ -159,6 +160,9 @@ export function useAutoUpdates() {
 					data: { constant },
 				});
 				setData(response);
+				if (Array.isArray(response?.dismissed_constants)) {
+					onDismissedConstantsChange?.(response.dismissed_constants);
+				}
 			} catch (e) {
 				createErrorNotice(
 					e?.message ||
@@ -169,7 +173,7 @@ export function useAutoUpdates() {
 				);
 			}
 		},
-		[createErrorNotice]
+		[createErrorNotice, onDismissedConstantsChange]
 	);
 
 	return {

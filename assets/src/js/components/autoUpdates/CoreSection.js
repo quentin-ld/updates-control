@@ -78,7 +78,7 @@ export function CoreSection({ core, constants, setCoreMode, busy }) {
 				help={
 					locked
 						? __(
-								'A constant in your wp-config.php file controls this setting. To change it, edit that file directly.',
+								'This choice is set in your wp-config.php file. Edit that file to change it.',
 								'updatronix'
 							)
 						: ''

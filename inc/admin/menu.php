@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Admin menu: Updatronix under Tools and Dashboard.
+ * Admin menu: Updatronix under Tools and Dashboard (single-site) or Network Admin (Multisite).
  *
  * @package updatronix
  */
@@ -10,9 +10,16 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action('admin_menu', 'updatronix_add_option_page');
+if (is_multisite()) {
+    add_action('network_admin_menu', 'updatronix_add_network_option_page');
+} else {
+    add_action('admin_menu', 'updatronix_add_option_page');
+}
+
 /**
- * Add Updatronix under Tools and a link under Dashboard > Updatronix.
+ * Registers **Tools → Updatronix** and **Dashboard → Update logs**, both opening the same app shell.
+ *
+ * @since 1.0.0
  *
  * @return void
  */
@@ -35,16 +42,55 @@ function updatronix_add_option_page(): void {
 }
 
 /**
- * Output Updatronix settings page (shell; React app mounts in #updatronix-settings).
+ * Registers the Updatronix top-level menu in Network Admin (Super Admin only).
+ *
+ * @since 1.1.0
+ *
+ * @return void
+ */
+function updatronix_add_network_option_page(): void {
+    if (!is_super_admin()) {
+        return;
+    }
+
+    add_menu_page(
+        __('Updatronix', 'updatronix'),
+        __('Updatronix', 'updatronix'),
+        UPDATRONIX_CAP_MANAGE,
+        'updatronix',
+        'updatronix_options_page',
+        'dashicons-update',
+        30
+    );
+}
+
+/**
+ * Outputs the admin page shell; the React app mounts into `#updatronix-settings`.
+ *
+ * @since 1.0.0
  *
  * @return void
  */
 function updatronix_options_page(): void {
+    if (is_multisite() && !is_super_admin()) {
+        return;
+    }
+
     $plugin_data = get_file_data(updatronix_PLUGIN_FILE, ['Version' => 'Version'], 'plugin');
     $plugin_version = $plugin_data['Version'] ?? '';
     $logo_rel_path = 'assets/img/logo-60x60.webp';
     $logo_file_path = updatronix_PLUGIN_DIR . $logo_rel_path;
     $logo_url = file_exists($logo_file_path) ? plugins_url($logo_rel_path, updatronix_PLUGIN_FILE) : '';
+    /* translators: URL to the plugin changelog page. */
+    $changelog_url = esc_url(__('https://wordpress.org/plugins/updatronix/#developers', 'updatronix'));
+    /* translators: URL to plugin documentation. */
+    $documentation_url = esc_url(__('https://holdmywp.com/en/documents/', 'updatronix'));
+    /* translators: URL to source code repository. */
+    $source_code_url = esc_url(__('https://github.com/quentin-ld/updatronix/', 'updatronix'));
+    /* translators: URL to the plugin reviews page. */
+    $reviews_url = esc_url(__('https://wordpress.org/plugins/updatronix/#reviews', 'updatronix'));
+    /* translators: URL to support plugin development. */
+    $support_url = esc_url(__('https://buymeacoffee.com/quentinld', 'updatronix'));
     ?>
     <div class="updatronix-dashboard-wrap">
         <div class="updatronix-page">
@@ -78,7 +124,7 @@ function updatronix_options_page(): void {
                                 );
                             echo ' — ';
                             ?>
-                                <a href="https://wordpress.org/plugins/updatronix/#developers"
+                                <a href="<?php echo esc_url($changelog_url); ?>"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="<?php echo esc_attr__('View Updatronix changelog on WordPress.org (opens in a new tab)', 'updatronix'); ?>">
@@ -89,19 +135,19 @@ function updatronix_options_page(): void {
                     </div>
                 </div>
                 <div class="updatronix-header-navigation">
-                    <a href="https://holdmywp.com/en/plugins/updatronix/"
+                    <a href="<?php echo esc_url($documentation_url); ?>"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="<?php echo esc_attr__('Read the Updatronix documentation (opens in a new tab)', 'updatronix'); ?>">
                         <?php echo esc_html__('Documentation', 'updatronix'); ?>
                     </a>
-                    <a href="https://github.com/quentin-ld/updatronix/"
+                    <a href="<?php echo esc_url($source_code_url); ?>"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="<?php echo esc_attr__('View the source code on GitHub (opens in a new tab)', 'updatronix'); ?>">
                         <?php echo esc_html__('Source code', 'updatronix'); ?>
                     </a>
-                    <a href="https://wordpress.org/plugins/updatronix/#reviews"
+                    <a href="<?php echo esc_url($reviews_url); ?>"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="<?php echo esc_attr__('Leave a review for Updatronix on WordPress.org (opens in a new tab)', 'updatronix'); ?>">
@@ -118,7 +164,7 @@ function updatronix_options_page(): void {
                                     ));
     ?>
                         </span>
-                        <a href="https://buymeacoffee.com/quentinld"
+                        <a href="<?php echo esc_url($support_url); ?>"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="components-button is-next-40px-default-size is-primary is-small"

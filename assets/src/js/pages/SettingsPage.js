@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from '@wordpress/element';
 import {
 	backup as iconLogs,
+	calendar as iconSchedule,
 	settings as iconSettings,
 	update as iconUpdate,
 } from '@wordpress/icons';
@@ -8,14 +9,16 @@ import { Notices } from '../components/Notices';
 import { Tabs } from '../components/Tabs';
 import { ActivityLogPanel } from '../components/activityLog';
 import { AutoUpdatesPanel } from '../components/autoUpdates';
+import { SchedulePanel } from '../components/schedule';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { usePluginSettings } from '../hooks/usePluginSettings';
 import { __ } from '@wordpress/i18n';
 
 const TAB_LOGS = 'logs';
 const TAB_AUTO_UPDATES = 'auto-updates';
+const TAB_SCHEDULE = 'schedule';
 const TAB_SETTINGS = 'settings';
-const VALID_TABS = [TAB_LOGS, TAB_AUTO_UPDATES, TAB_SETTINGS];
+const VALID_TABS = [TAB_LOGS, TAB_AUTO_UPDATES, TAB_SCHEDULE, TAB_SETTINGS];
 
 function getTabFromUrl() {
 	const params = new URLSearchParams(window.location.search);
@@ -38,7 +41,25 @@ function setTabInUrl(tabId) {
  * @return {JSX.Element} The settings page UI.
  */
 export const SettingsPage = () => {
-	const { settings, setSettings, saveSettings, saving } = usePluginSettings();
+	const {
+		settings,
+		setSettings,
+		saveSettings,
+		saving,
+		scheduleMeta,
+		wpConfigConstants,
+		dismissConstantNotice,
+	} = usePluginSettings();
+
+	const syncDismissedConstants = useCallback(
+		(dismissed) => {
+			setSettings((prev) => ({
+				...prev,
+				dismissed_constants: dismissed,
+			}));
+		},
+		[setSettings]
+	);
 	const [selectedTabId, setSelectedTabId] = useState(getTabFromUrl);
 
 	const handleSelectTab = useCallback((tabId) => {
@@ -86,6 +107,13 @@ export const SettingsPage = () => {
 								{__('Auto-updates', 'updatronix')}
 							</Tabs.Tab>
 							<Tabs.Tab
+								tabId={TAB_SCHEDULE}
+								title={__('Schedule', 'updatronix')}
+								icon={iconSchedule}
+							>
+								{__('Schedule', 'updatronix')}
+							</Tabs.Tab>
+							<Tabs.Tab
 								tabId={TAB_SETTINGS}
 								title={__('Settings', 'updatronix')}
 								icon={iconSettings}
@@ -99,7 +127,25 @@ export const SettingsPage = () => {
 							/>
 						</Tabs.TabPanel>
 						<Tabs.TabPanel tabId={TAB_AUTO_UPDATES}>
-							<AutoUpdatesPanel />
+							<AutoUpdatesPanel
+								dismissedConstants={
+									settings.dismissed_constants
+								}
+								onDismissedConstantsChange={
+									syncDismissedConstants
+								}
+							/>
+						</Tabs.TabPanel>
+						<Tabs.TabPanel tabId={TAB_SCHEDULE}>
+							<SchedulePanel
+								settings={settings}
+								setSettings={setSettings}
+								saveSettings={saveSettings}
+								saving={saving}
+								scheduleMeta={scheduleMeta}
+								wpConfigConstants={wpConfigConstants}
+								onDismissConstantNotice={dismissConstantNotice}
+							/>
 						</Tabs.TabPanel>
 						<Tabs.TabPanel tabId={TAB_SETTINGS}>
 							<SettingsPanel

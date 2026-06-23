@@ -121,11 +121,34 @@ final class Updatronix_Settings {
                 'args' => [
                     'logging_enabled' => ['type' => 'boolean'],
                     'retention_days' => ['type' => 'integer', 'minimum' => 1, 'maximum' => 365],
+                    'notifications_mode' => ['type' => 'string', 'enum' => ['default', 'disabled']],
                     'notify_enabled' => ['type' => 'boolean'],
-                    'notify_emails' => ['type' => 'string'],
+                    'notify_emails' => [
+                        'type' => 'string',
+                        'maxLength' => UPDATRONIX_NOTIFY_EMAILS_MAX_BYTES,
+                    ],
                     'notify_on' => [
                         'type' => 'array',
                         'items' => ['type' => 'string', 'enum' => ['core', 'plugin_theme', 'debug', 'technical']],
+                    ],
+                    'schedule' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'update_check' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'recurrence' => ['type' => 'string'],
+                                    'time' => ['type' => 'string'],
+                                ],
+                            ],
+                            'delay_updates' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'enabled' => ['type' => 'boolean'],
+                                    'delay_value' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 365],
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -198,7 +221,13 @@ final class Updatronix_Settings {
     public static function rest_get_settings(\WP_REST_Request $request): WP_REST_Response {
         $options = updatronix_get_settings();
 
-        return new WP_REST_Response(['options' => $options], 200);
+        return new WP_REST_Response(
+            [
+                'options' => $options,
+                'schedule_meta' => self::schedule_meta_response_payload(),
+            ],
+            200
+        );
     }
 
     /**
@@ -264,7 +293,8 @@ final class Updatronix_Settings {
         $id = absint((string) $request->get_param('id'));
         $log = Updatronix_Logger::get_log($id, true);
 
-        if (!$log || (int) ($log->site_id ?? 0) !== self::resolve_site_id($request)) {
+        $scope = self::resolve_site_id($request);
+        if (!$log || ($scope > 0 && (int) ($log->site_id ?? 0) !== $scope)) {
             return new WP_REST_Response([
                 'message' => __('The requested log entry could not be found.', 'updatronix'),
             ], 404);
@@ -411,7 +441,8 @@ final class Updatronix_Settings {
     public static function rest_delete_log(\WP_REST_Request $request): WP_REST_Response {
         $id = (int) $request->get_param('id');
         $log = Updatronix_Logger::get_log($id, false);
-        if (!$log || (int) ($log->site_id ?? 0) !== self::resolve_site_id($request)) {
+        $scope = self::resolve_site_id($request);
+        if (!$log || ($scope > 0 && (int) ($log->site_id ?? 0) !== $scope)) {
             return new WP_REST_Response(['message' => __('The requested log entry could not be found.', 'updatronix')], 404);
         }
 
@@ -445,9 +476,15 @@ final class Updatronix_Settings {
      */
     public static function rest_update_settings(\WP_REST_Request $request): WP_REST_Response {
         $current = updatronix_get_settings();
+
+        $schedule_in_request = $request->has_param('schedule') && is_array($request->get_param('schedule'));
+
         $next = [
             'logging_enabled' => $request->has_param('logging_enabled') ? (bool) $request->get_param('logging_enabled') : $current['logging_enabled'],
             'retention_days' => $request->has_param('retention_days') ? max(1, min(365, (int) $request->get_param('retention_days'))) : $current['retention_days'],
+            'notifications_mode' => $request->has_param('notifications_mode')
+                ? updatronix_sanitize_notifications_mode($request->get_param('notifications_mode'))
+                : $current['notifications_mode'],
             'notify_enabled' => $request->has_param('notify_enabled') ? (bool) $request->get_param('notify_enabled') : $current['notify_enabled'],
             'notify_emails' => $request->has_param('notify_emails') ? updatronix_sanitize_emails($request->get_param('notify_emails')) : $current['notify_emails'],
             'notify_on' => $request->has_param('notify_on') && is_array($request->get_param('notify_on'))
@@ -455,10 +492,28 @@ final class Updatronix_Settings {
                 : $current['notify_on'],
             'auto_update_translations' => $current['auto_update_translations'],
             'dismissed_constants' => $current['dismissed_constants'],
+            'schedule' => $schedule_in_request
+                ? updatronix_merge_partial_schedule_into((array) $request->get_param('schedule'), $current['schedule'])
+                : $current['schedule'],
         ];
         updatronix_save_settings_array($next);
 
-        return new WP_REST_Response(['options' => updatronix_get_settings()], 200);
+        return new WP_REST_Response(
+            [
+                'options' => updatronix_get_settings(),
+                'schedule_meta' => self::schedule_meta_response_payload(),
+            ],
+            200
+        );
+    }
+
+    /**
+     * Schedule tab read-only meta for REST JSON.
+     *
+     * @return array<string, mixed>
+     */
+    private static function schedule_meta_response_payload(): array {
+        return updatronix_decorate_schedule_meta_for_display(Updatronix_Cron::get_schedule_rest_meta());
     }
 
     /**
@@ -546,12 +601,21 @@ final class Updatronix_Settings {
     /**
      * REST: Dismiss a constant notice.
      *
+     * Returns 400 when the requested constant is not in the dismissable allowlist
+     * (see {@see updatronix_dismissable_constants_allowlist()}).
+     *
      * @param \WP_REST_Request<array<string, mixed>> $request Request.
      * @return WP_REST_Response
      */
     public static function rest_dismiss_constant(\WP_REST_Request $request): WP_REST_Response {
         $constant = sanitize_text_field($request->get_param('constant'));
-        Updatronix_AutoUpdates::dismiss_constant($constant);
+        $ok = Updatronix_AutoUpdates::dismiss_constant($constant);
+
+        if (!$ok) {
+            return new WP_REST_Response([
+                'message' => __('That constant is not recognised by Updatronix.', 'updatronix'),
+            ], 400);
+        }
 
         return new WP_REST_Response(Updatronix_AutoUpdates::get_data(), 200);
     }
@@ -559,8 +623,13 @@ final class Updatronix_Settings {
     /**
      * Resolve the allowed site scope for log routes.
      *
+     * Returns a concrete blog ID to scope to, or `0` (network-global sentinel) to mean
+     * "all originating sites". On Multisite these routes are reachable only by Super Admins
+     * (see {@see Updatronix_Security::user_can_manage_logs()}), so the default is the
+     * network-global view; an explicit `site_id` narrows it to a single subsite.
+     *
      * @param \WP_REST_Request<array<string, mixed>> $request Request.
-     * @return int
+     * @return int Blog ID, or 0 for the network-global scope.
      */
     private static function resolve_site_id(\WP_REST_Request $request): int {
         $current_site_id = (int) get_current_blog_id();
@@ -570,10 +639,15 @@ final class Updatronix_Settings {
             return $current_site_id;
         }
 
-        if ($requested_site_id > 0 && current_user_can('manage_network_options')) {
+        // Defensive: callers are super-admin-gated, but never widen scope for anyone else.
+        if (!is_super_admin()) {
+            return $current_site_id;
+        }
+
+        if ($requested_site_id > 0) {
             return $requested_site_id;
         }
 
-        return $current_site_id;
+        return 0;
     }
 }

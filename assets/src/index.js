@@ -1,7 +1,17 @@
+import apiFetch from '@wordpress/api-fetch';
 import domReady from '@wordpress/dom-ready';
 import { createRoot } from '@wordpress/element';
 
 import './index.scss';
+
+const updatronixSettings =
+	typeof window !== 'undefined' && window.updatronixSettings
+		? window.updatronixSettings
+		: {};
+
+if (updatronixSettings.nonce) {
+	apiFetch.use(apiFetch.createNonceMiddleware(updatronixSettings.nonce));
+}
 
 /**
  * Render the Updatronix settings page once the DOM is ready.

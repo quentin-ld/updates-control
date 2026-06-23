@@ -26,17 +26,23 @@
 			"vendor/bin/php-cs-fixer fix -v --show-progress=dots --using-cache=no --config=.config/.php-cs-fixer.php updatronix.php inc tests",
 			"vendor/bin/phpstan analyse --memory-limit=2048M --configuration=.config/phpstan.neon updatronix.php inc"
 		],
-		"verify:php": [
-			"@lint:php",
-			"@test"
-		],
-		"test": "phpunit --configuration=.config/phpunit.xml.dist",
-		"test:integration": "phpunit --configuration=.config/phpunit.integration.xml.dist",
-		"test:all": [
-			"@test",
-			"@test:integration"
-		],
-		"lint:pcp": "bash .config/local-wp-cli.sh pcp",
-		"make:pot": "bash .config/local-wp-cli.sh pot"
+        "verify:php": [
+            "@lint:php",
+            "@test"
+        ],
+        "verify:all": [
+            "@lint:php",
+            "@test",
+            "@test:integration"
+        ],
+        "test": "phpunit --configuration=.config/phpunit.xml.dist",
+        "test:integration": "bash .config/local-wp-cli.sh integration-test",
+        "test:all": [
+            "@test",
+            "@test:integration"
+        ],
+        "lint:pcp": "bash .config/local-wp-cli.sh pcp",
+        "make:pot": "bash .config/local-wp-cli.sh pot",
+        "setup": "bash bin/setup-dev.sh"
 	}
 }

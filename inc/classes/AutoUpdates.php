@@ -164,7 +164,7 @@ final class Updatronix_AutoUpdates {
             $constants['DISABLE_WP_CRON'] = [
                 'defined' => true,
                 'value' => true,
-                'affects' => ['core', 'plugins', 'themes', 'translations'],
+                'affects' => ['core', 'plugins', 'themes', 'translations', 'schedule'],
                 'locks' => false,
             ];
         }
@@ -439,20 +439,26 @@ final class Updatronix_AutoUpdates {
     /**
      * Dismiss a constant notice (stored in plugin settings JSON).
      *
+     * Only constants the plugin actually surfaces (see {@see updatronix_dismissable_constants_allowlist()})
+     * may be dismissed; unknown values are silently dropped. Routes through
+     * {@see updatronix_save_settings_array()} so listeners on `updatronix_after_save_settings` see the write.
+     *
      * @param string $constant_name The constant name to dismiss.
-     * @return bool
+     * @return bool True when the constant is allowlisted and dismissal was attempted; false otherwise.
      */
     public static function dismiss_constant(string $constant_name): bool {
+        if (!in_array($constant_name, updatronix_dismissable_constants_allowlist(), true)) {
+            return false;
+        }
+
         $settings = updatronix_get_settings();
         $dismissed = $settings['dismissed_constants'];
-        if (!in_array($constant_name, $dismissed, true)) {
-            $dismissed[] = $constant_name;
+        if (in_array($constant_name, $dismissed, true)) {
+            return true;
         }
+        $dismissed[] = $constant_name;
         $settings['dismissed_constants'] = $dismissed;
-        $json = wp_json_encode($settings);
-        if ($json !== false) {
-            update_option(UPDATRONIX_OPTION_SETTINGS, $json);
-        }
+        updatronix_save_settings_array($settings);
 
         return true;
     }
@@ -460,16 +466,16 @@ final class Updatronix_AutoUpdates {
     /**
      * Set translation auto-update preference (stored in plugin settings JSON).
      *
+     * Routes through {@see updatronix_save_settings_array()} so listeners on
+     * `updatronix_after_save_settings` see the write.
+     *
      * @param bool $enable Whether to enable translation auto-updates.
      * @return bool
      */
     public static function set_translations(bool $enable): bool {
         $settings = updatronix_get_settings();
         $settings['auto_update_translations'] = $enable;
-        $json = wp_json_encode($settings);
-        if ($json !== false) {
-            update_option(UPDATRONIX_OPTION_SETTINGS, $json);
-        }
+        updatronix_save_settings_array($settings);
 
         return true;
     }

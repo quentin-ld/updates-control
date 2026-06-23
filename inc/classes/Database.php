@@ -71,12 +71,13 @@ final class Updatronix_Database {
      * @return bool True on success, false on failure.
      */
     public static function create_table(): bool {
-        global $wpdb;
+        return updatronix_with_main_site(static function (): bool {
+            global $wpdb;
 
-        $table_name = self::get_table_name();
-        $charset_collate = $wpdb->get_charset_collate();
+            $table_name = self::get_table_name();
+            $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE {$table_name} (
+            $sql = "CREATE TABLE {$table_name} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             site_id bigint(20) unsigned NOT NULL DEFAULT 1,
             log_type varchar(20) NOT NULL DEFAULT 'plugin',
@@ -103,13 +104,14 @@ final class Updatronix_Database {
             KEY created_type_status (created_at, log_type, status)
         ) {$charset_collate};";
 
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
 
-        update_option(self::OPTION_DB_VERSION, self::DB_VERSION);
-        self::$table_exists_cache = true;
+            updatronix_update_plugin_option(self::OPTION_DB_VERSION, self::DB_VERSION);
+            self::$table_exists_cache = true;
 
-        return true;
+            return true;
+        });
     }
 
     /**
@@ -118,13 +120,15 @@ final class Updatronix_Database {
      * @return void
      */
     public static function drop_table(): void {
-        global $wpdb;
+        updatronix_with_main_site(static function (): void {
+            global $wpdb;
 
-        $table_name = self::get_table_name();
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- Uninstall; no WP API for dropping custom tables; table name from get_table_name(), passed to prepare() %i.
-        $wpdb->query($wpdb->prepare('DROP TABLE IF EXISTS %i', $table_name));
-        delete_option(self::OPTION_DB_VERSION);
-        self::$table_exists_cache = false;
+            $table_name = self::get_table_name();
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- Uninstall; no WP API for dropping custom tables; table name from get_table_name(), passed to prepare() %i.
+            $wpdb->query($wpdb->prepare('DROP TABLE IF EXISTS %i', $table_name));
+            updatronix_delete_plugin_option(self::OPTION_DB_VERSION);
+            self::$table_exists_cache = false;
+        });
     }
 
     /**
@@ -139,21 +143,23 @@ final class Updatronix_Database {
             return self::$table_exists_cache;
         }
 
-        global $wpdb;
-        $table = self::get_table_name();
+        self::$table_exists_cache = updatronix_with_main_site(static function (): bool {
+            global $wpdb;
+            $table = self::get_table_name();
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-time per request; custom table check.
-        $found = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table));
-        $exists = ($found === $table);
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-time per request; custom table check.
+            $found = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table));
+            $exists = ($found === $table);
 
-        if ($exists && get_option(self::OPTION_DB_VERSION, false) === false) {
-            update_option(self::OPTION_DB_VERSION, self::DB_VERSION);
-        } elseif (!$exists && get_option(self::OPTION_DB_VERSION, false) !== false) {
-            delete_option(self::OPTION_DB_VERSION);
-        }
+            if ($exists && updatronix_get_plugin_option(self::OPTION_DB_VERSION, false) === false) {
+                updatronix_update_plugin_option(self::OPTION_DB_VERSION, self::DB_VERSION);
+            } elseif (!$exists && updatronix_get_plugin_option(self::OPTION_DB_VERSION, false) !== false) {
+                updatronix_delete_plugin_option(self::OPTION_DB_VERSION);
+            }
 
-        self::$table_exists_cache = $exists;
+            return $exists;
+        });
 
-        return $exists;
+        return self::$table_exists_cache;
     }
 }

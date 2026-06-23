@@ -56,7 +56,7 @@ export function TranslationsSection({
 				__nextHasNoMarginBottom
 				label={__('Translation auto-updates', 'updatronix')}
 				help={__(
-					'WordPress updates translations automatically by default. Turn this off to stop automatic translation downloads.',
+					'WordPress downloads translation updates automatically by default. Turn this off to skip automatic downloads.',
 					'updatronix'
 				)}
 				checked={translations.auto_update}

@@ -22,9 +22,15 @@ import { TranslationsSection } from './TranslationsSection';
 /**
  * Render the auto-updates panel.
  *
+ * @param {Object}                        props
+ * @param {string[]}                      [props.dismissedConstants]         Dismissed constant names from plugin settings (keeps notices in sync with Schedule tab).
+ * @param {(dismissed: string[]) => void} [props.onDismissedConstantsChange] Fired when a dismissible notice is cleared.
  * @return {JSX.Element} The auto-updates panel UI.
  */
-export function AutoUpdatesPanel() {
+export function AutoUpdatesPanel({
+	dismissedConstants,
+	onDismissedConstantsChange,
+}) {
 	const {
 		data,
 		loading,
@@ -34,7 +40,7 @@ export function AutoUpdatesPanel() {
 		toggleTheme,
 		toggleTranslation,
 		dismissConstant,
-	} = useAutoUpdates();
+	} = useAutoUpdates(onDismissedConstantsChange);
 
 	if (loading || !data) {
 		return (
@@ -56,7 +62,7 @@ export function AutoUpdatesPanel() {
 			</h2>
 			<Text variant="muted">
 				{__(
-					'Choose which parts of your site update automatically: core, plugins, themes, and translations.',
+					'Choose what updates automatically on your site: WordPress core, plugins, themes, and translations.',
 					'updatronix'
 				)}
 			</Text>
@@ -64,7 +70,7 @@ export function AutoUpdatesPanel() {
 				constants={data.constants}
 				sections={['core', 'plugins', 'themes', 'translations']}
 				dismissibleOnly
-				dismissed={data.dismissed_constants || []}
+				dismissed={dismissedConstants ?? data.dismissed_constants ?? []}
 				onDismiss={dismissConstant}
 			/>
 

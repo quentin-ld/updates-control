@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ensures secure database interactions and sanitization of inputs
+ * Sanitization helpers for log fields, REST payloads, and related admin inputs.
  *
  * @package updatronix
  */
@@ -178,6 +178,10 @@ final class Updatronix_Security {
      * @return bool
      */
     public static function user_can_manage_logs(): bool {
+        if (is_multisite() && !is_super_admin()) {
+            return false;
+        }
+
         return current_user_can(UPDATRONIX_CAP_MANAGE);
     }
 }

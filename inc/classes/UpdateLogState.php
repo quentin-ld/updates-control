@@ -228,7 +228,7 @@ final class Updatronix_UpdateLogState {
             return self::$state_cache;
         }
 
-        $raw = get_option(self::OPTION_STATE, []);
+        $raw = updatronix_get_plugin_option(self::OPTION_STATE, []);
         $state = is_array($raw) ? $raw : [];
         $cutoff = time() - self::STATE_TTL;
 
@@ -257,6 +257,6 @@ final class Updatronix_UpdateLogState {
      */
     private static function persist_state(array $state): void {
         self::$state_cache = $state;
-        update_option(self::OPTION_STATE, $state, false);
+        updatronix_update_plugin_option(self::OPTION_STATE, $state, false);
     }
 }

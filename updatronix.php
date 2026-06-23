@@ -10,8 +10,8 @@
  * @license   GPL v2 or later
  *
  * Plugin Name: Updatronix
- * Description: Log every WordPress update with version details, manage auto-updates through native settings, and route notification emails to chosen recipients.
- * Version: 1.0.6.1
+ * Description: Enhanced Update Manager for WordPress. Monitor every change, control all updates, and fine-tune your website maintenance flow.
+ * Version: 1.1
  * Plugin URI: https://wordpress.org/plugins/updatronix/
  * Author: Quentin Le Duff
  * Author URI: https://profiles.wordpress.org/quentinldd/
@@ -20,6 +20,7 @@
  * Requires at least: 6.2
  * Tested up to: 7.0
  * Requires PHP: 8.1
+ * Network: true
  * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html/
  * License: GPL v2 or later
  *
@@ -39,7 +40,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** Plugin version (must match Version header above; used for DB schema version). */
-define('UPDATRONIX_VERSION', '1.0.6.1');
+define('UPDATRONIX_VERSION', '1.1');
 
 define('UPDATRONIX_PLUGIN_FILE', __FILE__); // Absolute path to this file.
 define('UPDATRONIX_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Plugin root directory with trailing slash.
@@ -51,43 +52,74 @@ if (!defined('updatronix_PLUGIN_DIR')) {
 }
 
 require_once __DIR__ . '/inc/core/constants.php';
+require_once __DIR__ . '/inc/core/context.php';
+require_once __DIR__ . '/inc/core/storage.php';
+
+register_activation_hook(__FILE__, 'updatronix_activate');
+register_deactivation_hook(__FILE__, 'updatronix_deactivate');
+
+/**
+ * Register capabilities, create the log table, and schedule cron.
+ *
+ * @since 1.0.0
+ *
+ * @return void
+ */
+function updatronix_activate(): void {
+    if (!updatronix_activation_allowed()) {
+        return;
+    }
+
+    // Super Admins pass every capability check on multisite, so the administrator-role
+    // cap is only meaningful on single-site installs (access is super-admin-gated otherwise).
+    if (!is_multisite()) {
+        $role = get_role('administrator');
+        if ($role) {
+            $role->add_cap(UPDATRONIX_CAP_MANAGE);
+        }
+        updatronix_update_plugin_option('updatronix_cap_migrated', '1', false);
+    }
+
+    require_once __DIR__ . '/inc/classes/Database.php';
+    updatronix_with_main_site(static function (): void {
+        Updatronix_Database::create_table();
+    });
+    require_once __DIR__ . '/inc/classes/Cron.php';
+    updatronix_with_main_site(static function (): void {
+        Updatronix_Cron::schedule_if_needed();
+        Updatronix_Cron::apply_update_check_schedule_from_settings();
+        Updatronix_Cron::clear_subsite_cron_artifacts();
+    });
+}
+
+/**
+ * Unschedule cron on deactivation. The log table is kept.
+ *
+ * @since 1.0.0
+ *
+ * @return void
+ */
+function updatronix_deactivate(): void {
+    if (!updatronix_activation_allowed()) {
+        return;
+    }
+
+    require_once __DIR__ . '/inc/classes/Cron.php';
+    updatronix_with_main_site(static function (): void {
+        Updatronix_Cron::unschedule();
+    });
+}
+
+if (!updatronix_should_load()) {
+    return;
+}
+
 require_once __DIR__ . '/inc/classes/Bootstrap.php';
 
 require_once __DIR__ . '/inc/admin/enqueue.php';
 require_once __DIR__ . '/inc/admin/links.php';
 require_once __DIR__ . '/inc/admin/menu.php';
 require_once __DIR__ . '/inc/settings/options.php';
+require_once __DIR__ . '/inc/admin/native-update-delay-notice.php';
 
 add_action('plugins_loaded', ['Updatronix_Bootstrap', 'init']);
-
-register_activation_hook(__FILE__, 'updatronix_activate');
-
-/**
- * Register capabilities, create the log table, and schedule cron.
- *
- * @return void
- */
-function updatronix_activate(): void {
-    $role = get_role('administrator');
-    if ($role) {
-        $role->add_cap(UPDATRONIX_CAP_MANAGE);
-    }
-    update_option('updatronix_cap_migrated', '1', false);
-
-    require_once __DIR__ . '/inc/classes/Database.php';
-    Updatronix_Database::create_table();
-    require_once __DIR__ . '/inc/classes/Cron.php';
-    Updatronix_Cron::schedule_if_needed();
-}
-
-register_deactivation_hook(__FILE__, 'updatronix_deactivate');
-
-/**
- * Unschedule cron on deactivation. The log table is kept.
- *
- * @return void
- */
-function updatronix_deactivate(): void {
-    require_once __DIR__ . '/inc/classes/Cron.php';
-    Updatronix_Cron::unschedule();
-}

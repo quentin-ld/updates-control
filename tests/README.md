@@ -1,6 +1,8 @@
 # Tests
 
-**Verification stack:** `composer run verify:php` runs PHP CS Fixer, PHPStan, and the **unit** suite. **`npm run build:all`** starts with `verify:php`, then Plugin Check, JS/CSS, POT, and `npm run build` — see **`workflow.md`**. **Integration** tests are optional and not part of `build:all`.
+**Verification stack:** `composer run verify:php` runs PHP CS Fixer, PHPStan, and the **unit** suite; `composer run verify:all` adds the **integration** suite. **`npm run test:all`** runs every linter + unit + integration tests; **`npm run build:all`** adds POT regeneration + `npm run build` — see **`workflow.md`**.
+
+**First-time setup:** `composer install && npm install && bash bin/setup-dev.sh`. The setup script writes `.config/wp-tests.env` (from your site's DB credentials) and installs `wordpress-tests-lib`, after which integration tests run with no further configuration.
 
 ## Unit tests (no WordPress)
 
@@ -22,55 +24,48 @@ Requires the official **wordpress-tests-lib**, a MySQL/MariaDB server, and PHP w
 
 ### One-time: install WordPress core + test library
 
-1. Copy and adjust env (DB matches Local / `wp-config.php`):
+Run the setup script (idempotent; safe to re-run):
 
-   ```bash
-   cp .config/wp-tests-env.example .config/wp-tests.env
-   ```
+```bash
+bash bin/setup-dev.sh
+```
 
-   - **`WP_TEST_DB_*`** — same database as your Local site if you want (e.g. `local` / `root` / `root` / `localhost`).
-   - **Install paths** (`WP_CORE_DIR`, `WP_TESTS_DIR`, `TMPDIR`) live under **`$HOME/.cache/updatronix-wp-tests/`** so paths have **no spaces** (the stock `install-wp-tests.sh` breaks when `TMPDIR` contains spaces, e.g. `Local Sites`).
+This calls `bash .config/local-wp-cli.sh setup`, which:
 
-2. **Use your existing database** (no second DB) — last argument `true` skips `CREATE DATABASE`:
+- Reads your site's DB credentials with `wp config get` and writes **`.config/wp-tests.env`**.
+- Installs WordPress core + `wordpress-tests-lib` under **`$HOME/.cache/updatronix-wp-tests/`**, where paths have **no spaces** (the stock `install-wp-tests.sh` breaks when `TMPDIR` contains spaces, e.g. `Local Sites`).
+- Uses your existing database (the harness uses table prefix **`wptests_`**, so your site tables stay under the normal **`wp_`** prefix in the same database).
 
-   ```bash
-   source .config/wp-tests.env
-   bash bin/install-wp-tests.sh "$WP_TEST_DB_NAME" "$WP_TEST_DB_USER" "$WP_TEST_DB_PASSWORD" "$WP_TEST_DB_HOST" trunk true
-   ```
+To regenerate the env file (e.g. after the site's DB credentials change):
 
-   The PHPUnit harness uses table prefix **`wptests_`** in `wp-tests-config.php`. Your site tables stay under the normal **`wp_`** prefix in the same database.
+```bash
+bash bin/setup-dev.sh --force
+```
 
-3. **Reinstall test library only** (e.g. after a failed run): delete  
-   `$HOME/.cache/updatronix-wp-tests/wordpress-tests-lib` and run the command again.
+To reinstall the test library only (e.g. after a failed run): delete
+`$HOME/.cache/updatronix-wp-tests/wordpress-tests-lib` and re-run `bash bin/setup-dev.sh`.
 
 ### Run integration tests
 
-**Recommended (Local PHP + mysqli):** same environment as `composer run lint:pcp`:
+`composer run test:integration` routes through `.config/local-wp-cli.sh`, so it uses
+Local's PHP + mysqli automatically (the same environment as `composer run lint:pcp`):
 
 ```bash
-bash .config/local-wp-cli.sh integration-test
-```
-
-Optional PHPUnit args:
-
-```bash
-bash .config/local-wp-cli.sh integration-test --filter RestSettingsAuthTest
-```
-
-**From the host shell** (requires PHP CLI **with mysqli** — many default CLIs do not):
-
-```bash
-source .config/wp-tests.env
 composer run test:integration
+```
+
+Optional PHPUnit args (after `--`):
+
+```bash
+composer run test:integration -- --filter RestSettingsAuthTest
 ```
 
 ### Run everything
 
 ```bash
-composer run test:all
+composer run test:all   # unit, then integration
+npm run test:all        # all linters + unit + integration tests
 ```
-
-(`test:all` runs unit tests, then integration — integration needs the stack installed and mysqli.)
 
 ### PHPUnit version note
 

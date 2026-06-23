@@ -205,6 +205,19 @@ function updatronix_i18n_store_split_bundle_cache(string $cache_key, array $mani
     );
 }
 
+/**
+ * Admin page hook suffixes for asset enqueue (single-site vs network admin).
+ *
+ * @return list<string>
+ */
+function updatronix_admin_page_hooks(): array {
+    if (is_multisite()) {
+        return ['toplevel_page_updatronix'];
+    }
+
+    return ['tools_page_updatronix', 'dashboard_page_updatronix'];
+}
+
 add_action('admin_enqueue_scripts', 'updatronix_admin_enqueue_scripts');
 /**
  * Enqueue script and style on the Updatronix settings page only.
@@ -213,7 +226,7 @@ add_action('admin_enqueue_scripts', 'updatronix_admin_enqueue_scripts');
  * @return void
  */
 function updatronix_admin_enqueue_scripts(string $admin_page): void {
-    $allowed = ['tools_page_updatronix', 'dashboard_page_updatronix'];
+    $allowed = updatronix_admin_page_hooks();
     if (!in_array($admin_page, $allowed, true)) {
         return;
     }
@@ -262,7 +275,7 @@ add_action('admin_enqueue_scripts', 'updatronix_localize_settings');
  * @return void
  */
 function updatronix_localize_settings(string $admin_page): void {
-    $allowed = ['tools_page_updatronix', 'dashboard_page_updatronix'];
+    $allowed = updatronix_admin_page_hooks();
     if (!in_array($admin_page, $allowed, true)) {
         return;
     }
@@ -273,5 +286,7 @@ function updatronix_localize_settings(string $admin_page): void {
         'namespace' => 'updatronix/v1',
         'nonce' => wp_create_nonce('wp_rest'),
         'options' => $options,
+        'schedule_meta' => updatronix_decorate_schedule_meta_for_display(Updatronix_Cron::get_schedule_rest_meta()),
+        'constants' => Updatronix_AutoUpdates::get_constants(),
     ]);
 }

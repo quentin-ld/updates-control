@@ -12,7 +12,9 @@
     "format:fix": "wp-scripts format 'assets/src/**/*.{js,jsx}' --write",
     "start": "wp-scripts start assets/src/index.js --output-path=assets/build",
     "build": "wp-scripts build assets/src/index.js --output-path=assets/build",
-    "build:all": "composer run verify:php && composer run lint:pcp && npm run lint && npm run lint:css && npm run format && composer run make:pot && npm run build",
+    "setup": "bash bin/setup-dev.sh",
+    "test:all": "composer run verify:all && composer run lint:pcp && npm run lint && npm run lint:css && npm run format",
+    "build:all": "npm run test:all && composer run make:pot && npm run build",
     "zip": "node .config/zip.js"
   },
   "prettier": "@wordpress/prettier-config",
@@ -34,6 +36,7 @@
     "@wordpress/element": "^6.43.0",
     "@wordpress/i18n": "^6.16.0",
     "@wordpress/icons": "^12.1.0",
-    "@wordpress/notices": "^5.43.0"
+    "@wordpress/notices": "^5.43.0",
+    "@wordpress/ui": "^0.10.0"
   }
 }
