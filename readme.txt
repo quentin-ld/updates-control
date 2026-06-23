@@ -28,7 +28,7 @@ Updatronix is a precision plugin built on the native WordPress update engine ins
 
 Four tabs, one per concern.
 
-= Update logs 📑=
+= Update logs =
 
 Every core, plugin, theme, and translation update is logged with full details. If something breaks after updates, you have a trusty starting point instead of a guess.
 
@@ -38,7 +38,7 @@ Every core, plugin, theme, and translation update is logged with full details. I
 
 Need to hand it off? Export the log just as you've filtered it. Handy for briefing your team when something breaks, sending a maintenance report for a client, or sharing context with someone you've called in to help.
 
-= Auto-updates 🔄=
+= Auto-updates =
 
 WordPress 5.5 made auto-updates available across the dashboard. The controls then got scattered across half a dozen screens. This tab pulls them onto one page: how core updates itself, which plugins and themes update on their own, whether translations come along.
 
@@ -46,7 +46,7 @@ WordPress 5.5 made auto-updates available across the dashboard. The controls the
 * A switch for each plugin and theme, and one for translations.
 * If a `wp-config.php` constant is overriding something, you'll see which one.
 
-= Schedule 📅=
+= Schedule =
 
 WordPress checks for updates twice a day. Usually that's fine. When it isn't, this feature hands you the timing, and lets a new release age a little before it reaches you.
 
@@ -55,7 +55,7 @@ WordPress checks for updates twice a day. Usually that's fine. When it isn't, th
 * Skip the bad ones. If a plugin ships a broken update and then a quick fix, a short hold means you get the fix and miss the mess.
 * A notice appears on the Updates, Plugins, and Themes screens whenever a hold is active.
 
-= Settings ⚙️=
+= Settings =
 
 How long the log sticks around, who gets the update emails WordPress sends, and the master switch for those emails when you'd rather not see them at all.
 
