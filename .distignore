@@ -1,3 +1,5 @@
+.agents/
+.agents
 .cache/
 .cache
 .config/
@@ -74,3 +76,6 @@ Thumbs.db
 workflow.md
 wp-cli.local.yml
 yarn.lock
+.php-cs-fixer.cache
+.phpactor.json
+AGENTS.md

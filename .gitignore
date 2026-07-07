@@ -395,4 +395,9 @@ assets/img/.DS_Store
 
 docs/*
 .cursor/
+.agents/tasks/
+.agents/notes/
 FEATURE_REQUEST.md
+
+.php-cs-fixer.cache
+.phpactor.json

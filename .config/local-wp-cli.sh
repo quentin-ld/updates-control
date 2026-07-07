@@ -189,7 +189,7 @@ REQUIRE_FILE="${PLUGIN_ROOT}/.config/pcp-setup.php"
 # Paths and files not part of the distributable plugin (dev / repo tooling).
 # - tests/: PHPUnit bootstraps + integration tests (not shipped in the zip from .distignore).
 # - bin/: install-wp-tests.sh triggers application_detected in PCP.
-PCP_EXCLUDE_DIRS=".config,.github,.cursor,bin,tests"
+PCP_EXCLUDE_DIRS=".config,.github,.cursor,.agents,bin,tests"
 PCP_EXCLUDE_FILES="workflow.md,.distignore,.gitignore,.gitattributes,.editorconfig,updatronix.zip"
 
 # Legitimate use of core update APIs for an updates-management plugin (not a bundled updater).
