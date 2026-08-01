@@ -6,8 +6,8 @@
  * @since 1.1.0
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
@@ -35,19 +35,19 @@ if (!defined('ABSPATH')) {
  * @return bool
  */
 function updatronix_should_load(): bool {
-    if (!is_multisite()) {
-        return true;
-    }
+	if ( ! is_multisite() ) {
+		return true;
+	}
 
-    if (is_network_admin()) {
-        return true;
-    }
+	if ( is_network_admin() ) {
+		return true;
+	}
 
-    if (defined('WP_CLI') && WP_CLI) {
-        return true;
-    }
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		return true;
+	}
 
-    return (int) get_current_blog_id() === (int) get_main_site_id();
+	return (int) get_current_blog_id() === (int) get_main_site_id();
 }
 
 /**
@@ -57,19 +57,19 @@ function updatronix_should_load(): bool {
  * @return bool
  */
 function updatronix_activation_allowed(): bool {
-    if (!is_multisite()) {
-        return true;
-    }
+	if ( ! is_multisite() ) {
+		return true;
+	}
 
-    if (is_network_admin()) {
-        return true;
-    }
+	if ( is_network_admin() ) {
+		return true;
+	}
 
-    if (defined('WP_CLI') && WP_CLI) {
-        return true;
-    }
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		return true;
+	}
 
-    return false;
+	return false;
 }
 
 /**
@@ -80,21 +80,21 @@ function updatronix_activation_allowed(): bool {
  * @param callable(): T $callback Callback.
  * @return T
  */
-function updatronix_with_main_site(callable $callback) {
-    if (!is_multisite()) {
-        return $callback();
-    }
+function updatronix_with_main_site( callable $callback ) {
+	if ( ! is_multisite() ) {
+		return $callback();
+	}
 
-    $main_id = (int) get_main_site_id();
-    $current = (int) get_current_blog_id();
-    if ($current === $main_id) {
-        return $callback();
-    }
+	$main_id = (int) get_main_site_id();
+	$current = (int) get_current_blog_id();
+	if ( $current === $main_id ) {
+		return $callback();
+	}
 
-    switch_to_blog($main_id);
-    try {
-        return $callback();
-    } finally {
-        restore_current_blog();
-    }
+	switch_to_blog( $main_id );
+	try {
+		return $callback();
+	} finally {
+		restore_current_blog();
+	}
 }

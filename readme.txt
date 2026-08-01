@@ -1,10 +1,10 @@
 === Updatronix ===
-Contributors: quentinldd
+Contributors: quentinldd, alkesh7
 Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, maintenance, security, audit-log
 Requires at least: 6.2
-Tested up to: 7.0
-Stable tag: 1.1
+Tested up to: 7.0.2
+Stable tag: 1.1.1
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -166,6 +166,13 @@ In addition, if you like the plugin then I'd love for you to [leave a review](ht
 I welcome your ideas! If you have a suggestion for the roadmap, please visit the official support forum. If you are a developer, you can also contribute directly to the project on GitHub.
 
 == Changelog ==
+
+= 1.1.1 =
+* Confirmed compatibility with WordPress 7.0.2 (final release; previously tested against 7.0-RC2).
+* Change: Adopted the WordPress Coding Standards (WPCS) PHPCS ruleset alongside the existing PHP CS Fixer setup; codebase reformatted to match (no functional changes).
+* Fix: Aligned the License URI in the plugin header with readme.txt.
+* i18n: Audited every translation string; no issues found.
+* Security: Reviewed REST routes, database queries, exports, and email handling; no issues found.
 
 = 1.1 =
 * New: Schedule tab, set how often WordPress checks for updates (hourly, twice daily, daily, or weekly), pick a preferred time of day, and hold automatic installs for a chosen number of days. Active holds show a notice on the Updates, Plugins, and Themes screens, and WordPress schedule messaging stays in sync with your settings.

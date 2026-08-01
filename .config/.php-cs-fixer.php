@@ -127,15 +127,17 @@ $rules = [
     'whitespace_after_comma_in_array' => true,
 ];
 
+// Scoped to tests/ only: WPCS (phpcs.xml.dist / phpcbf) is the sole formatting authority for
+// updatronix.php, inc/, and uninstall.php (tabs, array() padding, Yoda conditions, etc.). Running
+// this fixer over those paths too would fight WPCS on several rules (array padding, multiline
+// closure indentation) that don't have a clean shared configuration. tests/ isn't covered by
+// phpcs.xml.dist, so it keeps this project's original PHP CS Fixer style.
 $finder = Finder::create()
     ->name('*.php')
     ->notName('*.blade.php')
     ->ignoreDotFiles(true)
     ->ignoreVCS(true)
-    ->in(__DIR__ . '/../')
-    ->exclude('vendor')
-    ->exclude('node_modules')
-    ->exclude('.config');
+    ->in(__DIR__ . '/../tests');
 
 $config = new Config();
 

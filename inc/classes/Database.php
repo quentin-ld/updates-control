@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Creates and manages the custom database table for update logs
  *
@@ -9,75 +8,76 @@
  * @package updatronix
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
  * Database table manager for update logs.
  */
 final class Updatronix_Database {
-    /**
-     * Option key storing the database version for upgrades.
-     *
-     * @var string
-     */
-    public const OPTION_DB_VERSION = 'updatronix_log_db_version';
+	/**
+	 * Option key storing the database version for upgrades.
+	 *
+	 * @var string
+	 */
+	public const OPTION_DB_VERSION = 'updatronix_log_db_version';
 
-    /**
-     * Current schema version.
-     *
-     * @var string
-     */
-    public const DB_VERSION = UPDATRONIX_VERSION;
+	/**
+	 * Current schema version.
+	 *
+	 * @var string
+	 */
+	public const DB_VERSION = UPDATRONIX_VERSION;
 
-    /**
-     * Table name (without prefix).
-     *
-     * @var string
-     */
-    public const TABLE_LOGS = 'updatronix_logs';
+	/**
+	 * Table name (without prefix).
+	 *
+	 * @var string
+	 */
+	public const TABLE_LOGS = 'updatronix_logs';
 
-    /**
-     * Request-level cache for {@see self::table_exists()}.
-     *
-     * @var bool|null
-     */
-    private static $table_exists_cache = null;
+	/**
+	 * Request-level cache for {@see self::table_exists()}.
+	 *
+	 * @var bool|null
+	 */
+	private static $table_exists_cache = null;
 
-    /**
-     * Get full table name including prefix.
-     *
-     * @return string
-     */
-    public static function get_table_name(): string {
-        global $wpdb;
+	/**
+	 * Get full table name including prefix.
+	 *
+	 * @return string
+	 */
+	public static function get_table_name(): string {
+		global $wpdb;
 
-        return $wpdb->prefix . self::TABLE_LOGS;
-    }
+		return $wpdb->prefix . self::TABLE_LOGS;
+	}
 
-    /**
-     * Invalidate cached table existence (after schema changes).
-     *
-     * @return void
-     */
-    public static function clear_table_exists_cache(): void {
-        self::$table_exists_cache = null;
-    }
+	/**
+	 * Invalidate cached table existence (after schema changes).
+	 *
+	 * @return void
+	 */
+	public static function clear_table_exists_cache(): void {
+		self::$table_exists_cache = null;
+	}
 
-    /**
-     * Create or update the logs table.
-     *
-     * @return bool True on success, false on failure.
-     */
-    public static function create_table(): bool {
-        return updatronix_with_main_site(static function (): bool {
-            global $wpdb;
+	/**
+	 * Create or update the logs table.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	public static function create_table(): bool {
+		return updatronix_with_main_site(
+			static function (): bool {
+				global $wpdb;
 
-            $table_name = self::get_table_name();
-            $charset_collate = $wpdb->get_charset_collate();
+				$table_name = self::get_table_name();
+				$charset_collate = $wpdb->get_charset_collate();
 
-            $sql = "CREATE TABLE {$table_name} (
+				$sql = "CREATE TABLE {$table_name} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             site_id bigint(20) unsigned NOT NULL DEFAULT 1,
             log_type varchar(20) NOT NULL DEFAULT 'plugin',
@@ -104,62 +104,67 @@ final class Updatronix_Database {
             KEY created_type_status (created_at, log_type, status)
         ) {$charset_collate};";
 
-            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-            dbDelta($sql);
+				require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+				dbDelta( $sql );
 
-            updatronix_update_plugin_option(self::OPTION_DB_VERSION, self::DB_VERSION);
-            self::$table_exists_cache = true;
+				updatronix_update_plugin_option( self::OPTION_DB_VERSION, self::DB_VERSION );
+				self::$table_exists_cache = true;
 
-            return true;
-        });
-    }
+				return true;
+			}
+		);
+	}
 
-    /**
-     * Drop logs table (uninstall). Uses %i for table name (WP 6.2+).
-     *
-     * @return void
-     */
-    public static function drop_table(): void {
-        updatronix_with_main_site(static function (): void {
-            global $wpdb;
+	/**
+	 * Drop logs table (uninstall). Uses %i for table name (WP 6.2+).
+	 *
+	 * @return void
+	 */
+	public static function drop_table(): void {
+		updatronix_with_main_site(
+			static function (): void {
+				global $wpdb;
 
-            $table_name = self::get_table_name();
+				$table_name = self::get_table_name();
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- Uninstall; no WP API for dropping custom tables; table name from get_table_name(), passed to prepare() %i.
-            $wpdb->query($wpdb->prepare('DROP TABLE IF EXISTS %i', $table_name));
-            updatronix_delete_plugin_option(self::OPTION_DB_VERSION);
-            self::$table_exists_cache = false;
-        });
-    }
+				$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table_name ) );
+				updatronix_delete_plugin_option( self::OPTION_DB_VERSION );
+				self::$table_exists_cache = false;
+			}
+		);
+	}
 
-    /**
-     * Check whether the logs table exists in the database (authoritative check).
-     *
-     * Uses SHOW TABLES so the result stays correct if the option is missing or stale.
-     *
-     * @return bool
-     */
-    public static function table_exists(): bool {
-        if (self::$table_exists_cache !== null) {
-            return self::$table_exists_cache;
-        }
+	/**
+	 * Check whether the logs table exists in the database (authoritative check).
+	 *
+	 * Uses SHOW TABLES so the result stays correct if the option is missing or stale.
+	 *
+	 * @return bool
+	 */
+	public static function table_exists(): bool {
+		if ( null !== self::$table_exists_cache ) {
+			return self::$table_exists_cache;
+		}
 
-        self::$table_exists_cache = updatronix_with_main_site(static function (): bool {
-            global $wpdb;
-            $table = self::get_table_name();
+		self::$table_exists_cache = updatronix_with_main_site(
+			static function (): bool {
+				global $wpdb;
+				$table = self::get_table_name();
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-time per request; custom table check.
-            $found = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table));
-            $exists = ($found === $table);
+				$found = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
+				$exists = ( $found === $table );
 
-            if ($exists && updatronix_get_plugin_option(self::OPTION_DB_VERSION, false) === false) {
-                updatronix_update_plugin_option(self::OPTION_DB_VERSION, self::DB_VERSION);
-            } elseif (!$exists && updatronix_get_plugin_option(self::OPTION_DB_VERSION, false) !== false) {
-                updatronix_delete_plugin_option(self::OPTION_DB_VERSION);
-            }
+				if ( $exists && false === updatronix_get_plugin_option( self::OPTION_DB_VERSION, false ) ) {
+					updatronix_update_plugin_option( self::OPTION_DB_VERSION, self::DB_VERSION );
+				} elseif ( ! $exists && false !== updatronix_get_plugin_option( self::OPTION_DB_VERSION, false ) ) {
+					updatronix_delete_plugin_option( self::OPTION_DB_VERSION );
+				}
 
-            return $exists;
-        });
+				return $exists;
+			}
+		);
 
-        return self::$table_exists_cache;
-    }
+		return self::$table_exists_cache;
+	}
 }

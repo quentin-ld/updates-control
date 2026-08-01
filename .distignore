@@ -2,6 +2,8 @@
 .agents
 .cache/
 .cache
+.claude/
+.claude
 .config/
 .config
 .cursor/

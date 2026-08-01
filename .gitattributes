@@ -1,5 +1,6 @@
 # Directories
 /.git export-ignore
+/.claude export-ignore
 /.config export-ignore
 /.github export-ignore
 /.cursor export-ignore
