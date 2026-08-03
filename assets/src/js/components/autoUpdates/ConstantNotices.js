@@ -6,7 +6,6 @@
  * @property {boolean}  locks   Whether the constant locks the setting.
  */
 
-import { memo } from '@wordpress/element';
 import { Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -24,7 +23,7 @@ const CONSTANT_DESCRIPTIONS = {
 		'updatronix'
 	),
 	DISABLE_WP_CRON: __(
-		'WordPress does not run scheduled tasks during normal visits. Ask your host to call wp-cron.php on a timer, often with a system cron job, so automatic updates and other schedules keep working.',
+		'DISABLE_WP_CRON is set in your wp-config.php file. WordPress does not run scheduled tasks during normal visits. If you use a system cron job, make sure it calls wp-cron.php regularly so automatic updates and other scheduled events run properly.',
 		'updatronix'
 	),
 };
@@ -35,17 +34,17 @@ const CONSTANT_DESCRIPTIONS = {
  * @param {Object}                        props                   Component props.
  * @param {Object.<string, ConstantInfo>} props.constants         Map of constant name to info.
  * @param {string[]}                      props.sections          Sections to filter ('core', 'plugins', etc.).
- * @param {boolean}                       [props.lockingOnly]     When true, only show constants with locks=true.
  * @param {boolean}                       [props.dismissibleOnly] When true, only show constants with locks=false (dismissible).
+ * @param {boolean}                       [props.lockingOnly]     When true, only show constants with locks=true (locking, non-dismissible).
  * @param {string[]}                      [props.dismissed]       List of dismissed constant names.
  * @param {Function}                      [props.onDismiss]       Called with constant name when dismissed.
  * @return {JSX.Element[]|null} Warning notices, or null if none apply.
  */
-export const ConstantNotices = memo(function ConstantNotices({
+export function ConstantNotices({
 	constants,
 	sections,
-	lockingOnly = false,
 	dismissibleOnly = false,
+	lockingOnly = false,
 	dismissed = [],
 	onDismiss,
 }) {
@@ -54,11 +53,11 @@ export const ConstantNotices = memo(function ConstantNotices({
 	}
 
 	const matchesFilter = (info) => {
-		if (lockingOnly) {
-			return info.locks;
-		}
 		if (dismissibleOnly) {
 			return !info.locks;
+		}
+		if (lockingOnly) {
+			return info.locks;
 		}
 		return true;
 	};
@@ -88,4 +87,4 @@ export const ConstantNotices = memo(function ConstantNotices({
 			{CONSTANT_DESCRIPTIONS[name] || name}
 		</Notice>
 	));
-});
+}

@@ -8,6 +8,7 @@ import { DataViews, filterSortAndPaginate } from '@wordpress/dataviews';
 import { __, sprintf } from '@wordpress/i18n';
 import { StatusBadge } from '../activityLog/StatusBadge';
 import { ConstantNotices } from './ConstantNotices';
+import { isSectionLocked } from './utils';
 
 const FIXED_FIELDS = [
 	'auto_update',
@@ -19,39 +20,6 @@ const FIXED_FIELDS = [
 	'details',
 ];
 
-/**
- * Check whether a section is locked by a wp-config constant.
- *
- * @param {Object} constants Map from PHP.
- * @param {string} section   'plugins' | 'themes'.
- * @return {boolean} True if the section is locked by a constant.
- */
-function isSectionLocked(constants, section) {
-	if (!constants) {
-		return false;
-	}
-	return Object.values(constants).some(
-		(info) => info.locks && info.value && info.affects.includes(section)
-	);
-}
-
-/**
- * Render a DataViews table section for plugins or themes.
- *
- * @param {Object}   props              Component props.
- * @param {Array}    props.items        Plugin or theme items.
- * @param {string}   props.itemIdKey    'file' (plugins) | 'stylesheet' (themes).
- * @param {Object}   props.icon         Icon from @wordpress/icons.
- * @param {string}   props.sectionTitle e.g. 'Plugins' | 'Themes'.
- * @param {string}   props.itemLabel    e.g. 'Plugin' | 'Theme'.
- * @param {string}   props.searchLabel  e.g. 'Search plugins' | 'Search themes'.
- * @param {string}   props.uriKey       'plugin_uri' | 'theme_uri'.
- * @param {Object}   props.constants    Constant info from API.
- * @param {string[]} props.sections     e.g. ['plugins'] | ['themes'].
- * @param {Function} props.onToggle     (id, checked) => void.
- * @param {boolean}  props.busy         Whether a request is in progress.
- * @return {JSX.Element} The items DataView section.
- */
 export function ItemsDataViewSection({
 	items,
 	itemIdKey,
@@ -115,7 +83,7 @@ export function ItemsDataViewSection({
 				label: __('Auto-update', 'updatronix'),
 				render: ({ item }) => (
 					<span className="updatronix-autoupdates__toggle">
-						{item.auto_update_available === false ? (
+						{item.update_data_available === false ? (
 							<span
 								className="updatronix-autoupdates__unavailable"
 								title={__(
@@ -132,26 +100,41 @@ export function ItemsDataViewSection({
 								onChange={(checked) =>
 									onToggle(item[itemIdKey], checked)
 								}
-								disabled={locked || busy}
-								aria-label={
-									item.auto_update
-										? sprintf(
-												/* translators: %s: plugin or theme name */
-												__(
-													'Disable auto-update for %s',
-													'updatronix'
-												),
-												item.name
-											)
-										: sprintf(
-												/* translators: %s: plugin or theme name */
-												__(
-													'Enable auto-update for %s',
-													'updatronix'
-												),
-												item.name
-											)
+								disabled={
+									locked || busy || item.auto_update_locked
 								}
+								title={
+									item.auto_update_locked
+										? item.auto_update_locked_reason ||
+											__(
+												'Locked by Safe Mode due to incompatibility',
+												'updatronix'
+											)
+										: undefined
+								}
+								aria-label={(() => {
+									if (item.auto_update_locked) {
+										return item.auto_update_locked_reason;
+									}
+									if (item.auto_update) {
+										return sprintf(
+											/* translators: %s: plugin or theme name */
+											__(
+												'Disable auto-update for %s',
+												'updatronix'
+											),
+											item.name
+										);
+									}
+									return sprintf(
+										/* translators: %s: plugin or theme name */
+										__(
+											'Enable auto-update for %s',
+											'updatronix'
+										),
+										item.name
+									);
+								})()}
 							/>
 						)}
 					</span>

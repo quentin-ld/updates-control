@@ -26,14 +26,14 @@ final class Updatronix_Security {
      *
      * @var array<string>
      */
-    public const ALLOWED_ACTION_TYPES = ['update', 'downgrade', 'install', 'same_version', 'failed', 'uninstall'];
+    public const ALLOWED_ACTION_TYPES = ['update', 'downgrade', 'install', 'same_version', 'failed', 'uninstall', 'prevented', 'incompatible', 'disabled', 'safe_mode_disabled'];
 
     /**
      * Allowed status values.
      *
      * @var array<string>
      */
-    public const ALLOWED_STATUSES = ['success', 'error', 'cancelled'];
+    public const ALLOWED_STATUSES = ['success', 'error', 'cancelled', 'info', 'warning'];
 
     /**
      * Allowed performed_as values: manual, automatic, or file upload (update.php upload flow).
@@ -130,9 +130,10 @@ final class Updatronix_Security {
      */
     public static function sanitize_message(string $value): string {
         $value = wp_strip_all_tags(wp_unslash($value));
+        $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $value = self::redact_sensitive_text($value);
 
-        return mb_substr(html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8'), 0, 65535);
+        return mb_substr($value, 0, 65535);
     }
 
     /**
@@ -166,8 +167,29 @@ final class Updatronix_Security {
      * @return string
      */
     private static function redact_sensitive_text(string $value): string {
-        $value = preg_replace('/([?&](?:token|signature|sig|key|access_token|auth)[^=\s]*=)[^&\s]+/i', '$1[redacted]', $value) ?: $value;
+        $value = preg_replace('/([?&](?:token|signature|sig|key|access_token|auth(?![a-zA-Z]))[^=\s]*=)[^&\s]+/i', '$1[redacted]', $value) ?: $value;
         $value = preg_replace('/([A-Z0-9._%+\-]+)@([A-Z0-9.\-]+\.[A-Z]{2,})/i', '[redacted-email]', $value) ?: $value;
+
+        // Redact server paths so internal filesystem layout is not exposed in log entries.
+        $path_prefixes = [];
+        if (defined('ABSPATH') && ABSPATH !== '') {
+            $path_prefixes[] = preg_quote(untrailingslashit(ABSPATH), '/');
+        }
+        if (defined('WP_PLUGIN_DIR') && WP_PLUGIN_DIR !== '') {
+            $path_prefixes[] = preg_quote(untrailingslashit(WP_PLUGIN_DIR), '/');
+        }
+        if (defined('WP_CONTENT_DIR') && WP_CONTENT_DIR !== '') {
+            $path_prefixes[] = preg_quote(untrailingslashit(WP_CONTENT_DIR), '/');
+        }
+        if ($path_prefixes !== []) {
+            // Sort by length descending so longer paths (e.g. WP_CONTENT_DIR) match before
+            // shorter ones (e.g. ABSPATH) when one is a parent of another.
+            usort($path_prefixes, static fn (string $a, string $b): int => strlen($b) <=> strlen($a));
+
+            $pattern = '/(' . implode('|', $path_prefixes) . ')[^\s"]*/i';
+            $replacement = basename(untrailingslashit(ABSPATH)) . '[redacted]';
+            $value = preg_replace($pattern, $replacement, $value) ?: $value;
+        }
 
         return $value;
     }

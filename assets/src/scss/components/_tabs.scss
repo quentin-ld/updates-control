@@ -133,7 +133,7 @@
 				max-height: unset;
 			}
 
-			&:focus {
+			&:focus-visible {
 				outline: 2px solid transparent;
 				box-shadow: inset 0 0 0 2px var(--wpds-color-fg-content-neutral) !important;
 			}

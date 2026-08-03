@@ -184,13 +184,16 @@ export function usePluginSettings() {
 						...response.schedule_meta,
 					});
 				}
-				createSuccessNotice(__('Settings saved.', 'updatronix'));
+				createSuccessNotice(__('Settings saved.', 'updatronix'), {
+					id: 'updatronix-settings-save',
+				});
 			} else {
 				createWarningNotice(
 					__(
 						'Your settings were saved, but the server did not return the updated values. Refresh the page to confirm.',
 						'updatronix'
-					)
+					),
+					{ id: 'updatronix-settings-save' }
 				);
 			}
 		} catch (e) {
@@ -200,7 +203,7 @@ export function usePluginSettings() {
 					'Your settings could not be saved. Check your connection and try again.',
 					'updatronix'
 				);
-			createErrorNotice(message);
+			createErrorNotice(message, { id: 'updatronix-settings-save' });
 		} finally {
 			setSaving(false);
 		}
@@ -234,7 +237,8 @@ export function usePluginSettings() {
 						__(
 							'The notice could not be dismissed. Try again.',
 							'updatronix'
-						)
+						),
+					{ id: 'updatronix-constant-dismiss' }
 				);
 			}
 		},

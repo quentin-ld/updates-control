@@ -233,6 +233,21 @@ function updatronix_admin_enqueue_scripts(string $admin_page): void {
 
     $asset_file = updatronix_PLUGIN_DIR . 'assets/build/index.asset.php';
     if (!file_exists($asset_file)) {
+        $notice_callback = static function (): void {
+            $class = 'notice notice-warning is-dismissible';
+            $message = sprintf(
+                /* translators: %s: `npm run build` command */
+                __('Updatronix: The admin interface is not available because the JavaScript bundle is missing. Please run %s from the plugin directory.', 'updatronix'),
+                '<code>npm run build</code>'
+            );
+            printf('<div class="%s"><p><strong>Updatronix</strong>: %s</p></div>', esc_attr($class), wp_kses_post($message));
+        };
+        if (is_multisite()) {
+            add_action('network_admin_notices', $notice_callback);
+        } else {
+            add_action('admin_notices', $notice_callback);
+        }
+
         return;
     }
 
@@ -265,6 +280,20 @@ function updatronix_admin_enqueue_scripts(string $admin_page): void {
         ),
         $asset['version']
     );
+
+    /**
+     * Fires after Updatronix Free admin assets are enqueued.
+     *
+     * Consumed by Updatronix Pro's `Updatronix_Pro_Enqueue::enqueue_scripts()`
+     * to enqueue Pro's own admin JS/CSS on the Updatronix admin page. Fires only
+     * on the correct page hooks and after Free's core assets have been
+     * registered, so Pro can depend on `updatronix-scripts` and `wp-components`.
+     *
+     * @since 1.1.1
+     *
+     * @param string $admin_page Current admin page hook suffix.
+     */
+    do_action('updatronix_enqueue_admin_assets', $admin_page);
 }
 
 add_action('admin_enqueue_scripts', 'updatronix_localize_settings');
@@ -281,6 +310,9 @@ function updatronix_localize_settings(string $admin_page): void {
     }
 
     $options = updatronix_get_settings();
+    $tabs = updatronix_get_admin_tabs();
+    $active_tab = updatronix_get_active_tab($tabs);
+
     wp_localize_script('updatronix-scripts', 'updatronixSettings', [
         'restUrl' => esc_url_raw(rest_url()),
         'namespace' => 'updatronix/v1',
@@ -288,5 +320,10 @@ function updatronix_localize_settings(string $admin_page): void {
         'options' => $options,
         'schedule_meta' => updatronix_decorate_schedule_meta_for_display(Updatronix_Cron::get_schedule_rest_meta()),
         'constants' => Updatronix_AutoUpdates::get_constants(),
+        'tabs' => $tabs,
+        'activeTab' => $active_tab,
+        'isPro' => defined('UPDATRONIX_PRO_VERSION'),
+        // Global window property populated by Pro's admin JS for the panel registry; Free reads it via ProTabPanel.
+        'proPanelRegistryGlobal' => 'updatronixProPanelRegistry',
     ]);
 }

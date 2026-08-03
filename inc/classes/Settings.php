@@ -66,11 +66,16 @@ final class Updatronix_Settings {
                 ],
                 'status' => [
                     'type' => 'string',
-                    'enum' => ['', 'success', 'error', 'cancelled'],
+                    'enum' => ['', 'success', 'error', 'cancelled', 'info', 'warning'],
                 ],
                 'site_id' => [
                     'type' => 'integer',
                     'default' => null,
+                ],
+                'search' => [
+                    'type' => 'string',
+                    'default' => '',
+                    'maxLength' => 200,
                 ],
             ],
         ]);
@@ -108,6 +113,12 @@ final class Updatronix_Settings {
             'permission_callback' => [self::class, 'rest_can_manage_logs'],
         ]);
 
+        register_rest_route(self::REST_NAMESPACE, '/logs/all', [
+            'methods' => \WP_REST_Server::DELETABLE,
+            'callback' => [self::class, 'rest_delete_all_logs'],
+            'permission_callback' => [self::class, 'rest_can_manage_logs'],
+        ]);
+
         register_rest_route(self::REST_NAMESPACE, '/settings', [
             [
                 'methods' => \WP_REST_Server::READABLE,
@@ -137,7 +148,7 @@ final class Updatronix_Settings {
                             'update_check' => [
                                 'type' => 'object',
                                 'properties' => [
-                                    'recurrence' => ['type' => 'string'],
+                                    'recurrence' => ['type' => 'string', 'enum' => ['', 'hourly', 'twicedaily', 'daily', 'weekly']],
                                     'time' => ['type' => 'string'],
                                 ],
                             ],
@@ -145,7 +156,7 @@ final class Updatronix_Settings {
                                 'type' => 'object',
                                 'properties' => [
                                     'enabled' => ['type' => 'boolean'],
-                                    'delay_value' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 365],
+                                    'delay_value' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 365, 'sanitize_callback' => 'absint'],
                                 ],
                             ],
                         ],
@@ -264,6 +275,11 @@ final class Updatronix_Settings {
             $args['performed_as'] = $request->get_param('performed_as');
         }
 
+        $search = $request->get_param('search');
+        if ($search !== null && $search !== '') {
+            $args['search'] = sanitize_text_field((string) $search);
+        }
+
         $logs = Updatronix_Logger::get_logs($args, false);
         $total = Updatronix_Logger::get_logs_count($args);
 
@@ -342,6 +358,10 @@ final class Updatronix_Settings {
             'same_version' => __('Reinstall', 'updatronix'),
             'failed' => __('Failed', 'updatronix'),
             'uninstall' => __('Uninstall', 'updatronix'),
+            'prevented' => __('Prevented', 'updatronix'),
+            'incompatible' => __('Incompatible', 'updatronix'),
+            'disabled' => __('Disabled', 'updatronix'),
+            'safe_mode_disabled' => __('Auto-updates disabled by Safe Mode', 'updatronix'),
         ];
         $log->action_type_display = $action_labels[$action_type] ?? $action_type;
 
@@ -469,6 +489,18 @@ final class Updatronix_Settings {
     }
 
     /**
+     * REST: Delete all log entries.
+     *
+     * @param \WP_REST_Request<array<string, mixed>> $request Request.
+     * @return WP_REST_Response
+     */
+    public static function rest_delete_all_logs(\WP_REST_Request $request): WP_REST_Response {
+        $deleted = Updatronix_Logger::delete_all_logs();
+
+        return new WP_REST_Response(['deleted' => $deleted], 200);
+    }
+
+    /**
      * REST: Update plugin settings.
      *
      * @param \WP_REST_Request<array<string, mixed>> $request Request.
@@ -527,12 +559,42 @@ final class Updatronix_Settings {
     }
 
     /**
+     * Check whether global auto-update kill switches are active.
+     *
+     * Returns a WP_REST_Response with 403 status when {@see AUTOMATIC_UPDATER_DISABLED}
+     * or {@see DISALLOW_FILE_MODS} is set to true in wp-config. Returns null when
+     * both constants are not active, allowing the caller to proceed.
+     *
+     * @return WP_REST_Response|null Null when no kill switch is active, otherwise a 403 response.
+     */
+    private static function auto_update_globally_locked(): ?WP_REST_Response {
+        if (defined('AUTOMATIC_UPDATER_DISABLED') && AUTOMATIC_UPDATER_DISABLED) {
+            return new WP_REST_Response([
+                'message' => __('Automatic updates are disabled on this site via the AUTOMATIC_UPDATER_DISABLED constant in your wp-config.php file.', 'updatronix'),
+            ], 403);
+        }
+
+        if (!wp_is_file_mod_allowed('automatic_updater')) {
+            return new WP_REST_Response([
+                'message' => __('File modifications are not allowed on this site via the DISALLOW_FILE_MODS constant in your wp-config.php file.', 'updatronix'),
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * REST: Set core auto-update mode.
      *
      * @param \WP_REST_Request<array<string, mixed>> $request Request.
      * @return WP_REST_Response
      */
     public static function rest_set_core_mode(\WP_REST_Request $request): WP_REST_Response {
+        $lock_check = self::auto_update_globally_locked();
+        if ($lock_check !== null) {
+            return $lock_check;
+        }
+
         $mode = sanitize_key($request->get_param('mode'));
         $ok = Updatronix_AutoUpdates::set_core_mode($mode);
 
@@ -552,6 +614,11 @@ final class Updatronix_Settings {
      * @return WP_REST_Response
      */
     public static function rest_toggle_plugin(\WP_REST_Request $request): WP_REST_Response {
+        $lock_check = self::auto_update_globally_locked();
+        if ($lock_check !== null) {
+            return $lock_check;
+        }
+
         $plugin = sanitize_text_field($request->get_param('plugin'));
         $enable = (bool) $request->get_param('enable');
         $ok = Updatronix_AutoUpdates::toggle_plugin($plugin, $enable);
@@ -572,6 +639,11 @@ final class Updatronix_Settings {
      * @return WP_REST_Response
      */
     public static function rest_toggle_theme(\WP_REST_Request $request): WP_REST_Response {
+        $lock_check = self::auto_update_globally_locked();
+        if ($lock_check !== null) {
+            return $lock_check;
+        }
+
         $stylesheet = sanitize_text_field($request->get_param('stylesheet'));
         $enable = (bool) $request->get_param('enable');
         $ok = Updatronix_AutoUpdates::toggle_theme($stylesheet, $enable);
@@ -592,6 +664,11 @@ final class Updatronix_Settings {
      * @return WP_REST_Response
      */
     public static function rest_toggle_translation(\WP_REST_Request $request): WP_REST_Response {
+        $lock_check = self::auto_update_globally_locked();
+        if ($lock_check !== null) {
+            return $lock_check;
+        }
+
         $enable = (bool) $request->get_param('enable');
         Updatronix_AutoUpdates::set_translations($enable);
 

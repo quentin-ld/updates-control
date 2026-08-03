@@ -22,14 +22,14 @@ final class Updatronix_Database {
      *
      * @var string
      */
-    public const OPTION_DB_VERSION = 'updatronix_log_db_version';
+    public const OPTION_DB_VERSION = UPDATRONIX_DB_OPTION_KEY;
 
     /**
      * Current schema version.
      *
      * @var string
      */
-    public const DB_VERSION = UPDATRONIX_VERSION;
+    public const DB_VERSION = UPDATRONIX_DB_VERSION;
 
     /**
      * Table name (without prefix).

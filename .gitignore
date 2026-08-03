@@ -318,6 +318,7 @@ $RECYCLE.BIN/
 .phpunit.cache/
 .phpunit.result.cache
 .config/.phpunit.result.cache
+.config/wp-tests.env
 **/.phpunit.result.cache
 
 # WordPress test stack under repo, Parcel/Vite-style `.cache`, etc.

@@ -207,6 +207,8 @@ export const LOG_FILTERS = [
 			{ value: 'success', label: __('Success', 'updatronix') },
 			{ value: 'error', label: __('Error', 'updatronix') },
 			{ value: 'cancelled', label: __('Cancelled', 'updatronix') },
+			{ value: 'info', label: __('Info', 'updatronix') },
+			{ value: 'warning', label: __('Warning', 'updatronix') },
 		],
 		formatSummary: summarizeValueOnly,
 	},

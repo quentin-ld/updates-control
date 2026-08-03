@@ -240,14 +240,7 @@ export const TabPanel = ({ tabId, children }) => {
 
 	useEffect(() => {
 		if (isSelected && panelRef.current) {
-			const focusableElements = panelRef.current.querySelectorAll(
-				'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])'
-			);
-			if (focusableElements.length === 0) {
-				panelRef.current.setAttribute('tabindex', '0');
-			} else {
-				panelRef.current.removeAttribute('tabindex');
-			}
+			panelRef.current.setAttribute('tabindex', '0');
 		}
 	}, [isSelected]);
 

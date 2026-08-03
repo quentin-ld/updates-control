@@ -22,19 +22,29 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [busy, setBusy] = useState(false);
+	const [fetchError, setFetchError] = useState(null);
 
 	const fetchData = useCallback(async () => {
 		setLoading(true);
+		setFetchError(null);
 		try {
 			const response = await apiFetch({ path: API_BASE });
 			setData(response);
 		} catch (e) {
-			createErrorNotice(
+			setFetchError(
 				e?.message ||
 					__(
 						'Your auto-update settings could not be loaded. Try refreshing the page.',
 						'updatronix'
 					)
+			);
+			createErrorNotice(
+				e?.message ||
+					__(
+						'Your auto-update settings could not be loaded. Try refreshing the page.',
+						'updatronix'
+					),
+				{ id: 'updatronix-autoupdate-toggle' }
 			);
 		} finally {
 			setLoading(false);
@@ -56,7 +66,8 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 				});
 				setData(response);
 				createSuccessNotice(
-					__('Core auto-update setting saved.', 'updatronix')
+					__('Core auto-update setting saved.', 'updatronix'),
+					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} catch (e) {
 				createErrorNotice(
@@ -64,7 +75,8 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 						__(
 							'The core auto-update setting could not be saved. Check your connection and try again.',
 							'updatronix'
-						)
+						),
+					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} finally {
 				setBusy(false);
@@ -83,19 +95,32 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 					data: { plugin: pluginFile, enable },
 				});
 				setData(response);
+				createSuccessNotice(
+					enable
+						? __(
+								'Auto-update enabled for this plugin.',
+								'updatronix'
+							)
+						: __(
+								'Auto-update disabled for this plugin.',
+								'updatronix'
+							),
+					{ id: 'updatronix-autoupdate-toggle' }
+				);
 			} catch (e) {
 				createErrorNotice(
 					e?.message ||
 						__(
 							'The plugin auto-update setting could not be changed. Try again.',
 							'updatronix'
-						)
+						),
+					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} finally {
 				setBusy(false);
 			}
 		},
-		[createErrorNotice]
+		[createSuccessNotice, createErrorNotice]
 	);
 
 	const toggleTheme = useCallback(
@@ -108,19 +133,32 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 					data: { stylesheet, enable },
 				});
 				setData(response);
+				createSuccessNotice(
+					enable
+						? __(
+								'Auto-update enabled for this theme.',
+								'updatronix'
+							)
+						: __(
+								'Auto-update disabled for this theme.',
+								'updatronix'
+							),
+					{ id: 'updatronix-autoupdate-toggle' }
+				);
 			} catch (e) {
 				createErrorNotice(
 					e?.message ||
 						__(
 							'The theme auto-update setting could not be changed. Try again.',
 							'updatronix'
-						)
+						),
+					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} finally {
 				setBusy(false);
 			}
 		},
-		[createErrorNotice]
+		[createSuccessNotice, createErrorNotice]
 	);
 
 	const toggleTranslation = useCallback(
@@ -134,7 +172,8 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 				});
 				setData(response);
 				createSuccessNotice(
-					__('Translation auto-update setting saved.', 'updatronix')
+					__('Translation auto-update setting saved.', 'updatronix'),
+					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} catch (e) {
 				createErrorNotice(
@@ -142,7 +181,8 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 						__(
 							'The translation auto-update setting could not be changed. Try again.',
 							'updatronix'
-						)
+						),
+					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} finally {
 				setBusy(false);
@@ -169,7 +209,8 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 						__(
 							'The notice could not be dismissed. Try again.',
 							'updatronix'
-						)
+						),
+					{ id: 'updatronix-constant-dismiss' }
 				);
 			}
 		},
@@ -180,6 +221,8 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 		data,
 		loading,
 		busy,
+		fetchError,
+		retryFetch: fetchData,
 		setCoreMode,
 		togglePlugin,
 		toggleTheme,

@@ -3,6 +3,7 @@
  */
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { Notice } from '@wordpress/components';
 import { formatDate, getStatusLabel } from './utils';
 
 /**
@@ -17,6 +18,7 @@ import { formatDate, getStatusLabel } from './utils';
 export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 	const [detailLog, setDetailLog] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [fetchError, setFetchError] = useState(null);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -26,10 +28,21 @@ export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 		}
 
 		setLoading(true);
+		setFetchError(null);
 		fetchLogDetails(logId)
 			.then((nextLog) => {
 				if (isMounted && nextLog) {
 					setDetailLog(nextLog);
+				}
+			})
+			.catch(() => {
+				if (isMounted) {
+					setFetchError(
+						__(
+							'Could not load the log details. Try again, or check your database connection.',
+							'updatronix'
+						)
+					);
 				}
 			})
 			.finally(() => {
@@ -45,6 +58,14 @@ export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 
 	if (loading) {
 		return <p>{__('Loading log details…', 'updatronix')}</p>;
+	}
+
+	if (fetchError) {
+		return (
+			<Notice status="error" isDismissible={false}>
+				{fetchError}
+			</Notice>
+		);
 	}
 
 	const currentLog = detailLog || log;
@@ -116,6 +137,12 @@ export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 					<summary className="updatronix-notes-toggle">
 						{__('Advanced details', 'updatronix')}
 					</summary>
+					<p className="updatronix-notes-redaction-note">
+						{__(
+							'Server paths have been redacted for security.',
+							'updatronix'
+						)}
+					</p>
 					<pre
 						className="updatronix-notes-trace"
 						style={{

@@ -392,6 +392,13 @@
 	details[open] > .updatronix-notes-toggle {
 		margin-bottom: var(--wpds-dimension-gap-sm);
 	}
+
+	.updatronix-notes-redaction-note {
+		margin: 0 0 var(--wpds-dimension-gap-sm);
+		font-size: var(--wpds-typography-font-size-sm);
+		color: var(--wpds-color-fg-content-neutral-weak);
+		font-style: italic;
+	}
 }
 
 .updatronix-settings-form {
@@ -447,6 +454,10 @@
 			opacity: 0.4;
 			pointer-events: none;
 		}
+	}
+
+	.updatronix-settings-clear-logs {
+		margin-top: var(--wpds-dimension-gap-lg);
 	}
 
 	.updatronix-settings-error {

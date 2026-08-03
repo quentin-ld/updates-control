@@ -3,6 +3,7 @@
  */
 
 const STORAGE_KEY = 'updatronix_export_preferences';
+const STORAGE_VERSION = 1;
 
 /** @type {Readonly<Record<string, boolean>>} */
 export const DEFAULT_EXPORT_COLUMNS = {
@@ -61,6 +62,13 @@ export function loadExportPreferences() {
 		}
 
 		const parsed = JSON.parse(raw);
+		if (parsed?.version !== STORAGE_VERSION) {
+			return {
+				merge: true,
+				columns: { ...DEFAULT_EXPORT_COLUMNS },
+			};
+		}
+
 		return {
 			merge: typeof parsed?.merge === 'boolean' ? parsed.merge : true,
 			columns: normalizeColumns(parsed?.columns),
@@ -84,6 +92,7 @@ export function saveExportPreferences(prefs) {
 		window.localStorage?.setItem(
 			STORAGE_KEY,
 			JSON.stringify({
+				version: STORAGE_VERSION,
 				merge: prefs.merge,
 				columns: prefs.columns,
 			})

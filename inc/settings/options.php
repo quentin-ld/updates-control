@@ -184,11 +184,7 @@ function updatronix_sanitize_schedule_array(array $in): array {
 
     $delay_enabled = (bool) ($du_in['enabled'] ?? false);
     $delay_value_raw = isset($du_in['delay_value']) ? (int) $du_in['delay_value'] : (int) $defaults['delay_updates']['delay_value'];
-    $delay_value = $delay_enabled ? max(1, min(365, $delay_value_raw)) : max(0, min(365, $delay_value_raw));
-
-    if (!$delay_enabled) {
-        $delay_value = 0;
-    }
+    $delay_value = $delay_enabled ? max(1, min(365, $delay_value_raw)) : 0;
 
     return [
         'update_check' => [
@@ -261,13 +257,15 @@ function updatronix_next_update_check_timestamp(string $recurrence, string $time
         if ($run->getTimestamp() <= $now->getTimestamp()) {
             if ($recurrence === 'weekly') {
                 $run = $run->modify('+7 days');
+            } elseif ($recurrence === 'twicedaily') {
+                $run = $run->modify('+12 hours');
             } else {
                 $run = $run->modify('+1 day');
             }
         }
 
         return (int) $run->getTimestamp();
-    } catch (\Exception $exception) {
+    } catch (\Throwable $exception) {
         return (int) time();
     }
 }
@@ -336,7 +334,7 @@ function updatronix_get_settings(): array {
 
     $defaults = UPDATRONIX_SETTINGS_DEFAULTS;
     $raw_dismissed = isset($decoded['dismissed_constants']) && is_array($decoded['dismissed_constants'])
-        ? array_values(array_filter($decoded['dismissed_constants'], 'is_string'))
+        ? array_values($decoded['dismissed_constants'])
         : $defaults['dismissed_constants'];
     $out = [
         'logging_enabled' => isset($decoded['logging_enabled']) ? (bool) $decoded['logging_enabled'] : $defaults['logging_enabled'],
@@ -444,7 +442,14 @@ function updatronix_sanitize_settings_json(mixed $value): string {
     ];
     $encoded = wp_json_encode($out);
 
-    return $encoded !== false ? $encoded : '{}';
+    if ($encoded === false) {
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+        error_log('Updatronix: wp_json_encode failed in updatronix_sanitize_settings_json — settings data may be corrupted.');
+
+        return '{}';
+    }
+
+    return $encoded;
 }
 
 /**
@@ -488,7 +493,7 @@ function updatronix_maybe_migrate_network_storage(): void {
                 UPDATRONIX_OPTION_SETTINGS,
                 UPDATRONIX_OPTION_NETWORK_SCHEDULE,
                 'updatronix_cap_migrated',
-                'updatronix_log_db_version',
+                UPDATRONIX_DB_OPTION_KEY,
                 Updatronix_UpdateLogState::OPTION_STATE,
                 'updatronix_export_audit',
             ],

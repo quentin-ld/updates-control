@@ -70,17 +70,15 @@ final class Updatronix_Export_Transient_Manager {
             return new WP_Error('internal', '', ['status' => 500]);
         }
 
+        // Read the prior key BEFORE writing the new one — the meta pointer
+        // is about to be overwritten.
         $prior = get_user_meta($user_id, self::POINTER_META_KEY, true);
         $prior = is_string($prior) ? $prior : '';
 
-        if ($prior !== '' && preg_match(self::KEY_PATTERN, $prior)) {
-            $deleted = updatronix_delete_plugin_transient($prior);
-            if (!$deleted && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- gated diagnostic only.
-                error_log('[updatronix] export transient delete prior returned false');
-            }
-        }
-
+        // Write the new transient first, then delete the old one.
+        // This eliminates the orphan window where a crash between the operations
+        // would lose both transients. The old transient still has its TTL and will
+        // expire naturally if the delete fails.
         if (!updatronix_set_plugin_transient($new_key, $payload, Updatronix_Export::TRANSIENT_TTL)) {
             return new WP_Error('internal', '', ['status' => 500]);
         }
@@ -90,6 +88,16 @@ final class Updatronix_Export_Transient_Manager {
             updatronix_delete_plugin_transient($new_key);
 
             return new WP_Error('internal', '', ['status' => 500]);
+        }
+
+        // Best-effort cleanup of the prior transient. The old one expires
+        // naturally via TTL if this delete fails.
+        if ($prior !== '' && preg_match(self::KEY_PATTERN, $prior) && $prior !== $new_key) {
+            $deleted = updatronix_delete_plugin_transient($prior);
+            if (!$deleted && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- gated diagnostic only.
+                error_log('[updatronix] export transient delete prior returned false');
+            }
         }
 
         return true;

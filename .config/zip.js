@@ -25,73 +25,118 @@ archive.on('error', (err) => {
 
 archive.pipe(output);
 
-archive.glob('**/*', {
-	ignore: [
-		'.agents/**',
-		'.cache/**',
-		'.config/**',
-		'.cursor/**',
-		'.github/**',
-		'.git/**',
-		'.phpunit.cache/**',
-		'.sublime/**',
-		'.vscode/**',
-		'.wordpress-org/**',
-		'assets/src/**',
-		'bin/**',
-		'docs/**',
-		'node_modules/**',
-		'tests/**',
-		'vendor/**',
-		'*.sql',
-		'*.tar.gz',
-		'*.zip',
-		'.distignore',
-		'.DS_Store',
-		'.editorconfig',
-		'.eslintrc',
-		'.eslintrc.js',
-		'.gitattributes',
-		'.gitignore',
-		'.gitlab-ci.yml',
-		'.gitmodules',
-		'.php-cs-fixer.php',
-		'.phpunit.result.cache',
-		'.prettierrc',
-		'.prettierrc.js',
-		'.travis.yml',
-		'behat.yml',
-		'circle.yml',
-		'composer.json',
-		'composer.lock',
-		'eslintrc',
-		'eslintrc.js',
-		'FEATURE_REQUEST.md',
-		'Gruntfile.js',
-		'multisite.xml',
-		'multisite.xml.dist',
-		'package-lock.json',
-		'package.json',
-		'php-cs-fixer.php',
-		'phpcs.ruleset.xml',
-		'phpcs.xml',
-		'phpcs.xml.dist',
-		'phpstan-bootstrap.php',
-		'phpstan.neon',
-		'phpunit.xml',
-		'phpunit.xml.dist',
-		'postcss.config.sort.js',
-		'prettierrc',
-		'prettierrc.js',
-		'README.md',
-		'Thumbs.db',
-		'workflow.md',
-		'wp-cli.local.yml',
-		'yarn.lock',
-		'.phpactor.json',
-		'AGENTS.md',
-		'.php-cs-fixer.cache',
-	],
-});
+const ignore = [
+	'.agents/**',
+	'.cache/**',
+	'.config/**',
+	'.cursor/**',
+	'.github/**',
+	'.git/**',
+	'.phpunit.cache/**',
+	'.sublime/**',
+	'.vscode/**',
+	'.wordpress-org/**',
+	'assets/src/**',
+	'bin/**',
+	'docs/**',
+	'node_modules/**',
+	'tests/**',
+	'vendor/**',
+	'*.sql',
+	'*.tar.gz',
+	'*.zip',
+	'.distignore',
+	'.DS_Store',
+	'.editorconfig',
+	'.eslintrc',
+	'.eslintrc.js',
+	'.gitattributes',
+	'.gitignore',
+	'.gitlab-ci.yml',
+	'.gitmodules',
+	'.php-cs-fixer.php',
+	'.phpunit.result.cache',
+	'.prettierrc',
+	'.prettierrc.js',
+	'.travis.yml',
+	'behat.yml',
+	'circle.yml',
+	'composer.json',
+	'composer.lock',
+	'eslintrc',
+	'eslintrc.js',
+	'FEATURE_REQUEST.md',
+	'Gruntfile.js',
+	'multisite.xml',
+	'multisite.xml.dist',
+	'package-lock.json',
+	'package.json',
+	'php-cs-fixer.php',
+	'phpcs.ruleset.xml',
+	'phpcs.xml',
+	'phpcs.xml.dist',
+	'phpstan-bootstrap.php',
+	'phpstan.neon',
+	'phpunit.xml',
+	'phpunit.xml.dist',
+	'postcss.config.sort.js',
+	'prettierrc',
+	'prettierrc.js',
+	'README.md',
+	'Thumbs.db',
+	'workflow.md',
+	'wp-cli.local.yml',
+	'yarn.lock',
+	'.phpactor.json',
+	'AGENTS.md',
+	'.php-cs-fixer.cache',
+];
+
+function isIgnored(filePath, ignorePatterns) {
+	for (const pattern of ignorePatterns) {
+		if (pattern.endsWith('/**')) {
+			const prefix = pattern.slice(0, -3);
+			if (filePath === prefix || filePath.startsWith(prefix + '/')) {
+				return true;
+			}
+		} else if (pattern.startsWith('*')) {
+			const ext = pattern.slice(1);
+			if (filePath.endsWith(ext)) {
+				return true;
+			}
+		} else if (filePath === pattern) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function walkDir(dir, baseDir, results) {
+	const entries = fs.readdirSync(dir, { withFileTypes: true });
+	for (const entry of entries) {
+		const fullPath = path.join(dir, entry.name);
+		const relativePath = path.relative(baseDir, fullPath);
+
+		if (isIgnored(relativePath, ignore)) {
+			continue;
+		}
+
+		if (entry.isDirectory()) {
+			walkDir(fullPath, baseDir, results);
+		} else {
+			results.push(fullPath);
+		}
+	}
+}
+
+const files = [];
+walkDir(process.cwd(), process.cwd(), files);
+
+for (const filePath of files) {
+	const relativePath = path.relative(process.cwd(), filePath);
+	archive.file(filePath, {
+		name: path.join(currentDir, relativePath),
+	});
+}
 
 archive.finalize();

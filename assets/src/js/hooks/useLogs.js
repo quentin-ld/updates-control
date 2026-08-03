@@ -2,6 +2,38 @@ import { useState, useCallback, useRef } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
+/** Cache entry TTL in milliseconds (30 seconds). */
+const DETAIL_CACHE_TTL = 30_000;
+
+/**
+ * Extract a single filter value from the DataView filters array.
+ *
+ * Handles `is` (scalar), `isNot` (scalar), `isAny` (list), `isNone` (list).
+ * For list operators, returns the first value. For `isNot`, returns the value
+ * so the server can apply it as a pre-filter (the client-side
+ * filterSortAndPaginate remains the final authority for negation).
+ *
+ * @param {Array<{ field: string, operator: string, value: string|Array }>} filters DataView filters.
+ * @param {string}                                                          field   Filter field name.
+ * @return {string} The filter value, or empty string if no matching filter is found.
+ */
+export function getFilterValue(filters, field) {
+	if (!Array.isArray(filters)) {
+		return '';
+	}
+	for (const f of filters) {
+		if (!f || f.field !== field) {
+			continue;
+		}
+		const val = f.value;
+		if (Array.isArray(val)) {
+			return String(val[0] ?? '');
+		}
+		return String(val ?? '');
+	}
+	return '';
+}
+
 /**
  * Fetch, delete, and clean up update logs.
  *
@@ -23,6 +55,8 @@ export function useLogs() {
 				page: String(params.page || 1),
 				log_type: params.log_type || '',
 				status: params.status || '',
+				performed_as: params.performed_as || '',
+				search: params.search || '',
 			}).toString();
 			const response = await apiFetch({
 				path: `updatronix/v1/logs?${query}`,
@@ -44,8 +78,9 @@ export function useLogs() {
 
 	const fetchLogDetails = useCallback(async (id) => {
 		const cacheKey = String(id);
-		if (detailsCacheRef.current[cacheKey]) {
-			return detailsCacheRef.current[cacheKey];
+		const cached = detailsCacheRef.current[cacheKey];
+		if (cached && Date.now() - cached.ts < DETAIL_CACHE_TTL) {
+			return cached.log;
 		}
 
 		const response = await apiFetch({
@@ -53,7 +88,7 @@ export function useLogs() {
 		});
 		const log = response?.log || null;
 		if (log) {
-			detailsCacheRef.current[cacheKey] = log;
+			detailsCacheRef.current[cacheKey] = { log, ts: Date.now() };
 		}
 
 		return log;
@@ -76,6 +111,25 @@ export function useLogs() {
 		}
 	}, []);
 
+	const clearAllLogs = useCallback(async () => {
+		try {
+			await apiFetch({
+				path: 'updatronix/v1/logs/all',
+				method: 'DELETE',
+			});
+			setLogs([]);
+			setTotal(0);
+			detailsCacheRef.current = {};
+			return true;
+		} catch (e) {
+			setError(
+				e?.message ||
+					__('Could not clear logs. Try again.', 'updatronix')
+			);
+			return false;
+		}
+	}, []);
+
 	return {
 		logs,
 		total,
@@ -84,5 +138,6 @@ export function useLogs() {
 		fetchLogs,
 		fetchLogDetails,
 		deleteLog,
+		clearAllLogs,
 	};
 }

@@ -27,6 +27,9 @@ export function statusToBadgeIntent(status) {
 	if (s === 'error' || s === 'failed' || s === 'errors') {
 		return 'error';
 	}
+	if (s === 'info') {
+		return 'info';
+	}
 	return 'default';
 }
 
@@ -52,6 +55,9 @@ export function getStatusLabel(status) {
 	}
 	if (s === 'cancelled') {
 		return __('Cancelled', 'updatronix');
+	}
+	if (s === 'info') {
+		return __('Info', 'updatronix');
 	}
 	return String(status);
 }

@@ -7,12 +7,8 @@
 #   bash bin/setup-dev.sh            # install everything, keep an existing test env
 #   bash bin/setup-dev.sh --force    # also regenerate .config/wp-tests.env
 #
-# It is safe to re-run. After it completes, these all work:
-#
-#   composer run test           # unit tests (no WordPress)
-#   composer run test:integration   # full WordPress integration tests
-#   npm run test:all            # all linters + unit + integration tests
-#   npm run build:all           # full verification + POT + production build
+# It is safe to re-run. After it completes, all commands work
+# (integration tests skip gracefully when the env is not set up).
 #
 # Requirements: Composer, Node.js + npm, bash, and the site running in
 # Local by Flywheel (the integration stack reuses Local's PHP, MySQL, and WP-CLI).
@@ -53,5 +49,5 @@ fi
 
 echo
 echo "==> Done. Next:"
-echo "      npm run test:all     # all linters + unit + integration tests"
+echo "      npm run test:all     # all linters + unit tests"
 echo "      npm run build:all    # full verification + POT + production build"

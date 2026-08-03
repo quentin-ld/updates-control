@@ -3,7 +3,7 @@
  * Uses Gutenberg components: NumberControl, TextControl, ToggleControl, CheckboxControl.
  */
 
-import { memo } from '@wordpress/element';
+import { memo, useState } from '@wordpress/element';
 import {
 	Button,
 	Card,
@@ -19,6 +19,7 @@ import {
 } from '@wordpress/components';
 import { bellUnread, seen } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
+import { useLogs } from '../hooks/useLogs';
 
 const NOTIFY_TYPES = [
 	{
@@ -58,11 +59,12 @@ const NOTIFY_TYPES = [
 /**
  * Render the logging and notification settings form.
  *
- * @param {Object}   props              Component props.
- * @param {Object}   props.settings     Current settings.
- * @param {Function} props.setSettings  Setter for settings.
- * @param {Function} props.saveSettings Async save to REST API.
- * @param {boolean}  props.saving       Whether save is in progress.
+ * @param {Object}   props               Component props.
+ * @param {Object}   props.settings      Current settings.
+ * @param {Function} props.setSettings   Setter for settings.
+ * @param {Function} props.saveSettings  Async save to REST API.
+ * @param {boolean}  props.saving        Whether save is in progress.
+ * @param {Function} props.onLogsCleared Callback after successful clear.
  * @return {JSX.Element} The settings form.
  */
 export const SettingsPanel = memo(function SettingsPanel({
@@ -70,7 +72,33 @@ export const SettingsPanel = memo(function SettingsPanel({
 	setSettings,
 	saveSettings,
 	saving,
+	onLogsCleared,
 }) {
+	const { clearAllLogs } = useLogs();
+	const [clearing, setClearing] = useState(false);
+
+	const handleClearLogs = async () => {
+		if (
+			// eslint-disable-next-line no-alert
+			!window.confirm(
+				__(
+					'Are you sure you want to clear all update logs? This action cannot be undone.',
+					'updatronix'
+				)
+			)
+		) {
+			return;
+		}
+
+		setClearing(true);
+		const ok = await clearAllLogs();
+		setClearing(false);
+
+		if (ok && onLogsCleared) {
+			onLogsCleared();
+		}
+	};
+
 	const handleNotifyChange = (key, checked) => {
 		setSettings((prev) => ({
 			...prev,
@@ -127,16 +155,32 @@ export const SettingsPanel = memo(function SettingsPanel({
 						min={1}
 						max={365}
 						value={settings.retention_days}
-						onChange={(value) =>
+						onChange={(value) => {
+							const n = Number(value);
+							const clamped = Math.max(
+								1,
+								Math.min(365, Number.isFinite(n) ? n : 90)
+							);
 							setSettings((prev) => ({
 								...prev,
-								retention_days: Math.max(
-									1,
-									Math.min(365, Number(value) ?? 90)
-								),
-							}))
-						}
+								retention_days: clamped,
+							}));
+						}}
 					/>
+					<div className="updatronix-settings-clear-logs">
+						<Button
+							variant="secondary"
+							isDestructive
+							onClick={handleClearLogs}
+							isBusy={clearing}
+							disabled={clearing}
+							__next40pxDefaultSize
+						>
+							{clearing
+								? __('Clearing…', 'updatronix')
+								: __('Clear all logs', 'updatronix')}
+						</Button>
+					</div>
 				</fieldset>
 			</div>
 			<div className="updatronix-settings-section">

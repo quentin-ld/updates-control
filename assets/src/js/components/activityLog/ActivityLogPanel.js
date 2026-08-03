@@ -22,7 +22,7 @@ import {
 import { upload } from '@wordpress/icons';
 import { Button as DesignSystemButton } from '@wordpress/ui';
 import { __ } from '@wordpress/i18n';
-import { useLogs } from '../../hooks/useLogs';
+import { useLogs, getFilterValue } from '../../hooks/useLogs';
 import { LAYOUT_ACTIVITY } from './constants';
 import { buildFilterFields, PER_PAGE_SIZES } from './logFilters';
 import {
@@ -53,9 +53,10 @@ const DELETE_MODAL_STYLE = {
  *
  * @param {Object}  props                       Component props.
  * @param {boolean} [props.loggingEnabled=true] Whether update logging is enabled.
+ * @param {number}  [props.logsVersion=0]       Incremented to trigger a logs refetch.
  * @return {JSX.Element} The activity log panel UI.
  */
-export function ActivityLogPanel({ loggingEnabled = true }) {
+export function ActivityLogPanel({ loggingEnabled = true, logsVersion = 0 }) {
 	const { logs, loading, error, fetchLogs, fetchLogDetails, deleteLog } =
 		useLogs();
 	const [announcement, setAnnouncement] = useState({
@@ -87,8 +88,23 @@ export function ActivityLogPanel({ loggingEnabled = true }) {
 	}, []);
 
 	useEffect(() => {
-		fetchLogs({ per_page: view.perPage, page: view.page });
-	}, [fetchLogs, view.perPage, view.page]);
+		const filters = view.filters || [];
+		fetchLogs({
+			per_page: view.perPage,
+			page: view.page,
+			log_type: getFilterValue(filters, 'category'),
+			status: getFilterValue(filters, 'status'),
+			performed_as: getFilterValue(filters, 'triggeredBy'),
+			search: view.search || '',
+		});
+	}, [
+		fetchLogs,
+		logsVersion,
+		view.perPage,
+		view.page,
+		view.filters,
+		view.search,
+	]);
 
 	const filterFields = useMemo(() => buildFilterFields({ logs }), [logs]);
 

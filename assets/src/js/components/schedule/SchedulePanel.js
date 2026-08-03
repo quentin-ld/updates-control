@@ -139,7 +139,7 @@ export const SchedulePanel = memo(function SchedulePanel({
 		);
 	} else {
 		nextScheduledCopy = __(
-			'Save your changes to see the next scheduled time.',
+			'Schedule information is not yet available.',
 			'updatronix'
 		);
 	}

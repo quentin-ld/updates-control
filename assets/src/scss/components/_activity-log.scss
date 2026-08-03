@@ -1,8 +1,8 @@
 @use "../abstracts/variables" as *;
 
 .dataviews-view-activity {
-	padding-left: var(--wpds-dimension-padding-xs) !important;
-	padding-right: var(--wpds-dimension-padding-xs) !important;
+	padding-left: var(--wpds-dimension-padding-xs);
+	padding-right: var(--wpds-dimension-padding-xs);
 
 	&__item {
 
@@ -25,8 +25,8 @@
 }
 
 .dataviews__view-actions {
-	padding-left: var(--wpds-dimension-padding-xs) !important;
-	padding-right: var(--wpds-dimension-padding-xs) !important;
+	padding-left: var(--wpds-dimension-padding-xs);
+	padding-right: var(--wpds-dimension-padding-xs);
 }
 
 .updatronix-activitylog-panel .dataviews-wrapper {
@@ -100,13 +100,15 @@
 
 	&__output {
 
-		textarea {
+		textarea#updatronix-export-output {
 			font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 			font-size: 13px;
 			line-height: 1.5;
 			tab-size: 4;
 			white-space: pre;
 			overflow-x: auto;
+			width: 100%;
+			max-width: 100%;
 		}
 	}
 

@@ -42,8 +42,12 @@ final class Updatronix_Logger {
     /**
      * Insert a log entry.
      *
+     * Note: the parameter list is long (12 positional params). Future refactoring may
+     * consolidate these into a single parameter array. Callers should prefer named
+     * parameters or a helper wrapper for readability.
+     *
      * @param string $log_type       One of: core, plugin, theme, translation.
-     * @param string $action_type    One of: update, downgrade, install, same_version, failed, uninstall.
+     * @param string $action_type    One of: update, downgrade, install, same_version, failed, uninstall, prevented, incompatible, disabled.
      * @param string $item_name      Display name of the item.
      * @param string $item_slug      Slug/identifier.
      * @param string $version_before Previous version.
@@ -54,6 +58,12 @@ final class Updatronix_Logger {
      * @param string $performed_as   manual, automatic, or upload.
      * @param string $update_context bulk, single, or '' (for core/translation/legacy).
      * @param string $event_key      Optional canonical event key for dedupe.
+     *
+     * Note on `performed_by`: when `get_current_user_id()` returns 0 (e.g. during WP-Cron),
+     * the log entry is stored with `performed_by = 'system'`. Automatic updates triggered
+     * by the background updater always use this value. The `performed_as` field ('manual',
+     * 'automatic', 'upload') provides the more granular distinction for the UI.
+     *
      * @return int|false Log ID on success, false on failure.
      */
     public static function log(
@@ -132,7 +142,7 @@ final class Updatronix_Logger {
                 'performed_by' => $performed_by,
                 'performed_as' => $performed_as,
                 'update_context' => $update_context,
-                'created_at' => current_time('mysql'),
+                'created_at' => current_time('mysql'), // Must match wp_date() timezone in delete_older_than().
             ];
             $format = ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s'];
 
@@ -172,7 +182,7 @@ final class Updatronix_Logger {
                 'trace' => $trace,
                 'update_context' => $update_context,
                 'event_key' => $event_key,
-                'created_at' => current_time('mysql'),
+                'created_at' => current_time('mysql'), // Must match wp_date() timezone in delete_older_than().
             ];
             self::bump_logs_cache_last_changed();
 
@@ -199,6 +209,8 @@ final class Updatronix_Logger {
      * @return array{where_sql: string, values: array<int, int|string>}
      */
     private static function build_logs_where(array $args): array {
+        global $wpdb;
+
         $where = ['1=1'];
         $values = [];
         $site_id = $args['site_id'] ?? null;
@@ -222,6 +234,15 @@ final class Updatronix_Logger {
         if ($performed_as !== null && $performed_as !== '') {
             $where[] = 'performed_as = %s';
             $values[] = Updatronix_Security::sanitize_performed_as((string) $performed_as);
+        }
+
+        $search = $args['search'] ?? null;
+        if ($search !== null && $search !== '') {
+            $like = '%' . $wpdb->esc_like($search) . '%';
+            $where[] = '(item_name LIKE %s OR item_slug LIKE %s OR COALESCE(message, \'\') LIKE %s)';
+            $values[] = $like;
+            $values[] = $like;
+            $values[] = $like;
         }
 
         return ['where_sql' => implode(' AND ', $where), 'values' => $values];
@@ -248,6 +269,7 @@ final class Updatronix_Logger {
                 'log_type' => null,
                 'status' => null,
                 'performed_as' => null,
+                'search' => null,
                 'per_page' => 50,
                 'page' => 1,
                 'orderby' => 'created_at',
@@ -355,6 +377,9 @@ final class Updatronix_Logger {
                 );
             }
 
+            // Cache key includes microtime() via get_logs_cache_last_changed(), making it
+            // effectively a per-request cache. The 5-minute TTL is never reached because the
+            // key changes on every request; the TTL is a safety net for persistent cache backends.
             wp_cache_set($cache_key, is_object($row) ? $row : null, self::CACHE_GROUP, MINUTE_IN_SECONDS * 5);
 
             return is_object($row) ? $row : null;
@@ -412,10 +437,46 @@ final class Updatronix_Logger {
         return self::with_logs_table(static function () use ($days): int {
             global $wpdb;
             $table = Updatronix_Database::get_table_name();
-            $date = gmdate('Y-m-d H:i:s', strtotime("-{$days} days"));
+
+            $timestamp = strtotime("-{$days} days");
+            if ($timestamp === false) {
+                return 0;
+            }
+            $date = wp_date('Y-m-d H:i:s', $timestamp);
+
+            // Note: wp_date() uses the site's timezone, matching the created_at insert
+            // which uses current_time('mysql'). Both must stay in sync if either API changes.
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; table and date via prepare(); no WP API for bulk delete by date.
             $result = $wpdb->query($wpdb->prepare('DELETE FROM %i WHERE created_at < %s', $table, $date));
+
+            if (is_numeric($result) && (int) $result > 0) {
+                self::bump_logs_cache_last_changed();
+            }
+
+            return is_numeric($result) ? (int) $result : 0;
+        });
+    }
+
+    /**
+     * Delete every log row from the table.
+     *
+     * Intended for the "Clear all logs" destructive action in Settings. Runs via
+     * {@see with_logs_table()} so on Multisite the main site's table is always targeted.
+     *
+     * @return int Number of rows deleted.
+     */
+    public static function delete_all_logs(): int {
+        if (!Updatronix_Database::table_exists()) {
+            return 0;
+        }
+
+        return self::with_logs_table(static function (): int {
+            global $wpdb;
+            $table = Updatronix_Database::get_table_name();
+
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table; DELETE FROM without WHERE is the correct API for clearing all rows on user action.
+            $result = $wpdb->query($wpdb->prepare('DELETE FROM %i', $table));
 
             if (is_numeric($result) && (int) $result > 0) {
                 self::bump_logs_cache_last_changed();

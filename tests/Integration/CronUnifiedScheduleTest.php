@@ -102,6 +102,43 @@ final class CronUnifiedScheduleTest extends WP_UnitTestCase {
     }
 
     /**
+     * The {@see block_single_contamination()} filter prevents non-recurring `wp_version_check`
+     * events from being written to the cron option when unified scheduling is active.
+     *
+     * @return void
+     */
+    public function test_single_event_contamination_is_blocked_by_filter(): void {
+        $current = updatronix_get_settings();
+        $current['schedule']['update_check']['recurrence'] = 'daily';
+        $current['schedule']['update_check']['time'] = '03:00';
+        updatronix_save_settings_array($current);
+
+        self::assertTrue(Updatronix_Cron::is_unified_schedule_active());
+
+        $event_before = wp_get_scheduled_event(Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK);
+        self::assertNotFalse($event_before, 'A recurring event should exist.');
+        $previous_timestamp = $event_before->timestamp;
+
+        // Simulate Core's TTL logic: attempt to schedule a non-recurring single event.
+        $result = wp_schedule_single_event(time() + HOUR_IN_SECONDS, Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK);
+        self::assertFalse($result, 'The single event should be blocked by the filter.');
+
+        // Verify the cron event is unchanged (still the recurring event, not the single event).
+        $event_after = wp_get_scheduled_event(Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK);
+        self::assertNotFalse($event_after, 'A recurring event should still exist.');
+        self::assertSame('daily', $event_after->schedule, 'Should still be the configured daily recurrence.');
+        self::assertSame(
+            $previous_timestamp,
+            $event_after->timestamp,
+            'The event timestamp should be unchanged (single event was not written).'
+        );
+
+        // Clean up.
+        $current['schedule']['update_check']['recurrence'] = '';
+        updatronix_save_settings_array($current);
+    }
+
+    /**
      * Weekly is a native WordPress cron schedule; unified mode should accept it and keep `wp_version_check` scheduled.
      *
      * @return void

@@ -27,6 +27,12 @@ final class Updatronix_Notifications {
     /**
      * Set to true when we allow the debug (detailed) email this run; used to suppress standard emails.
      *
+     * Note: this flag is set before {@see wp_mail()} is called. If the debug email fails to send
+     * (SMTP failure, rate limit, etc.), the flag stays true and the standard core/plugin/theme
+     * emails are also suppressed for this request. The user receives no email at all for that
+     * update run. This is a deliberate trade-off — the window is per-request and the next
+     * automatic update run will re-evaluate.
+     *
      * @var bool
      */
     private static bool $detailed_email_sent_this_run = false;
@@ -59,6 +65,32 @@ final class Updatronix_Notifications {
         return updatronix_get_settings()['notifications_mode'] === 'disabled';
     }
 
+    /** @var array<string>|null Cached parsed email recipients for the current request. */
+    private static ?array $parsed_recipients_cache = null;
+
+    /**
+     * Parse and sanitize the recipient list from settings, caching the result for the request.
+     *
+     * @return array<string> List of sanitized email addresses.
+     */
+    private static function get_parsed_recipients(): array {
+        if (self::$parsed_recipients_cache !== null) {
+            return self::$parsed_recipients_cache;
+        }
+
+        $emails = updatronix_get_settings()['notify_emails'];
+        if ($emails === '') {
+            self::$parsed_recipients_cache = [];
+
+            return [];
+        }
+
+        $recipients = array_values(array_filter(array_map('sanitize_email', explode(',', $emails))));
+        self::$parsed_recipients_cache = $recipients;
+
+        return $recipients;
+    }
+
     /**
      * Check whether notifications are enabled and a valid recipient is set.
      *
@@ -72,12 +104,8 @@ final class Updatronix_Notifications {
         if (!$s['notify_enabled']) {
             return false;
         }
-        if ($s['notify_emails'] === '') {
-            return false;
-        }
-        $recipients = array_filter(array_map('sanitize_email', explode(',', $s['notify_emails'])));
 
-        return $recipients !== [];
+        return self::get_parsed_recipients() !== [];
     }
 
     /**
@@ -86,8 +114,7 @@ final class Updatronix_Notifications {
      * @return string|array<string>
      */
     private static function get_recipient(): string|array {
-        $emails = updatronix_get_settings()['notify_emails'];
-        $recipients = array_values(array_filter(array_map('sanitize_email', explode(',', $emails))));
+        $recipients = self::get_parsed_recipients();
         if ($recipients === []) {
             return '';
         }

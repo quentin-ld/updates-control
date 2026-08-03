@@ -73,11 +73,14 @@ function updatronix_add_network_option_page(): void {
  */
 function updatronix_options_page(): void {
     if (is_multisite() && !is_super_admin()) {
-        return;
+        wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'updatronix'));
     }
 
     $plugin_data = get_file_data(updatronix_PLUGIN_FILE, ['Version' => 'Version'], 'plugin');
     $plugin_version = $plugin_data['Version'] ?? '';
+
+    $tabs = updatronix_get_admin_tabs();
+    $active_tab = updatronix_get_active_tab($tabs);
     $logo_rel_path = 'assets/img/logo-60x60.webp';
     $logo_file_path = updatronix_PLUGIN_DIR . $logo_rel_path;
     $logo_url = file_exists($logo_file_path) ? plugins_url($logo_rel_path, updatronix_PLUGIN_FILE) : '';
@@ -182,6 +185,22 @@ function updatronix_options_page(): void {
                         </p>
                     </div>
                 </div>
+                <?php
+                /**
+                 * Fires inside the admin page shell, after the default content area.
+                 *
+                 * Reserved extension point for server-rendered tab content or
+                 * supplementary panels. Currently has no core consumer; kept for
+                 * future use by extensions. The active tab slug is passed so
+                 * consumers can conditionally output content only when their
+                 * tab is selected.
+                 *
+                 * @since 1.1.1
+                 *
+                 * @param string $active_tab The slug of the currently active admin tab.
+                 */
+                do_action('updatronix_admin_page_content', $active_tab);
+    ?>
             </main>
         </div>
     </div>

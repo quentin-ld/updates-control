@@ -41,7 +41,7 @@ final class Updatronix_AutoUpdates {
     /**
      * Build the full payload for the GET /auto-updates endpoint.
      *
-     * @return array{constants: array<string, array{defined: bool, value: mixed, affects: array<string>, locks: bool}>, dismissed_constants: array<string>, core: array{mode: string, major: string, minor: string, dev: string, overridden_by_constant: bool}, plugins: array<int, array{file: string, slug: string, name: string, description: string, version: string, author: string, plugin_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>, themes: array<int, array{stylesheet: string, name: string, description: string, version: string, author: string, theme_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>, translations: array{auto_update: bool}}
+     * @return array{constants: array<string, array{defined: bool, value: mixed, affects: array<string>, locks: bool}>, dismissed_constants: array<string>, core: array{mode: string, major: string, minor: string, dev: string, overridden_by_constant: bool}, plugins: array<int, array{file: string, slug: string, name: string, description: string, version: string, author: string, plugin_uri: string, icon: string, auto_update: bool, update_data_available: bool, active: bool}>, themes: array<int, array{stylesheet: string, name: string, description: string, version: string, author: string, theme_uri: string, icon: string, auto_update: bool, update_data_available: bool, active: bool}>, translations: array{auto_update: bool}}
      */
     public static function get_data(): array {
         $plugins_and_themes = self::with_admin_locale(static function (): array {
@@ -231,7 +231,7 @@ final class Updatronix_AutoUpdates {
     /**
      * Get all installed plugins with their auto-update status and metadata.
      *
-     * @return array<int, array{file: string, slug: string, name: string, description: string, version: string, author: string, plugin_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>
+     * @return array<int, array{file: string, slug: string, name: string, description: string, version: string, author: string, plugin_uri: string, icon: string, auto_update: bool, update_data_available: bool, active: bool}>
      */
     public static function get_plugins_data(): array {
         if (!function_exists('get_plugins')) {
@@ -240,6 +240,13 @@ final class Updatronix_AutoUpdates {
 
         $all_plugins = get_plugins();
         $auto_update_plugins = (array) get_site_option('auto_update_plugins', []);
+
+        // Prune stale entries from the option (deleted plugins) at read time.
+        $pruned_plugins = array_values(array_intersect($auto_update_plugins, array_keys($all_plugins)));
+        if (count($pruned_plugins) !== count($auto_update_plugins)) {
+            update_site_option('auto_update_plugins', $pruned_plugins);
+            $auto_update_plugins = $pruned_plugins;
+        }
 
         $icons = [];
         $update_transient = get_site_transient('update_plugins');
@@ -272,7 +279,7 @@ final class Updatronix_AutoUpdates {
                 && (isset($update_transient->response[$file])
                     || isset($update_transient->no_update[$file]));
 
-            $plugins[] = [
+            $plugins[] = apply_filters('updatronix_auto_update_plugin_data', [
                 'file' => $file,
                 'slug' => $slug,
                 'name' => $data['Name'] ?? '',
@@ -282,9 +289,16 @@ final class Updatronix_AutoUpdates {
                 'plugin_uri' => $data['PluginURI'] ?? '',
                 'icon' => $icon_url,
                 'auto_update' => in_array($file, $auto_update_plugins, true),
-                'auto_update_available' => $auto_update_available,
+                /**
+                 * Whether this item is known to WordPress.org's update API.
+                 * When false, toggling auto-update is not available.
+                 * This does NOT mean an update is currently available — it means
+                 * the item is recognised by the update system (present in either
+                 * the `response` or `no_update` transient group).
+                 */
+                'update_data_available' => $auto_update_available,
                 'active' => is_plugin_active($file),
-            ];
+            ], $file);
         }
 
         usort($plugins, static function (array $a, array $b): int {
@@ -297,11 +311,19 @@ final class Updatronix_AutoUpdates {
     /**
      * Get all installed themes with their auto-update status and metadata.
      *
-     * @return array<int, array{stylesheet: string, name: string, description: string, version: string, author: string, theme_uri: string, icon: string, auto_update: bool, auto_update_available: bool, active: bool}>
+     * @return array<int, array{stylesheet: string, name: string, description: string, version: string, author: string, theme_uri: string, icon: string, auto_update: bool, update_data_available: bool, active: bool}>
      */
     public static function get_themes_data(): array {
         $all_themes = wp_get_themes();
         $auto_update_themes = (array) get_site_option('auto_update_themes', []);
+
+        // Prune stale entries from the option (deleted themes) at read time.
+        $pruned_themes = array_values(array_intersect($auto_update_themes, array_keys($all_themes)));
+        if (count($pruned_themes) !== count($auto_update_themes)) {
+            update_site_option('auto_update_themes', $pruned_themes);
+            $auto_update_themes = $pruned_themes;
+        }
+
         $active_stylesheet = get_stylesheet();
         $update_themes_transient = get_site_transient('update_themes');
 
@@ -313,7 +335,7 @@ final class Updatronix_AutoUpdates {
                     || isset($update_themes_transient->no_update[$stylesheet]);
             }
 
-            $themes[] = [
+            $themes[] = apply_filters('updatronix_auto_update_theme_data', [
                 'stylesheet' => $stylesheet,
                 'name' => $theme->get('Name'),
                 'description' => self::get_localized_theme_description($theme),
@@ -322,9 +344,13 @@ final class Updatronix_AutoUpdates {
                 'theme_uri' => $theme->get('ThemeURI'),
                 'icon' => $theme->get_screenshot() ?: '',
                 'auto_update' => in_array($stylesheet, $auto_update_themes, true),
-                'auto_update_available' => $auto_update_available,
+                /**
+                 * Whether this item is known to WordPress.org's update API.
+                 * When false, toggling auto-update is not available.
+                 */
+                'update_data_available' => $auto_update_available,
                 'active' => $stylesheet === $active_stylesheet,
-            ];
+            ], $stylesheet);
         }
 
         usort($themes, static function (array $a, array $b): int {

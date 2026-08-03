@@ -60,10 +60,6 @@ final class Updatronix_Export_Audit {
                 }
             }
 
-            if (false === updatronix_get_plugin_option(self::OPTION_NAME, false)) {
-                add_option(self::OPTION_NAME, [], '', false);
-            }
-
             $list = updatronix_get_plugin_option(self::OPTION_NAME, []);
             if (!is_array($list)) {
                 $list = [];

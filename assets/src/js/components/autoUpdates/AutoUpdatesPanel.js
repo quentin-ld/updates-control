@@ -6,8 +6,11 @@
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-dataviews/
  */
 
+import { useRef, useEffect } from '@wordpress/element';
 import {
 	Spinner,
+	Button,
+	Notice,
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalText as Text,
 } from '@wordpress/components';
@@ -31,16 +34,38 @@ export function AutoUpdatesPanel({
 	dismissedConstants,
 	onDismissedConstantsChange,
 }) {
+	const retryRef = useRef(null);
 	const {
 		data,
 		loading,
 		busy,
+		fetchError,
+		retryFetch,
 		setCoreMode,
 		togglePlugin,
 		toggleTheme,
 		toggleTranslation,
 		dismissConstant,
 	} = useAutoUpdates(onDismissedConstantsChange);
+
+	useEffect(() => {
+		if (fetchError && retryRef.current) {
+			retryRef.current.focus();
+		}
+	}, [fetchError]);
+
+	if (fetchError && !data) {
+		return (
+			<div className="updatronix-autoupdates-panel" role="alert">
+				<Notice status="error" isDismissible={false}>
+					<p>{fetchError}</p>
+				</Notice>
+				<Button variant="primary" onClick={retryFetch} ref={retryRef}>
+					{__('Retry', 'updatronix')}
+				</Button>
+			</div>
+		);
+	}
 
 	if (loading || !data) {
 		return (
@@ -70,7 +95,12 @@ export function AutoUpdatesPanel({
 				constants={data.constants}
 				sections={['core', 'plugins', 'themes', 'translations']}
 				dismissibleOnly
-				dismissed={dismissedConstants ?? data.dismissed_constants ?? []}
+				dismissed={[
+					...new Set([
+						...(data.dismissed_constants ?? []),
+						...(dismissedConstants ?? []),
+					]),
+				]}
 				onDismiss={dismissConstant}
 			/>
 

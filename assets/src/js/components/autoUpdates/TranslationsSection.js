@@ -6,22 +6,7 @@ import { Icon, ToggleControl } from '@wordpress/components';
 import { language as languageIcon } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { ConstantNotices } from './ConstantNotices';
-
-/**
- * Check whether a section is locked by a wp-config constant.
- *
- * @param {Object} constants Map from PHP.
- * @param {string} section   'core' | 'plugins' | 'themes' | 'translations'.
- * @return {boolean} True if the section is locked by a constant.
- */
-function isSectionLocked(constants, section) {
-	if (!constants) {
-		return false;
-	}
-	return Object.values(constants).some(
-		(info) => info.locks && info.value && info.affects.includes(section)
-	);
-}
+import { isSectionLocked } from './utils';
 
 /**
  * Render the translations auto-update toggle.

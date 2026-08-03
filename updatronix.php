@@ -9,9 +9,9 @@
  * @copyright 2024-2026 Quentin Le Duff
  * @license   GPL v2 or later
  *
- * Plugin Name: Updatronix
+ * Plugin Name: Updatronix - Update Manager Enhanced
  * Description: Enhanced Update Manager for WordPress. Monitor every change, control all updates, and fine-tune your website maintenance flow.
- * Version: 1.1
+ * Version: 1.1.1
  * Plugin URI: https://wordpress.org/plugins/updatronix/
  * Author: Quentin Le Duff
  * Author URI: https://profiles.wordpress.org/quentinldd/
@@ -40,7 +40,7 @@ if (!defined('ABSPATH')) {
 }
 
 /** Plugin version (must match Version header above; used for DB schema version). */
-define('UPDATRONIX_VERSION', '1.1');
+define('UPDATRONIX_VERSION', '1.1.1');
 
 define('UPDATRONIX_PLUGIN_FILE', __FILE__); // Absolute path to this file.
 define('UPDATRONIX_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Plugin root directory with trailing slash.
@@ -54,6 +54,48 @@ if (!defined('updatronix_PLUGIN_DIR')) {
 require_once __DIR__ . '/inc/core/constants.php';
 require_once __DIR__ . '/inc/core/context.php';
 require_once __DIR__ . '/inc/core/storage.php';
+require_once __DIR__ . '/inc/core/tabs.php';
+require_once __DIR__ . '/inc/core/site-health.php';
+
+add_action('admin_notices', 'updatronix_activation_subsite_notice');
+add_action('network_admin_notices', 'updatronix_activation_subsite_notice');
+
+/**
+ * Admin notice when the plugin was activated on a subsite where activation is not allowed.
+ *
+ * @since 1.1.2
+ *
+ * @return void
+ */
+function updatronix_activation_subsite_notice(): void {
+    if (!updatronix_get_plugin_option('updatronix_activation_subsite_skipped', '')) {
+        return;
+    }
+
+    updatronix_delete_plugin_option('updatronix_activation_subsite_skipped');
+
+    if (is_multisite() && !is_network_admin()) {
+        return;
+    }
+
+    $url = network_admin_url('admin.php?page=updatronix');
+    ?>
+    <div class="notice notice-warning is-dismissible">
+        <p>
+            <?php
+            printf(
+                wp_kses(
+                    /* translators: %s: URL to the network admin Updatronix page. */
+                    __('Updatronix was activated on a subsite, but it only works from the Network Admin. Please go to <a href="%s">Network Admin → Updatronix</a> to set it up.', 'updatronix'),
+                    ['a' => ['href' => []]]
+                ),
+                esc_url($url)
+            );
+    ?>
+        </p>
+    </div>
+    <?php
+}
 
 register_activation_hook(__FILE__, 'updatronix_activate');
 register_deactivation_hook(__FILE__, 'updatronix_deactivate');
@@ -67,6 +109,10 @@ register_deactivation_hook(__FILE__, 'updatronix_deactivate');
  */
 function updatronix_activate(): void {
     if (!updatronix_activation_allowed()) {
+        if (is_multisite() && !is_network_admin()) {
+            updatronix_update_plugin_option('updatronix_activation_subsite_skipped', '1', false);
+        }
+
         return;
     }
 

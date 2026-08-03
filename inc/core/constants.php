@@ -38,3 +38,11 @@ if (!defined('updatronix_PLUGIN_DIR')) {
 if (!defined('UPDATRONIX_CAP_MANAGE')) {
     define('UPDATRONIX_CAP_MANAGE', 'manage_updatronix'); // Custom capability for plugin admin access.
 }
+
+if (!defined('UPDATRONIX_DB_VERSION')) {
+    define('UPDATRONIX_DB_VERSION', UPDATRONIX_VERSION); // Current database schema version.
+}
+
+if (!defined('UPDATRONIX_DB_OPTION_KEY')) {
+    define('UPDATRONIX_DB_OPTION_KEY', 'updatronix_log_db_version'); // Option key storing the database version for upgrades.
+}

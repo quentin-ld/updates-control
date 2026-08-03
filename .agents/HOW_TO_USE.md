@@ -6,7 +6,7 @@ You delegate. The agent plans, codes, lints, and fixes. Your job: describe outco
 
 1. Open the **plugin root** (`updatronix/`) in your editor.
 2. Confirm the project's `AGENTS.md` is loaded as agent instructions.
-3. Skills available: `architect`, `resume`, `reviewer`, `security`, `release`.
+3. Skills available: `architect`, `resume`, `reviewer`, `security`, `qa`, `release`.
 4. Trust the workspace when prompted.
 
 ## Model tiers — what to pick per thread
@@ -17,19 +17,11 @@ Each thread: choose a **tier** in your model selector. Skills tell the agent wha
 |------|------|--------|
 | **Planning** | Clarify, design, write the plan — answer not in task file yet | `/architect` until you approve |
 | **Worker** | Execute from task file — implement, lint, fix, rotate | `/architect` after `go` · `/resume` · `/release` |
-| **Audit** | Review or security gate — no coding | `/reviewer` (high-risk) · `/security` |
+| **Audit** | Review or security gate — no coding | `/reviewer` (high-risk) · `/security` · `/qa` |
 
 **One-line rule:** Planning until `go` → worker to build → audit before ship when required.
 
-### Recommended models
-
-| Tier | Recommended | Why |
-|------|-------------|-----|
-| **Planning** | DeepSeek Pro V4 · Claude Opus | Strong reasoning, design, trade-off analysis |
-| **Worker** | DeepSeek Pro Flash | Fast, cheap, reliable tool calling — bulk of the work |
-| **Audit** | Claude Opus · DeepSeek Pro V4 | Thorough review, security analysis, no hallucinations on gates |
-
-Use **worker** on `/resume` threads to save tokens. Keep **audit** for `/security` and high-risk `/reviewer`. If a worker model mishandles tools or skips WP security rules, move that phase back to planning tier.
+Use **worker** on `/resume` threads to save tokens. Keep **audit** for `/security`, `/qa`, and high-risk `/reviewer`. If a worker model mishandles tools or skips WP security rules, move that phase back to planning tier.
 
 ## Daily flow — one feature
 
@@ -99,6 +91,15 @@ Same as rotation — **worker** tier + `/resume` + task file.
 
 Always **audit** tier. Fix findings with **worker** tier + `/resume`.
 
+## Hostile QA audit
+
+```
+/qa
+[scope]
+```
+
+Always **audit** tier. Generalist adversarial audit — code, config, build, workflow, docs, tests, UI, REST, SQL, auth, a11y, i18n, performance. Produces severity-ranked findings. Fix findings with **worker** tier + `/resume`.
+
 ## Release
 
 When tested, reviewed (if required), and you **explicitly authorize** the version bump:
@@ -130,4 +131,5 @@ When tested, reviewed (if required), and you **explicitly authorize** the versio
 | Build / continue | `/resume` + task file | Worker |
 | Integration review | `/reviewer` + task file | Audit (or planning if low-risk) |
 | Security audit | `/security` | Audit |
+| Hostile QA audit | `/qa` + scope | Audit |
 | Ship | `/release` | Worker |

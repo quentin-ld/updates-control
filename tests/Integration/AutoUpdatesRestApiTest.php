@@ -1,0 +1,204 @@
+<?php
+/**
+ * Integration tests for auto-update REST API endpoints.
+ *
+ * @package updatronix
+ */
+
+declare(strict_types=1);
+
+/**
+ * Verify auto-update REST endpoints return correct responses for valid/invalid input
+ * and enforce permission gates.
+ *
+ * Constant-gate tests (AUTOMATIC_UPDATER_DISABLED, DISALLOW_FILE_MODS) are excluded
+ * because PHP's defined() is permanent and cannot be set/unset mid-request. Those
+ * paths are covered by manual regression tests (see tests/MANUAL_REGRESSION.md).
+ *
+ * @coversNothing
+ */
+final class AutoUpdatesRestApiTest extends WP_UnitTestCase {
+    /**
+     * @var array<string, mixed>
+     */
+    private $rest_test_server_backup = [];
+
+    /**
+     * Restore $_SERVER keys and clean up REST auth globals.
+     *
+     * @return void
+     */
+    protected function tearDown(): void {
+        foreach ($this->rest_test_server_backup as $key => $value) {
+            if ($value === null) {
+                unset($_SERVER[$key]);
+            } else {
+                $_SERVER[$key] = $value;
+            }
+        }
+        $this->rest_test_server_backup = [];
+        unset($GLOBALS['wp_rest_auth_cookie']);
+
+        parent::tearDown();
+    }
+
+    /**
+     * @return void
+     */
+    public function test_get_auto_updates_returns_expected_structure(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('GET', '/updatronix/v1/auto-updates');
+        $response = rest_do_request($request);
+
+        self::assertSame(200, $response->get_status());
+        $data = $response->get_data();
+        self::assertIsArray($data);
+        self::assertArrayHasKey('constants', $data);
+        self::assertArrayHasKey('core', $data);
+        self::assertArrayHasKey('plugins', $data);
+        self::assertArrayHasKey('themes', $data);
+        self::assertArrayHasKey('translations', $data);
+        self::assertArrayHasKey('dismissed_constants', $data);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_get_auto_updates_returns_403_for_user_without_cap(): void {
+        $user_id = self::factory()->user->create(['role' => 'subscriber']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('GET', '/updatronix/v1/auto-updates');
+        $response = rest_do_request($request);
+
+        self::assertSame(403, $response->get_status());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_set_core_mode_with_valid_mode_returns_200(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('POST', '/updatronix/v1/auto-updates/core');
+        $request->set_param('mode', 'minor');
+        $response = rest_do_request($request);
+
+        self::assertSame(200, $response->get_status());
+        $data = $response->get_data();
+        self::assertArrayHasKey('core', $data);
+        self::assertSame('minor', $data['core']['mode']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_set_core_mode_with_invalid_mode_returns_400(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('POST', '/updatronix/v1/auto-updates/core');
+        $request->set_param('mode', 'invalid-mode');
+        $response = rest_do_request($request);
+
+        self::assertSame(400, $response->get_status());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_toggle_plugin_with_valid_plugin_returns_200(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('POST', '/updatronix/v1/auto-updates/plugin');
+        $request->set_param('plugin', 'hello.php');
+        $request->set_param('enable', true);
+        $response = rest_do_request($request);
+
+        self::assertSame(200, $response->get_status());
+        $data = $response->get_data();
+        self::assertArrayHasKey('plugins', $data);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_toggle_plugin_with_invalid_plugin_returns_404(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('POST', '/updatronix/v1/auto-updates/plugin');
+        $request->set_param('plugin', 'nonexistent-plugin/nonexistent.php');
+        $request->set_param('enable', true);
+        $response = rest_do_request($request);
+
+        self::assertSame(404, $response->get_status());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_toggle_theme_with_invalid_stylesheet_returns_404(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('POST', '/updatronix/v1/auto-updates/theme');
+        $request->set_param('stylesheet', 'nonexistent-theme');
+        $request->set_param('enable', true);
+        $response = rest_do_request($request);
+
+        self::assertSame(404, $response->get_status());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_toggle_translation_returns_200(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('POST', '/updatronix/v1/auto-updates/translation');
+        $request->set_param('enable', false);
+        $response = rest_do_request($request);
+
+        self::assertSame(200, $response->get_status());
+        $data = $response->get_data();
+        self::assertArrayHasKey('translations', $data);
+        self::assertFalse($data['translations']['auto_update']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_dismiss_constant_with_valid_constant_returns_200(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('POST', '/updatronix/v1/auto-updates/dismiss-constant');
+        $request->set_param('constant', 'WP_AUTO_UPDATE_CORE');
+        $response = rest_do_request($request);
+
+        self::assertSame(200, $response->get_status());
+        $data = $response->get_data();
+        self::assertArrayHasKey('dismissed_constants', $data);
+        self::assertContains('WP_AUTO_UPDATE_CORE', $data['dismissed_constants']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_dismiss_constant_with_invalid_constant_returns_400(): void {
+        $user_id = self::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($user_id);
+
+        $request = new WP_REST_Request('POST', '/updatronix/v1/auto-updates/dismiss-constant');
+        $request->set_param('constant', 'NOT_A_REAL_CONSTANT');
+        $response = rest_do_request($request);
+
+        self::assertSame(400, $response->get_status());
+    }
+}

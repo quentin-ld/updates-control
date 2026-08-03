@@ -4,6 +4,8 @@
 
 Messages may arrive in French or English. **Always reply in US English.** WordPress prose style: `.agents/docs/wordpress-documentation-style-guide-consolidated.md` (lookup sections only — never load the full file).
 
+**Reply verbosity:** Conclusion first, then evidence. No preamble ("Here's what I'll do…"), no recap ("I did X. Done with X."), no closing remarks ("Let me know if…"). Action over explanation. Scale detail to complexity — 1–4 lines unless the task needs more. **Stop when done**; do not offer follow-ups.
+
 ## Project Facts
 
 | | |
@@ -18,9 +20,11 @@ Messages may arrive in French or English. **Always reply in US English.** WordPr
 | Storage | `{prefix}updatronix_logs` · `updatronix_settings` (JSON, autoloaded) · `updatronix_update_logger_state` (no autoload) · native `auto_update_*` options |
 | Build & test | `workflow.md` |
 
-## Workflow — Delegate, Don’t Micromanage
+## Workflow — Delegate, Don't Micromanage
 
 You describe the outcome. The agent plans, implements, lints, logs, and fixes from your test feedback. **You approve the plan once, then test.**
+
+**Knowledge boundary:** Never guess paths, APIs, or commands. If uncertain, verify with a tool before claiming or acting. State clearly when a request exceeds available context (KBT).
 
 | Step | You | Agent |
 |------|-----|-------|
@@ -32,21 +36,13 @@ You describe the outcome. The agent plans, implements, lints, logs, and fixes fr
 
 ## Model Tiers
 
-Skills define **what** to do. **Model tier** defines **which capability level** to use per thread. Tier names are abstract — map them to whatever models you run locally.
+Skills define **what** to do. **Model tier** defines **which capability level** to use per thread. Tier names are abstract — you pick the model that matches the tier.
 
 | Tier | Use when | Typical skills / phase |
 |------|----------|-------------------------|
 | **Planning** | Answer not yet in the task file — clarify, design, trade-offs, ambiguous scope | `/architect` Phase 1–3 (plan) · low-risk `/reviewer` |
 | **Worker** | Task file is the contract — implement, lint, fix, rotate threads | `/architect` Phase 4–5 (execute) · `/resume` · `/release` |
-| **Audit** | Judge only — no implementation; security and integration gates | `/reviewer` when required · `/security` always |
-
-### Recommended models
-
-| Tier | Recommended | Why |
-|------|-------------|-----|
-| **Planning** | DeepSeek Pro V4 · Claude Opus | Strong reasoning, design, trade-off analysis |
-| **Worker** | DeepSeek Pro Flash | Fast, cheap, reliable tool calling — bulk of the work |
-| **Audit** | Claude Opus · DeepSeek Pro V4 | Thorough review, security analysis, no hallucinations on gates |
+| **Audit** | Judge only — no implementation; security, integration, and adversarial QA gates | `/reviewer` when required · `/security` always · `/qa` always |
 
 **Rules**
 
@@ -61,7 +57,7 @@ Record the tier used in review/security note frontmatter (`model_tier: planning 
 
 Every token costs. These rules keep context lean and runs fast.
 
-**Read strategy:** grep first → read only needed sections → never re-read a file you just wrote.
+**Read strategy:** grep first → read only needed sections → never re-read a file you just wrote. **Parallelize independent reads and searches** in a single response — do not serialize file reads that have no dependency on each other.
 
 **Lint economy:**
 
@@ -78,6 +74,8 @@ Every token costs. These rules keep context lean and runs fast.
 - No `npm run lint:css` unless SCSS changed
 - No `composer run verify:php` unless PHP changed
 
+When lint is skipped, say so: "Lint skipped per economy rules (no PHP/JS surface changed)."
+
 **Reference docs:** grep one `## Section` only — never load whole `.agents/docs/` mirrors.
 
 ## Thread Rotation
@@ -93,7 +91,7 @@ Rotate to a **new thread + `/resume`** when any trigger fires:
 
 Before rotating, update `## Session checkpoint` (last task done, files touched, open decisions, review required).
 
-In the new thread: `/resume` + `@.agents/tasks/YYYY-MM-DD-<type>-<slug>.md` on a **worker** tier model.
+In the new thread: `/resume` + `@.agents/tasks/YYYY-MM-DD-<type>-<slug>.md` on a **worker** tier.
 
 ## Reference Docs — Available, Not Mandatory
 
@@ -131,7 +129,7 @@ Deliverables per feature: **one task file** + **one review note** (when required
 
 **Optional** (agent may skip if you agree): comments/PHPDoc only, pure SCSS cosmetics, typo/copy wrapped in i18n with no logic change.
 
-When required, the architect must set `review_required: yes` in task frontmatter and say so at hand-off.
+When required, the architect sets `review_required: yes` in task frontmatter and re-evaluates after implementation — if the actual code touches a high-risk surface that the plan didn't anticipate, the frontmatter must be updated.
 
 ## Build & Lint Reference
 
@@ -153,5 +151,16 @@ When required, the architect must set `review_required: yes` in task frontmatter
 **Version** — Never bump `UPDATRONIX_VERSION`, headers, `Stable tag:`, or package versions without explicit owner authorization in the current conversation.
 
 **Files** — Never delete `.agents/tasks/` or `.agents/notes/` without owner confirmation. Stay in task scope.
+
+## Maintenance — Monthly Rule Review
+
+Review `AGENTS.md` and skills monthly. Short checklist:
+
+- Are rules still relevant to the current `inc/` structure?
+- Any repeated agent mistakes that need a new one-line rule?
+- Any redundant or dead rules to prune?
+- Token size creeping? Trim explanatory text, keep imperative directives.
+
+Do **not** rewrite for style. Only change rules to fix observed agent behavior.
 
 Human playbook: `.agents/HOW_TO_USE.md`.

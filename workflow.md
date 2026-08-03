@@ -8,6 +8,7 @@
 - WordPress **6.2+** (tested range in `readme.txt`)
 - Composer
 - Node.js **LTS** and npm (for `@wordpress/scripts`, ESLint, Stylelint, Prettier)
+- Python **3** (for `local-wp-cli.sh` site resolution via `sites.json`)
 
 ### Install dependencies
 
@@ -26,8 +27,8 @@ are missing, then sets up the integration test stack by calling
    `$HOME/.cache/updatronix-wp-tests/`).
 3. Installs WordPress core + **wordpress-tests-lib** into that cache (one-time).
 
-After it completes, `composer run test:integration`, `npm run test:all`, and
-`npm run build:all` all work. To regenerate the env file (e.g. after the site's DB
+After it completes, `composer run test:integration` works.
+To regenerate the env file (e.g. after the site's DB
 credentials change): `bash bin/setup-dev.sh --force`.
 
 **Requirements:** the site must run in **Local by Flywheel** (the integration stack
@@ -48,13 +49,16 @@ Run these before a commit or release, in order:
 | 7 | `composer run test:integration` | **PHPUnit integration tests** — single-site suite (full WordPress + DB; routes through `.config/local-wp-cli.sh`, so it uses Local's PHP/mysqli automatically after `bin/setup-dev.sh`) |
 | 8 | *(multisite)* `WP_MULTISITE=1 bash .config/local-wp-cli.sh integration-test --filter Multisite` | **Multisite integration tests** under `tests/Integration/Multisite/` (`MultisiteNetworkOnlyTest` self-skips on single-site bootstraps, so it is safe to leave in the default suite) |
 
-To run **everything at once** (all linters + unit + integration tests, no build):
+To run **everything at once** (all linters + unit, no build):
 
 ```bash
 npm run test:all
 ```
 
-WordPress.org suggests using coding standards / static analysis together with [Plugin Check](https://make.wordpress.org/plugins/developers/). This repo uses **PHP CS Fixer** and **PHPStan** for PHP, then Plugin Check for WordPress.org-oriented rules. **PHPUnit** covers pure helpers in `tests/Unit/`; **integration** tests live in `tests/Integration/` (single-site) and `tests/Integration/Multisite/` and run locally when the WordPress test library is installed. The scenario matrix backing the integration suite is documented in `.cursor/notes/2026-05-09-test-plan-opus-notifications-schedule-features.md`.
+Integration tests are included in the default gate. When the WordPress test
+environment is not installed, they skip gracefully (exit 0).
+
+WordPress.org suggests using coding standards / static analysis together with [Plugin Check](https://make.wordpress.org/plugins/developers/). This repo uses **PHP CS Fixer** and **PHPStan** for PHP, then Plugin Check for WordPress.org-oriented rules. **PHPUnit** covers pure helpers in `tests/Unit/`; **integration** tests live in `tests/Integration/` (single-site) and `tests/Integration/Multisite/` and run locally when the WordPress test library is installed.
 
 Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/stylelint-config/scss-stylistic`**; Prettier uses **`@wordpress/prettier-config`** (see `package.json`). SCSS is linted with Stylelint, not Prettier, so formatter commands target JS/JSX only.
 
@@ -81,7 +85,7 @@ Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/
 | `format` / `format:fix` | Prettier on `assets/src/**/*.{js,jsx}` |
 | `start` / `build` | `@wordpress/scripts` bundle |
 | `setup` | `bash bin/setup-dev.sh` — one-time dev environment setup (env file + WP test stack) |
-| `test:all` | All checks, no build: `verify:all` (PHP CS Fixer + PHPStan + unit + integration) + `lint:pcp` + `lint` + `lint:css` + `format` |
+| `test:all` | `verify:all` (CS Fixer + PHPStan + unit + integration) + `lint:pcp` + `lint` + `lint:css` + `format` |
 | `build:all` | `test:all` + `make:pot` + `build` (see **Build** below) |
 | `zip` | Build distributable zip via `.config/zip.js` (uses `archiver`; respects `.distignore`-style exclusions) |
 
@@ -190,10 +194,9 @@ npm run test:all
 
 Notes:
 
-- **Integration tests are part of `build:all` / `test:all`.** They route through
-  `.config/local-wp-cli.sh`, so they reuse Local's PHP/mysqli automatically — run
-  `bash bin/setup-dev.sh` once first (it installs `wordpress-tests-lib` and writes
-  `.config/wp-tests.env`).
+- Integration tests are part of the default gate. When the WordPress test
+  environment is not installed, they skip gracefully (exit 0).
+  Run `bash bin/setup-dev.sh` once to install the WP test stack.
 - `lint:pcp`, `make:pot`, and the integration tests all rely on **Local by Flywheel**
   (see `.config/local-wp-cli.sh`). On a fresh machine, `composer install` +
   `npm install` + `bash bin/setup-dev.sh` is all that is required.

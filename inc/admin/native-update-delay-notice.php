@@ -69,11 +69,13 @@ function updatronix_render_delay_context_admin_notice(): void {
         }
         $schedule_u = esc_url(add_query_arg(['page' => 'updatronix', 'tab' => 'schedule'], $base));
         $logs_u = esc_url(add_query_arg(['page' => 'updatronix', 'tab' => 'logs'], $base));
+        $schedule_link = '<a href="' . $schedule_u . '">' . esc_html__('Schedule tab', 'updatronix') . '</a>';
+        $logs_link = '<a href="' . $logs_u . '">' . esc_html__('Update logs', 'updatronix') . '</a>';
         $linked = sprintf(
-            /* translators: %1$s: Schedule tab URL. %2$s: Update logs URL. */
-            __('Change delay settings on the <a href="%1$s">Schedule tab</a> or open <a href="%2$s">Update logs</a> for details.', 'updatronix'),
-            $schedule_u,
-            $logs_u
+            /* translators: %1$s: Schedule tab link. %2$s: Update logs link. */
+            __('Change delay settings on the %1$s or open %2$s for details.', 'updatronix'),
+            $schedule_link,
+            $logs_link
         );
         echo '<p>' . wp_kses($linked, [
             'a' => [

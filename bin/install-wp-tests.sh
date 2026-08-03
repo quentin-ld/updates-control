@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Unset LD_LIBRARY_PATH to avoid Local's PHP environment polluting system curl.
+# The install-wp-tests.sh script is called from within Local's sourced environment
+# (via local-wp-cli.sh setup), which sets LD_LIBRARY_PATH for PHP. This breaks
+# system curl with "undefined symbol: curl_global_trace".
+unset LD_LIBRARY_PATH
+
 # See https://raw.githubusercontent.com/wp-cli/scaffold-command/master/templates/install-wp-tests.sh
 
 # Set up colors for output

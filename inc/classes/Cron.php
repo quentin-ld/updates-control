@@ -55,6 +55,16 @@ final class Updatronix_Cron {
         add_action(self::HOOK_CLEANUP, [self::class, 'run_cleanup']);
         add_action(self::HOOK_WP_CRON_CORE_VERSION_CHECK, [self::class, 'prime_unified_discovery_before_core'], 9);
         add_action('init', [self::class, 'sync_core_update_crons_with_schedule'], 11);
+
+        // Block single-event contamination at the source: Core's wp_version_check() TTL logic
+        // schedules a non-recurring event on wp_version_check; this filter prevents it when
+        // unified scheduling is active, so the native update-core.php page always sees the
+        // correct schedule.
+        add_filter('pre_schedule_event', [self::class, 'block_single_contamination'], 10, 2);
+
+        // Shutdown handlers ordered by priority (lowest runs first):
+        // 998 — maybe_heal_update_check_schedule: throttled (5 min), resurfaces lost recurring events.
+        // 999 — maybe_schedule_if_needed: throttled (1 day), surveils daily cleanup event.
         add_action('shutdown', [self::class, 'maybe_schedule_if_needed'], 999);
         add_action('shutdown', [self::class, 'maybe_heal_update_check_schedule'], 998);
         add_action('updatronix_after_save_network_schedule', [self::class, 'apply_update_check_schedule_from_settings']);
@@ -71,10 +81,6 @@ final class Updatronix_Cron {
      */
     private static function self_heal_allowed_in_context(): bool {
         if (wp_doing_cron()) {
-            if (is_multisite()) {
-                return (int) get_current_blog_id() === (int) get_main_site_id();
-            }
-
             return true;
         }
         if (is_multisite()) {
@@ -177,6 +183,7 @@ final class Updatronix_Cron {
 
         if (self::is_unified_schedule_active()) {
             self::suppress_redundant_core_update_crons();
+            self::assert_update_check_recurrence();
 
             return;
         }
@@ -185,7 +192,64 @@ final class Updatronix_Cron {
     }
 
     /**
+     * Verify the `wp_version_check` cron event matches the stored schedule recurrence.
+     *
+     * Note: this method uses {@see wp_clear_scheduled_hook()} which removes ALL events
+     * with the `wp_version_check` hook. If another plugin also schedules `wp_version_check`
+     * as a separate cron event, it will be silently removed. This is accepted because
+     * WordPress Core only schedules one `wp_version_check` event, and the plugin takes
+     * ownership of this hook when unified scheduling is active.
+     *
+     * When the event is missing, has a different recurrence, or is a one-time event
+     * (no schedule), re-schedule using the stored settings. This is a lightweight
+     * check — one cron array lookup — and runs without throttle on `init` so that
+     * external tools (Plesk, WP-CLI, manual DB edits) that clear or overwrite the
+     * event are corrected on the next admin page load.
+     *
+     * @since 1.1.1
+     * @return void
+     */
+    private static function assert_update_check_recurrence(): void {
+        $settings = updatronix_get_settings();
+        $schedule = $settings['schedule'];
+        $stored_recurrence = $schedule['update_check']['recurrence'];
+
+        if ($stored_recurrence === '' || !in_array($stored_recurrence, updatronix_allowed_update_check_recurrence_slugs(), true)) {
+            return;
+        }
+
+        $event = wp_get_scheduled_event(self::HOOK_WP_CRON_CORE_VERSION_CHECK);
+
+        if ($event !== false && isset($event->schedule) && $event->schedule === $stored_recurrence) {
+            return;
+        }
+
+        // Event missing, wrong recurrence, or one-time — re-apply.
+        self::apply_schedule_recurrence($stored_recurrence, $schedule['update_check']['time']);
+    }
+
+    /**
+     * Clear and re-schedule the `wp_version_check` event with the stored recurrence.
+     *
+     * Shared by {@see assert_update_check_recurrence()} and {@see maybe_repair_single_event_contamination()}.
+     *
+     * @since 1.1.1
+     * @param string $recurrence Valid recurrence slug.
+     * @param string $time        H:i wall-clock time (empty for hourly).
+     * @return void
+     */
+    private static function apply_schedule_recurrence(string $recurrence, string $time): void {
+        wp_clear_scheduled_hook(self::HOOK_WP_CRON_CORE_VERSION_CHECK);
+        $timestamp = updatronix_next_update_check_timestamp($recurrence, $time);
+        wp_schedule_event((int) $timestamp, $recurrence, self::HOOK_WP_CRON_CORE_VERSION_CHECK);
+    }
+
+    /**
      * Drop Core's plugin/theme recurring checks when the unified `wp_version_check` run already refreshes them.
+     *
+     * Note: uses {@see wp_clear_scheduled_hook()} which removes ALL events with the
+     * `wp_update_plugins` and `wp_update_themes` hooks. WordPress Core only schedules
+     * one of each, but other plugins scheduling these hooks would be affected.
      *
      * @return void
      */
@@ -235,6 +299,9 @@ final class Updatronix_Cron {
     /**
      * Reschedule unified background-update runs from stored settings (after save).
      *
+     * Note: this method uses {@see wp_clear_scheduled_hook()} which removes ALL events
+     * with the `wp_version_check` hook. See {@see assert_update_check_recurrence()} for details.
+     *
      * @return void
      */
     public static function apply_update_check_schedule_from_settings(): void {
@@ -268,7 +335,7 @@ final class Updatronix_Cron {
             return;
         }
 
-        updatronix_set_plugin_transient(self::UPDATE_CHECK_HEAL_TRANSIENT, '1', HOUR_IN_SECONDS);
+        updatronix_set_plugin_transient(self::UPDATE_CHECK_HEAL_TRANSIENT, '1', 5 * MINUTE_IN_SECONDS);
 
         $settings = updatronix_get_settings();
         $schedule = $settings['schedule'];
@@ -279,14 +346,50 @@ final class Updatronix_Cron {
             return;
         }
 
-        if (wp_next_scheduled(self::HOOK_WP_CRON_CORE_VERSION_CHECK)) {
-            return;
+        // Check recurrence correctness, not just existence.
+        self::assert_update_check_recurrence();
+        self::sync_core_update_crons_with_schedule();
+    }
+
+    /**
+     * Block non-recurring `wp_version_check` events from being scheduled when unified scheduling is active.
+     *
+     * WordPress Core's {@see wp_version_check()} schedules a single event on the `wp_version_check` hook
+     * when the API response includes a `ttl` shorter than the current next-scheduled gap. This contaminates
+     * the schedule that both the native `update-core.php` page and the Schedule tab read.
+     *
+     * Unlike the shutdown repair approach, this filter prevents the contamination **before** it is written
+     * to the cron option — no race window, no stale data on the current request.
+     *
+     * @since 1.1.1
+     * @param null|false|\WP_Error $pre   Short-circuit value. Null to proceed, false to block.
+     * @param object               $event {
+     *     @type string       $hook      Action hook.
+     *     @type int          $timestamp Unix timestamp (UTC).
+     *     @type string|false $schedule  Recurrence slug, or false for single events.
+     *     @type array        $args      Event arguments.
+     * }
+     * @return null|false Null to allow the event, false to block.
+     */
+    public static function block_single_contamination($pre, $event): mixed {
+        if ($pre !== null) {
+            return $pre;
         }
 
-        $time = $schedule['update_check']['time'];
-        $timestamp = updatronix_next_update_check_timestamp($recurrence, $time);
-        wp_schedule_event((int) $timestamp, $recurrence, self::HOOK_WP_CRON_CORE_VERSION_CHECK);
-        self::sync_core_update_crons_with_schedule();
+        if (!self::is_unified_schedule_active()) {
+            return $pre;
+        }
+
+        if (!isset($event->hook) || $event->hook !== self::HOOK_WP_CRON_CORE_VERSION_CHECK) {
+            return $pre;
+        }
+
+        // Only block non-recurring (single) events. The recurring event is set by the plugin.
+        if ($event->schedule !== false) {
+            return $pre;
+        }
+
+        return false;
     }
 
     /**

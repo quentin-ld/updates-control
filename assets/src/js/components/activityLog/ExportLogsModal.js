@@ -9,7 +9,6 @@ import {
 	Button,
 	ToggleControl,
 	CheckboxControl,
-	TextareaControl,
 	Notice,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
@@ -83,7 +82,7 @@ export function ExportLogsModal({
 
 	const normalizedView = useMemo(
 		() => normalizeViewForExport(view, logs),
-		[view, logs]
+		[view, logs] // View is the source of truth for export filters; logs resolves user display names to IDs.
 	);
 
 	const summaryParts = useMemo(
@@ -139,11 +138,24 @@ export function ExportLogsModal({
 		});
 	}, [exportTriggerRef, onClose, resetOutput]);
 
+	const MAX_CHUNKS = 100;
+
 	const mapExportError = useCallback((error) => {
 		const code =
 			error && typeof error === 'object' && 'code' in error
 				? String(error.code)
 				: '';
+		const message =
+			error && typeof error === 'object' && error instanceof Error
+				? error.message
+				: '';
+
+		if (code === 'max_chunks' || message === 'max_chunks') {
+			return __(
+				'The export is too large and was stopped. Narrow your filters to export fewer logs.',
+				'updatronix'
+			);
+		}
 
 		if (code === 'rate_limited') {
 			return __(
@@ -171,6 +183,7 @@ export function ExportLogsModal({
 
 		let accumulated = '';
 		let cursor = '';
+		let chunkCount = 0;
 
 		try {
 			while (true) {
@@ -263,6 +276,11 @@ export function ExportLogsModal({
 				}
 
 				cursor = next;
+				chunkCount++;
+
+				if (chunkCount > MAX_CHUNKS) {
+					throw new Error('max_chunks');
+				}
 			}
 		} catch (error) {
 			setNotice({
@@ -434,18 +452,27 @@ export function ExportLogsModal({
 
 			{notice?.status === 'info' ? null : (
 				<>
-					<TextareaControl
-						className="updatronix-export-modal__output"
-						label={__('Export output', 'updatronix')}
-						help={__(
-							'Copy the report to save it. It expires after 15 minutes.',
-							'updatronix'
-						)}
-						value={body}
-						readOnly
-						onChange={() => {}}
-						rows={14}
-					/>
+					<div className="updatronix-export-modal__output">
+						<label
+							className="components-textarea-control__label"
+							htmlFor="updatronix-export-output"
+						>
+							{__('Export output', 'updatronix')}
+						</label>
+						<p className="components-base-control__help">
+							{__(
+								'Copy the report to save it. It expires after 15 minutes.',
+								'updatronix'
+							)}
+						</p>
+						<textarea
+							id="updatronix-export-output"
+							className="components-textarea-control__input"
+							value={body}
+							readOnly
+							rows={14}
+						/>
+					</div>
 					<div className="updatronix-export-modal__copy-actions">
 						<Button
 							variant="secondary"

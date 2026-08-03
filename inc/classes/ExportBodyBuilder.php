@@ -210,7 +210,10 @@ final class Updatronix_Export_Body_Builder {
     ): array {
         $columns = self::normalize_export_columns($columns);
 
-        switch_to_user_locale(get_current_user_id());
+        // Guard: switch_to_user_locale() may return false when the user's locale
+        // is invalid or unavailable. The finally block always restores the previous
+        // locale, so the worst case is a momentary PHP warning.
+        $locale_switched = switch_to_user_locale(get_current_user_id());
 
         try {
             self::prime_user_cache($rows);
@@ -218,7 +221,9 @@ final class Updatronix_Export_Body_Builder {
 
             return self::emit_until_cap($records, $existing_chunk_body, $max_chunk_bytes);
         } finally {
-            restore_previous_locale();
+            if ($locale_switched) {
+                restore_previous_locale();
+            }
         }
     }
 
@@ -931,6 +936,10 @@ final class Updatronix_Export_Body_Builder {
             'same_version' => __('Reinstall', 'updatronix'),
             'failed' => __('Failed', 'updatronix'),
             'uninstall' => __('Uninstall', 'updatronix'),
+            'prevented' => __('Prevented', 'updatronix'),
+            'incompatible' => __('Incompatible', 'updatronix'),
+            'disabled' => __('Disabled', 'updatronix'),
+            'safe_mode_disabled' => __('Auto-updates disabled by Safe Mode', 'updatronix'),
             default => $action_type !== '' ? $action_type : '',
         };
     }

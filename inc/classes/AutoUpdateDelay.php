@@ -121,7 +121,7 @@ final class Updatronix_AutoUpdateDelay {
             $days = max(1, (int) $slice['days']);
         }
 
-        return max(\DAY_IN_SECONDS, $days * \DAY_IN_SECONDS);
+        return $days * \DAY_IN_SECONDS;
     }
 
     /**
@@ -144,33 +144,7 @@ final class Updatronix_AutoUpdateDelay {
      * @param 'plugin'|'theme'|'core'|'translation' $type
      */
     private static function is_excluded_auto_update_offer(string $type, object $item): bool {
-        if ($type === 'plugin') {
-            $file = isset($item->plugin) ? (string) $item->plugin : '';
-            if ($file === '') {
-                return false;
-            }
-
-            if ($file === 'a-fake-plugin/a-fake-plugin.php') {
-                return true;
-            }
-
-            return !file_exists(\WP_PLUGIN_DIR . '/' . $file);
-        }
-
-        if ($type === 'theme') {
-            $stylesheet = isset($item->theme) ? (string) $item->theme : '';
-            if ($stylesheet === '') {
-                return false;
-            }
-
-            if ($stylesheet === 'a-fake-theme') {
-                return true;
-            }
-
-            return !wp_get_theme($stylesheet)->exists();
-        }
-
-        return false;
+        return updatronix_is_site_health_mock($type, $item);
     }
 
     /**
@@ -253,7 +227,7 @@ final class Updatronix_AutoUpdateDelay {
                 ? 'theme|' . strtolower((string) $item->theme) . '|' . (string) $item->new_version
                 : '',
             'core' => isset($item->current)
-                ? 'core|' . (string) $item->current
+                ? 'core|' . (string) $item->current . '|' . (string) ($item->version ?? '')
                 : (isset($item->version) ? 'core|' . (string) $item->version : ''),
             default => isset($item->type, $item->slug, $item->language, $item->version)
                 ? sprintf(

@@ -56,6 +56,11 @@ final class Updatronix_Export_Request_Schema {
         $site_requested = isset($view['site_id']) ? absint((string) $view['site_id']) : 0;
         $site_id = self::resolve_site_id_for_export($site_requested);
 
+        // On multisite, verify the requested site_id refers to an existing site.
+        if ($site_id > 0 && is_multisite() && false === get_blog_details($site_id)) {
+            return new WP_Error('view_invalid', '', ['status' => 400]);
+        }
+
         $search = isset($view['search']) && is_string($view['search'])
             ? sanitize_text_field(wp_unslash($view['search']))
             : '';
