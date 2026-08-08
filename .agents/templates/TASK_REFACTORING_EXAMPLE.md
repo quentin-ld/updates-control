@@ -53,7 +53,7 @@ priority: <!-- low | normal | high -->
 <!-- Fill: define "done" for this refactoring. -->
 - [ ] Passes all automated tests without modification (or test changes limited to internal implementation details, not behavioral expectations).
 - [ ] Preserves externally observable behavior, public API, and stored data schema.
-- [ ] Passes `composer run lint:php` and `npm run lint` without new violations.
+- [ ] Passes `composer run lint:wpcs` and `npm run lint` without new violations.
 - [ ] Creates notes in `.agents/notes/` if architectural decisions affect future work.
 
 ---

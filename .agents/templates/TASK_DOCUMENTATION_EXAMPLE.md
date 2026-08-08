@@ -74,7 +74,7 @@ Reminder bullets (details and edge cases live in the agent profile and docs abov
 - [ ] Inline comments removed where they only narrate the code; remaining comments explain intent or trade-offs.
 - [ ] `readme.txt` prose (where in scope) follows the HelpHub style guide (consolidated mirror); docblocks follow Inline Documentation Standards.
 - [ ] No translatable strings were modified as a side effect.
-- [ ] Lint passes: `composer run lint:php` and `npm run lint`.
+- [ ] Lint passes: `composer run lint:wpcs` and `npm run lint`.
 
 ---
 

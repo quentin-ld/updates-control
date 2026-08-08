@@ -25,7 +25,7 @@ The user selects the matching model before starting the thread. Reference only a
 
 1. Task file — goal, tasks, log, feedback, `risk`, `review_required`
 2. Every file listed in `## Tasks`
-3. Lint/tests if not clean: `composer run lint:php`, `npm run test:all`
+3. Lint/tests if not clean: `composer run lint:wpcs`, `npm run test:all`
 
 Do not load full `.agents/docs/` mirrors.
 
