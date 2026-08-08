@@ -40,7 +40,7 @@ Run these before a commit or release, in order:
 
 | Step | Command | What it does |
 |------|---------|----------------|
-| 1 | `composer run verify:php` | **PHP CS Fixer + PHPStan + PHPUnit unit tests** (`updatronix.php`, `inc/`, `tests/Unit/`) |
+| 1 | `composer run verify:php` | **WordPress Coding Standards (WPCS) + PHPStan + PHPUnit unit tests** (`updatronix.php`, `inc/`, `tests/Unit/`) |
 | 2 | `composer run lint:pcp` | Plugin Check via WP-CLI (requires **Local** — see below) |
 | 3 | `npm run lint` | ESLint (WordPress preset + Prettier via `@wordpress/eslint-plugin`); `npm run lint:fix` to auto-fix |
 | 4 | `npm run lint:css` | Stylelint on `assets/src/**/*.scss` (`npm run lint:css:fix` to auto-fix) |
@@ -58,7 +58,7 @@ npm run test:all
 Integration tests are included in the default gate. When the WordPress test
 environment is not installed, they skip gracefully (exit 0).
 
-WordPress.org suggests using coding standards / static analysis together with [Plugin Check](https://make.wordpress.org/plugins/developers/). This repo uses **PHP CS Fixer** and **PHPStan** for PHP, then Plugin Check for WordPress.org-oriented rules. **PHPUnit** covers pure helpers in `tests/Unit/`; **integration** tests live in `tests/Integration/` (single-site) and `tests/Integration/Multisite/` and run locally when the WordPress test library is installed.
+WordPress.org suggests using coding standards / static analysis together with [Plugin Check](https://make.wordpress.org/plugins/developers/). This repo uses **WordPress Coding Standards (WPCS)** and **PHPStan** for PHP, then Plugin Check for WordPress.org-oriented rules. **PHPUnit** covers pure helpers in `tests/Unit/`; **integration** tests live in `tests/Integration/` (single-site) and `tests/Integration/Multisite/` and run locally when the WordPress test library is installed.
 
 Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/stylelint-config/scss-stylistic`**; Prettier uses **`@wordpress/prettier-config`** (see `package.json`). SCSS is linted with Stylelint, not Prettier, so formatter commands target JS/JSX only.
 
@@ -66,7 +66,9 @@ Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/
 
 | Script | Definition |
 |--------|------------|
-| `lint:php` | PHP CS Fixer then PHPStan (see `composer.json`) |
+| `lint:wpcs` | WordPress Coding Standards check via PHPCS (`.config/phpcs.xml`) |
+| `lint:wpcs:fix` | Auto-fix WPCS violations via PHPCBF |
+| `lint:php` | WPCS then PHPStan (see `composer.json`) |
 | `test` | PHPUnit **unit** suite only (`.config/phpunit.xml.dist` → `tests/Unit/`) |
 | `verify:php` | `lint:php` then `test` — quick PHP gate before commits |
 | `verify:all` | `lint:php` + `test` + `test:integration` — full PHP gate (unit **and** integration) |
@@ -85,7 +87,7 @@ Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/
 | `format` / `format:fix` | Prettier on `assets/src/**/*.{js,jsx}` |
 | `start` / `build` | `@wordpress/scripts` bundle |
 | `setup` | `bash bin/setup-dev.sh` — one-time dev environment setup (env file + WP test stack) |
-| `test:all` | `verify:all` (CS Fixer + PHPStan + unit + integration) + `lint:pcp` + `lint` + `lint:css` + `format` |
+| `test:all` | `verify:all` (WPCS + PHPStan + unit + integration) + `lint:pcp` + `lint` + `lint:css` + `format` |
 | `build:all` | `test:all` + `make:pot` + `build` (see **Build** below) |
 | `zip` | Build distributable zip via `.config/zip.js` (uses `archiver`; respects `.distignore`-style exclusions) |
 
@@ -93,7 +95,7 @@ Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/
 
 | Path | Role |
 |------|------|
-| `.config/.php-cs-fixer.php` | PHP code style |
+| `.config/phpcs.xml` | WordPress Coding Standards (WPCS) |
 | `.config/phpstan.neon` | Static analysis |
 | `.config/phpstan-bootstrap.php` | PHPStan bootstrap |
 | `.config/phpunit.xml.dist` | PHPUnit **unit** tests |
@@ -113,7 +115,7 @@ Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/
 
 Runs, in order:
 
-1. **PHP CS Fixer** — `.config/.php-cs-fixer.php`
+1. **WPCS** — `.config/phpcs.xml`
 2. **PHPStan** — `.config/phpstan.neon`
 3. **PHPUnit (unit)** — `.config/phpunit.xml.dist` (`tests/Unit/`)
 
@@ -178,7 +180,7 @@ npm run build:all
 `build:all` = `npm run test:all` + `composer run make:pot` + `npm run build`. It
 executes, in order:
 
-1. `composer run verify:all` (PHP CS Fixer + PHPStan + **unit** + **integration** tests)
+1. `composer run verify:all` (WPCS + PHPStan + **unit** + **integration** tests)
 2. `composer run lint:pcp`
 3. `npm run lint`
 4. `npm run lint:css`

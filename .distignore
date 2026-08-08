@@ -43,7 +43,6 @@ vendor
 .gitignore
 .gitlab-ci.yml
 .gitmodules
-.php-cs-fixer.php
 .phpunit.result.cache
 .prettierrc
 .prettierrc.js
@@ -60,7 +59,6 @@ multisite.xml
 multisite.xml.dist
 package-lock.json
 package.json
-php-cs-fixer.php
 phpcs.ruleset.xml
 phpcs.xml
 phpcs.xml.dist
@@ -76,6 +74,5 @@ Thumbs.db
 workflow.md
 wp-cli.local.yml
 yarn.lock
-.php-cs-fixer.cache
 .phpactor.json
 AGENTS.md

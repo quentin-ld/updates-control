@@ -14,17 +14,19 @@
 		"php": ">=8.1"
 	},
 	"require-dev": {
-		"friendsofphp/php-cs-fixer": "v3.64.0",
 		"phpstan/phpstan": "^2.1",
 		"szepeviktor/phpstan-wordpress": "^2.0",
 		"squizlabs/php_codesniffer": "^3.11",
 		"phpunit/phpunit": "^9.6",
-		"yoast/phpunit-polyfills": "^2.0"
+		"yoast/phpunit-polyfills": "^2.0",
+		"wp-coding-standards/wpcs": "^3.1"
 	},
 	"scripts": {
+		"lint:wpcs": "vendor/bin/phpcs --standard=.config/phpcs.xml",
+		"lint:wpcs:fix": "vendor/bin/phpcbf --standard=.config/phpcs.xml",
 		"lint:php": [
-			"vendor/bin/php-cs-fixer fix -v --show-progress=dots --using-cache=no --config=.config/.php-cs-fixer.php updatronix.php inc tests",
-			"vendor/bin/phpstan analyse --memory-limit=2048M --configuration=.config/phpstan.neon updatronix.php inc"
+			"@lint:wpcs",
+			"vendor/bin/phpstan analyse --memory-limit=2048M --configuration=.config/phpstan.neon updatronix.php uninstall.php inc"
 		],
         "verify:php": [
             "@lint:php",
@@ -44,5 +46,10 @@
         "lint:pcp": "bash .config/local-wp-cli.sh pcp",
         "make:pot": "bash .config/local-wp-cli.sh pot",
         "setup": "bash bin/setup-dev.sh"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
 	}
 }

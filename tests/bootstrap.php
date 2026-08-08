@@ -322,10 +322,10 @@ if (!function_exists('sanitize_key')) {
     }
 }
 
-require_once dirname(__DIR__) . '/inc/classes/CoreUpdateLogVersions.php';
-require_once dirname(__DIR__) . '/inc/classes/AutomaticUpdateResultNotes.php';
-require_once dirname(__DIR__) . '/inc/classes/Export.php';
-require_once dirname(__DIR__) . '/inc/classes/ExportBodyBuilder.php';
+require_once dirname(__DIR__) . '/inc/classes/class-updatronix-core-update-log-versions.php';
+require_once dirname(__DIR__) . '/inc/classes/class-updatronix-automatic-update-result-notes.php';
+require_once dirname(__DIR__) . '/inc/classes/class-updatronix-export.php';
+require_once dirname(__DIR__) . '/inc/classes/class-updatronix-export-body-builder.php';
 
 if (!function_exists('wp_json_encode')) {
     /**
@@ -402,5 +402,5 @@ if (!function_exists('untrailingslashit')) {
     }
 }
 
-require_once dirname(__DIR__) . '/inc/classes/AutoUpdateDelay.php';
-require_once dirname(__DIR__) . '/inc/classes/Security.php';
+require_once dirname(__DIR__) . '/inc/classes/class-updatronix-autoupdatedelay.php';
+require_once dirname(__DIR__) . '/inc/classes/class-updatronix-security.php';

@@ -54,7 +54,6 @@ const ignore = [
 	'.gitignore',
 	'.gitlab-ci.yml',
 	'.gitmodules',
-	'.php-cs-fixer.php',
 	'.phpunit.result.cache',
 	'.prettierrc',
 	'.prettierrc.js',
@@ -71,7 +70,6 @@ const ignore = [
 	'multisite.xml.dist',
 	'package-lock.json',
 	'package.json',
-	'php-cs-fixer.php',
 	'phpcs.ruleset.xml',
 	'phpcs.xml',
 	'phpcs.xml.dist',
@@ -89,7 +87,6 @@ const ignore = [
 	'yarn.lock',
 	'.phpactor.json',
 	'AGENTS.md',
-	'.php-cs-fixer.cache',
 ];
 
 function isIgnored(filePath, ignorePatterns) {

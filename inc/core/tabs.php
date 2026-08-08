@@ -9,8 +9,8 @@
  * @since 1.1.1
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
@@ -27,32 +27,32 @@ if (!defined('ABSPATH')) {
  * @return array<string, array{slug: string, label: string, icon: string, priority: int}>
  */
 function updatronix_default_admin_tabs(): array {
-    return [
-        'logs' => [
-            'slug' => 'logs',
-            'label' => __('Update logs', 'updatronix'),
-            'icon' => '',
-            'priority' => 10,
-        ],
-        'auto-updates' => [
-            'slug' => 'auto-updates',
-            'label' => __('Auto-updates', 'updatronix'),
-            'icon' => '',
-            'priority' => 20,
-        ],
-        'schedule' => [
-            'slug' => 'schedule',
-            'label' => __('Schedule', 'updatronix'),
-            'icon' => '',
-            'priority' => 30,
-        ],
-        'settings' => [
-            'slug' => 'settings',
-            'label' => __('Settings', 'updatronix'),
-            'icon' => '',
-            'priority' => 40,
-        ],
-    ];
+	return array(
+		'logs'         => array(
+			'slug'     => 'logs',
+			'label'    => __( 'Update logs', 'updatronix' ),
+			'icon'     => '',
+			'priority' => 10,
+		),
+		'auto-updates' => array(
+			'slug'     => 'auto-updates',
+			'label'    => __( 'Auto-updates', 'updatronix' ),
+			'icon'     => '',
+			'priority' => 20,
+		),
+		'schedule'     => array(
+			'slug'     => 'schedule',
+			'label'    => __( 'Schedule', 'updatronix' ),
+			'icon'     => '',
+			'priority' => 30,
+		),
+		'settings'     => array(
+			'slug'     => 'settings',
+			'label'    => __( 'Settings', 'updatronix' ),
+			'icon'     => '',
+			'priority' => 40,
+		),
+	);
 }
 
 /**
@@ -69,29 +69,29 @@ function updatronix_default_admin_tabs(): array {
  * @return array<string, array{slug: string, label: string, icon: string, priority: int}>
  */
 function updatronix_get_admin_tabs(): array {
-    /**
-     * Filters the admin page tab definitions.
-     *
-     * Allows third-party code (e.g. Updatronix Pro) to add, remove, or reorder
-     * tabs in the admin page shell. Tabs are sorted by `priority` after filtering.
-     *
-     * @since 1.1.1
-     *
-     * @param array<string, array{slug: string, label: string, icon: string, priority?: int}> $tabs Default tab definitions.
-     */
-    $tabs = apply_filters('updatronix_admin_tabs', updatronix_default_admin_tabs());
+	/**
+	 * Filters the admin page tab definitions.
+	 *
+	 * Allows third-party code (e.g. Updatronix Pro) to add, remove, or reorder
+	 * tabs in the admin page shell. Tabs are sorted by `priority` after filtering.
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param array<string, array{slug: string, label: string, icon: string, priority?: int}> $tabs Default tab definitions.
+	 */
+	$tabs = apply_filters( 'updatronix_admin_tabs', updatronix_default_admin_tabs() );
 
-    uasort(
-        $tabs,
-        static function (array $a, array $b): int {
-            $pa = isset($a['priority']) ? (int) $a['priority'] : 10;
-            $pb = isset($b['priority']) ? (int) $b['priority'] : 10;
+	uasort(
+		$tabs,
+		static function ( array $a, array $b ): int {
+			$pa = isset( $a['priority'] ) ? (int) $a['priority'] : 10;
+			$pb = isset( $b['priority'] ) ? (int) $b['priority'] : 10;
 
-            return $pa <=> $pb;
-        }
-    );
+			return $pa <=> $pb;
+		}
+	);
 
-    return $tabs;
+	return $tabs;
 }
 
 /**
@@ -102,17 +102,17 @@ function updatronix_get_admin_tabs(): array {
  * @param array<string, array{slug: string, label: string, icon: string, priority: int}> $tabs Tab definitions (from updatronix_get_admin_tabs()).
  * @return string Active tab slug.
  */
-function updatronix_get_active_tab(array $tabs): string {
-    $tab_input = filter_input(INPUT_GET, 'tab', FILTER_UNSAFE_RAW);
-    if (is_string($tab_input) && '' !== $tab_input) {
-        $requested_tab = sanitize_key($tab_input);
-        if (isset($tabs[$requested_tab])) {
-            return $requested_tab;
-        }
-    }
+function updatronix_get_active_tab( array $tabs ): string {
+	$tab_input = filter_input( INPUT_GET, 'tab', FILTER_UNSAFE_RAW );
+	if ( is_string( $tab_input ) && '' !== $tab_input ) {
+		$requested_tab = sanitize_key( $tab_input );
+		if ( isset( $tabs[ $requested_tab ] ) ) {
+			return $requested_tab;
+		}
+	}
 
-    // Default to the first registered tab.
-    $keys = array_keys($tabs);
+	// Default to the first registered tab.
+	$keys = array_keys( $tabs );
 
-    return $keys !== [] ? $keys[0] : 'logs';
+	return array() !== $keys ? $keys[0] : 'logs';
 }

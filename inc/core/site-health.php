@@ -10,8 +10,8 @@
  * @since 1.1.2
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
@@ -30,32 +30,32 @@ if (!defined('ABSPATH')) {
  * @param object $item The update item object from the filter.
  * @return bool True when the offer is a synthetic Site Health mock or references a missing file.
  */
-function updatronix_is_site_health_mock(string $type, object $item): bool {
-    if ($type === 'plugin') {
-        $file = isset($item->plugin) ? (string) $item->plugin : '';
-        if ($file === '') {
-            return false;
-        }
+function updatronix_is_site_health_mock( string $type, object $item ): bool {
+	if ( 'plugin' === $type ) {
+		$file = isset( $item->plugin ) ? (string) $item->plugin : '';
+		if ( '' === $file ) {
+			return false;
+		}
 
-        if ($file === 'a-fake-plugin/a-fake-plugin.php') {
-            return true;
-        }
+		if ( 'a-fake-plugin/a-fake-plugin.php' === $file ) {
+			return true;
+		}
 
-        return !file_exists(WP_PLUGIN_DIR . '/' . $file);
-    }
+		return ! file_exists( WP_PLUGIN_DIR . '/' . $file );
+	}
 
-    if ($type === 'theme') {
-        $stylesheet = isset($item->theme) ? (string) $item->theme : '';
-        if ($stylesheet === '') {
-            return false;
-        }
+	if ( 'theme' === $type ) {
+		$stylesheet = isset( $item->theme ) ? (string) $item->theme : '';
+		if ( '' === $stylesheet ) {
+			return false;
+		}
 
-        if ($stylesheet === 'a-fake-theme') {
-            return true;
-        }
+		if ( 'a-fake-theme' === $stylesheet ) {
+			return true;
+		}
 
-        return !wp_get_theme($stylesheet)->exists();
-    }
+		return ! wp_get_theme( $stylesheet )->exists();
+	}
 
-    return false;
+	return false;
 }

@@ -135,7 +135,8 @@ When required, the architect sets `review_required: yes` in task frontmatter and
 
 | Command | When |
 |---------|------|
-| `composer run verify:php` | PHP changes (CS Fixer + PHPStan + unit tests) |
+| `composer run lint:wpcs` / `lint:wpcs:fix` | PHP Coding Standards check / auto-fix (WPCS via `.config/phpcs.xml`) |
+| `composer run verify:php` | PHP changes (WPCS + PHPStan + unit tests) |
 | `npm run lint` / `npm run lint:css` | JS / SCSS |
 | `npm run test:all` | End of dev cycle |
 | `composer run lint:pcp` | Pre-release |

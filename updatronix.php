@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Updatronix plugin for WordPress
  *
@@ -35,20 +34,22 @@
  * GNU General Public License for more details.
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /** Plugin version (must match Version header above; used for DB schema version). */
-define('UPDATRONIX_VERSION', '1.1.1');
+define( 'UPDATRONIX_VERSION', '1.1.1' );
 
-define('UPDATRONIX_PLUGIN_FILE', __FILE__); // Absolute path to this file.
-define('UPDATRONIX_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Plugin root directory with trailing slash.
-if (!defined('updatronix_PLUGIN_FILE')) {
-    define('updatronix_PLUGIN_FILE', UPDATRONIX_PLUGIN_FILE); // Legacy alias (lowercase prefix).
+define( 'UPDATRONIX_PLUGIN_FILE', __FILE__ ); // Absolute path to this file.
+define( 'UPDATRONIX_PLUGIN_DIR', plugin_dir_path( __FILE__ ) ); // Plugin root directory with trailing slash.
+if ( ! defined( 'updatronix_PLUGIN_FILE' ) ) {
+	// phpcs:ignore Generic.NamingConventions.UpperCaseConstantName.ConstantNotUpperCase -- Legacy alias (lowercase prefix) kept for backward compatibility.
+	define( 'updatronix_PLUGIN_FILE', UPDATRONIX_PLUGIN_FILE );
 }
-if (!defined('updatronix_PLUGIN_DIR')) {
-    define('updatronix_PLUGIN_DIR', UPDATRONIX_PLUGIN_DIR); // Legacy alias (lowercase prefix).
+if ( ! defined( 'updatronix_PLUGIN_DIR' ) ) {
+	// phpcs:ignore Generic.NamingConventions.UpperCaseConstantName.ConstantNotUpperCase -- Legacy alias (lowercase prefix) kept for backward compatibility.
+	define( 'updatronix_PLUGIN_DIR', UPDATRONIX_PLUGIN_DIR );
 }
 
 require_once __DIR__ . '/inc/core/constants.php';
@@ -57,8 +58,8 @@ require_once __DIR__ . '/inc/core/storage.php';
 require_once __DIR__ . '/inc/core/tabs.php';
 require_once __DIR__ . '/inc/core/site-health.php';
 
-add_action('admin_notices', 'updatronix_activation_subsite_notice');
-add_action('network_admin_notices', 'updatronix_activation_subsite_notice');
+add_action( 'admin_notices', 'updatronix_activation_subsite_notice' );
+add_action( 'network_admin_notices', 'updatronix_activation_subsite_notice' );
 
 /**
  * Admin notice when the plugin was activated on a subsite where activation is not allowed.
@@ -68,37 +69,37 @@ add_action('network_admin_notices', 'updatronix_activation_subsite_notice');
  * @return void
  */
 function updatronix_activation_subsite_notice(): void {
-    if (!updatronix_get_plugin_option('updatronix_activation_subsite_skipped', '')) {
-        return;
-    }
+	if ( ! updatronix_get_plugin_option( 'updatronix_activation_subsite_skipped', '' ) ) {
+		return;
+	}
 
-    updatronix_delete_plugin_option('updatronix_activation_subsite_skipped');
+	updatronix_delete_plugin_option( 'updatronix_activation_subsite_skipped' );
 
-    if (is_multisite() && !is_network_admin()) {
-        return;
-    }
+	if ( is_multisite() && ! is_network_admin() ) {
+		return;
+	}
 
-    $url = network_admin_url('admin.php?page=updatronix');
-    ?>
-    <div class="notice notice-warning is-dismissible">
-        <p>
-            <?php
-            printf(
-                wp_kses(
-                    /* translators: %s: URL to the network admin Updatronix page. */
-                    __('Updatronix was activated on a subsite, but it only works from the Network Admin. Please go to <a href="%s">Network Admin → Updatronix</a> to set it up.', 'updatronix'),
-                    ['a' => ['href' => []]]
-                ),
-                esc_url($url)
-            );
-    ?>
-        </p>
-    </div>
-    <?php
+	$url = network_admin_url( 'admin.php?page=updatronix' );
+	?>
+	<div class="notice notice-warning is-dismissible">
+		<p>
+			<?php
+			printf(
+				wp_kses(
+					/* translators: %s: URL to the network admin Updatronix page. */
+					__( 'Updatronix was activated on a subsite, but it only works from the Network Admin. Please go to <a href="%s">Network Admin → Updatronix</a> to set it up.', 'updatronix' ),
+					array( 'a' => array( 'href' => array() ) )
+				),
+				esc_url( $url )
+			);
+			?>
+		</p>
+	</div>
+	<?php
 }
 
-register_activation_hook(__FILE__, 'updatronix_activate');
-register_deactivation_hook(__FILE__, 'updatronix_deactivate');
+register_activation_hook( __FILE__, 'updatronix_activate' );
+register_deactivation_hook( __FILE__, 'updatronix_deactivate' );
 
 /**
  * Register capabilities, create the log table, and schedule cron.
@@ -108,34 +109,38 @@ register_deactivation_hook(__FILE__, 'updatronix_deactivate');
  * @return void
  */
 function updatronix_activate(): void {
-    if (!updatronix_activation_allowed()) {
-        if (is_multisite() && !is_network_admin()) {
-            updatronix_update_plugin_option('updatronix_activation_subsite_skipped', '1', false);
-        }
+	if ( ! updatronix_activation_allowed() ) {
+		if ( is_multisite() && ! is_network_admin() ) {
+			updatronix_update_plugin_option( 'updatronix_activation_subsite_skipped', '1', false );
+		}
 
-        return;
-    }
+		return;
+	}
 
-    // Super Admins pass every capability check on multisite, so the administrator-role
-    // cap is only meaningful on single-site installs (access is super-admin-gated otherwise).
-    if (!is_multisite()) {
-        $role = get_role('administrator');
-        if ($role) {
-            $role->add_cap(UPDATRONIX_CAP_MANAGE);
-        }
-        updatronix_update_plugin_option('updatronix_cap_migrated', '1', false);
-    }
+	// Super Admins pass every capability check on multisite, so the administrator-role
+	// cap is only meaningful on single-site installs (access is super-admin-gated otherwise).
+	if ( ! is_multisite() ) {
+		$role = get_role( 'administrator' );
+		if ( $role ) {
+			$role->add_cap( UPDATRONIX_CAP_MANAGE );
+		}
+		updatronix_update_plugin_option( 'updatronix_cap_migrated', '1', false );
+	}
 
-    require_once __DIR__ . '/inc/classes/Database.php';
-    updatronix_with_main_site(static function (): void {
-        Updatronix_Database::create_table();
-    });
-    require_once __DIR__ . '/inc/classes/Cron.php';
-    updatronix_with_main_site(static function (): void {
-        Updatronix_Cron::schedule_if_needed();
-        Updatronix_Cron::apply_update_check_schedule_from_settings();
-        Updatronix_Cron::clear_subsite_cron_artifacts();
-    });
+	require_once __DIR__ . '/inc/classes/class-updatronix-database.php';
+	updatronix_with_main_site(
+		static function (): void {
+			Updatronix_Database::create_table();
+		}
+	);
+	require_once __DIR__ . '/inc/classes/class-updatronix-cron.php';
+	updatronix_with_main_site(
+		static function (): void {
+			Updatronix_Cron::schedule_if_needed();
+			Updatronix_Cron::apply_update_check_schedule_from_settings();
+			Updatronix_Cron::clear_subsite_cron_artifacts();
+		}
+	);
 }
 
 /**
@@ -146,21 +151,23 @@ function updatronix_activate(): void {
  * @return void
  */
 function updatronix_deactivate(): void {
-    if (!updatronix_activation_allowed()) {
-        return;
-    }
+	if ( ! updatronix_activation_allowed() ) {
+		return;
+	}
 
-    require_once __DIR__ . '/inc/classes/Cron.php';
-    updatronix_with_main_site(static function (): void {
-        Updatronix_Cron::unschedule();
-    });
+	require_once __DIR__ . '/inc/classes/class-updatronix-cron.php';
+	updatronix_with_main_site(
+		static function (): void {
+			Updatronix_Cron::unschedule();
+		}
+	);
 }
 
-if (!updatronix_should_load()) {
-    return;
+if ( ! updatronix_should_load() ) {
+	return;
 }
 
-require_once __DIR__ . '/inc/classes/Bootstrap.php';
+require_once __DIR__ . '/inc/classes/class-updatronix-bootstrap.php';
 
 require_once __DIR__ . '/inc/admin/enqueue.php';
 require_once __DIR__ . '/inc/admin/links.php';
@@ -168,4 +175,4 @@ require_once __DIR__ . '/inc/admin/menu.php';
 require_once __DIR__ . '/inc/settings/options.php';
 require_once __DIR__ . '/inc/admin/native-update-delay-notice.php';
 
-add_action('plugins_loaded', ['Updatronix_Bootstrap', 'init']);
+add_action( 'plugins_loaded', array( 'Updatronix_Bootstrap', 'init' ) );

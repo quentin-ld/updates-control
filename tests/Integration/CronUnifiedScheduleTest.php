@@ -8,169 +8,173 @@
 declare(strict_types=1);
 
 /**
+ * Tests unified Schedule tab cron behaviour (Core hooks + wp-admin messaging parity).
+ *
  * @coversNothing
  */
 final class CronUnifiedScheduleTest extends WP_UnitTestCase {
-    /**
-     * When recurrence is plugin-controlled, `wp_version_check` stays scheduled (admin UI messaging) while
-     * redundant plugin/theme recurring checks are suppressed.
-     *
-     * WordPress-default recurrence restores Core's three-hook pattern.
-     *
-     * @return void
-     */
-    public function test_unified_schedule_keeps_wp_version_check_and_suppresses_plugin_theme_crons(): void {
-        wp_clear_scheduled_hook('wp_version_check');
-        wp_clear_scheduled_hook('wp_update_plugins');
-        wp_clear_scheduled_hook('wp_update_themes');
-        if (function_exists('wp_schedule_update_checks')) {
-            wp_schedule_update_checks();
-        }
+	/**
+	 * When recurrence is plugin-controlled, `wp_version_check` stays scheduled (admin UI messaging) while
+	 * redundant plugin/theme recurring checks are suppressed.
+	 *
+	 * WordPress-default recurrence restores Core's three-hook pattern.
+	 *
+	 * @return void
+	 */
+	public function test_unified_schedule_keeps_wp_version_check_and_suppresses_plugin_theme_crons(): void {
+		wp_clear_scheduled_hook( 'wp_version_check' );
+		wp_clear_scheduled_hook( 'wp_update_plugins' );
+		wp_clear_scheduled_hook( 'wp_update_themes' );
+		if ( function_exists( 'wp_schedule_update_checks' ) ) {
+			wp_schedule_update_checks();
+		}
 
-        self::assertIsInt(wp_next_scheduled('wp_version_check'), 'Test setup should register Core update crons.');
+		self::assertIsInt( wp_next_scheduled( 'wp_version_check' ), 'Test setup should register Core update crons.' );
 
-        $current = updatronix_get_settings();
-        $current['schedule']['update_check']['recurrence'] = 'daily';
-        $current['schedule']['update_check']['time'] = '03:00';
-        updatronix_save_settings_array($current);
+		$current = updatronix_get_settings();
+		$current['schedule']['update_check']['recurrence'] = 'daily';
+		$current['schedule']['update_check']['time']       = '03:00';
+		updatronix_save_settings_array( $current );
 
-        self::assertIsInt(wp_next_scheduled(Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK));
-        self::assertFalse(wp_next_scheduled('wp_update_plugins'));
-        self::assertFalse(wp_next_scheduled('wp_update_themes'));
+		self::assertIsInt( wp_next_scheduled( Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK ) );
+		self::assertFalse( wp_next_scheduled( 'wp_update_plugins' ) );
+		self::assertFalse( wp_next_scheduled( 'wp_update_themes' ) );
 
-        $current['schedule']['update_check']['recurrence'] = '';
-        updatronix_save_settings_array($current);
+		$current['schedule']['update_check']['recurrence'] = '';
+		updatronix_save_settings_array( $current );
 
-        self::assertIsInt(wp_next_scheduled('wp_version_check'));
-        self::assertIsInt(wp_next_scheduled('wp_update_plugins'));
-        self::assertIsInt(wp_next_scheduled('wp_update_themes'));
-    }
+		self::assertIsInt( wp_next_scheduled( 'wp_version_check' ) );
+		self::assertIsInt( wp_next_scheduled( 'wp_update_plugins' ) );
+		self::assertIsInt( wp_next_scheduled( 'wp_update_themes' ) );
+	}
 
-    /**
-     * @return void
-     */
-    public function test_schedule_meta_includes_driver_fields(): void {
-        $meta = Updatronix_Cron::get_schedule_rest_meta();
-        self::assertArrayHasKey('schedule_driver', $meta);
-        self::assertArrayHasKey('unified_schedule_active', $meta);
-        self::assertContains($meta['schedule_driver'], ['wordpress', 'updatronix']);
-        self::assertIsBool($meta['unified_schedule_active']);
-    }
+	/**
+	 * Schedule REST meta includes driver and unified-schedule indicator fields.
+	 *
+	 * @return void
+	 */
+	public function test_schedule_meta_includes_driver_fields(): void {
+		$meta = Updatronix_Cron::get_schedule_rest_meta();
+		self::assertArrayHasKey( 'schedule_driver', $meta );
+		self::assertArrayHasKey( 'unified_schedule_active', $meta );
+		self::assertContains( $meta['schedule_driver'], array( 'wordpress', 'updatronix' ) );
+		self::assertIsBool( $meta['unified_schedule_active'] );
+	}
 
-    /**
-     * Regression guard for M1 (`.cursor/notes/2026-05-09-code-review-opus-notifications-schedule-features.md`):
-     * `Updatronix_Cron::prime_unified_discovery_before_core()` must not cause Core's priority-10
-     * callback (`wp_version_check()`) to run twice in a single `do_action( 'wp_version_check' )` tick.
-     *
-     * The plugin's listener primes plugin/theme transients at priority 9 and lets Core's listener
-     * run untouched at priority 10. The proxy counts `core_version_check_locale`, a filter
-     * `wp_version_check()` fires exactly once per non-short-circuited run (before the API request);
-     * the plugin primer calls `wp_update_plugins()` / `wp_update_themes()`, which do not fire it.
-     * (`pre_set_site_transient_update_core` is unusable here: WordPress 7.0's `wp_version_check()`
-     * sets the `update_core` transient twice within a single run — a defensive early set plus the
-     * result set — so it no longer maps 1:1 to a run.)
-     *
-     * @return void
-     */
-    public function test_unified_prime_does_not_double_run_version_check(): void {
-        $current = updatronix_get_settings();
-        $current['schedule']['update_check']['recurrence'] = 'daily';
-        $current['schedule']['update_check']['time'] = '03:00';
-        updatronix_save_settings_array($current);
+	/**
+	 * Regression guard for M1 (`.cursor/notes/2026-05-09-code-review-opus-notifications-schedule-features.md`):
+	 * `Updatronix_Cron::prime_unified_discovery_before_core()` must not cause Core's priority-10
+	 * callback (`wp_version_check()`) to run twice in a single `do_action( 'wp_version_check' )` tick.
+	 *
+	 * The plugin's listener primes plugin/theme transients at priority 9 and lets Core's listener
+	 * run untouched at priority 10. The proxy counts `core_version_check_locale`, a filter
+	 * `wp_version_check()` fires exactly once per non-short-circuited run (before the API request);
+	 * the plugin primer calls `wp_update_plugins()` / `wp_update_themes()`, which do not fire it.
+	 * (`pre_set_site_transient_update_core` is unusable here: WordPress 7.0's `wp_version_check()`
+	 * sets the `update_core` transient twice within a single run — a defensive early set plus the
+	 * result set — so it no longer maps 1:1 to a run.)
+	 *
+	 * @return void
+	 */
+	public function test_unified_prime_does_not_double_run_version_check(): void {
+		$current = updatronix_get_settings();
+		$current['schedule']['update_check']['recurrence'] = 'daily';
+		$current['schedule']['update_check']['time']       = '03:00';
+		updatronix_save_settings_array( $current );
 
-        self::assertTrue(Updatronix_Cron::is_unified_schedule_active());
+		self::assertTrue( Updatronix_Cron::is_unified_schedule_active() );
 
-        $core_check_runs = 0;
-        $listener = static function ($locale) use (&$core_check_runs) {
-            $core_check_runs++;
+		$core_check_runs = 0;
+		$listener        = static function ( $locale ) use ( &$core_check_runs ) {
+			++$core_check_runs;
 
-            return $locale;
-        };
-        add_filter('core_version_check_locale', $listener, 99);
+			return $locale;
+		};
+		add_filter( 'core_version_check_locale', $listener, 99 );
 
-        try {
-            do_action('wp_version_check');
-        } finally {
-            remove_filter('core_version_check_locale', $listener, 99);
-        }
+		try {
+			do_action( 'wp_version_check' );
+		} finally {
+			remove_filter( 'core_version_check_locale', $listener, 99 );
+		}
 
-        self::assertSame(
-            1,
-            $core_check_runs,
-            'wp_version_check() must run exactly once per cron tick when unified scheduling is active.'
-        );
-    }
+		self::assertSame(
+			1,
+			$core_check_runs,
+			'wp_version_check() must run exactly once per cron tick when unified scheduling is active.'
+		);
+	}
 
-    /**
-     * The {@see block_single_contamination()} filter prevents non-recurring `wp_version_check`
-     * events from being written to the cron option when unified scheduling is active.
-     *
-     * @return void
-     */
-    public function test_single_event_contamination_is_blocked_by_filter(): void {
-        $current = updatronix_get_settings();
-        $current['schedule']['update_check']['recurrence'] = 'daily';
-        $current['schedule']['update_check']['time'] = '03:00';
-        updatronix_save_settings_array($current);
+	/**
+	 * The {@see block_single_contamination()} filter prevents non-recurring `wp_version_check`
+	 * events from being written to the cron option when unified scheduling is active.
+	 *
+	 * @return void
+	 */
+	public function test_single_event_contamination_is_blocked_by_filter(): void {
+		$current = updatronix_get_settings();
+		$current['schedule']['update_check']['recurrence'] = 'daily';
+		$current['schedule']['update_check']['time']       = '03:00';
+		updatronix_save_settings_array( $current );
 
-        self::assertTrue(Updatronix_Cron::is_unified_schedule_active());
+		self::assertTrue( Updatronix_Cron::is_unified_schedule_active() );
 
-        $event_before = wp_get_scheduled_event(Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK);
-        self::assertNotFalse($event_before, 'A recurring event should exist.');
-        $previous_timestamp = $event_before->timestamp;
+		$event_before = wp_get_scheduled_event( Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK );
+		self::assertNotFalse( $event_before, 'A recurring event should exist.' );
+		$previous_timestamp = $event_before->timestamp;
 
-        // Simulate Core's TTL logic: attempt to schedule a non-recurring single event.
-        $result = wp_schedule_single_event(time() + HOUR_IN_SECONDS, Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK);
-        self::assertFalse($result, 'The single event should be blocked by the filter.');
+		// Simulate Core's TTL logic: attempt to schedule a non-recurring single event.
+		$result = wp_schedule_single_event( time() + HOUR_IN_SECONDS, Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK );
+		self::assertFalse( $result, 'The single event should be blocked by the filter.' );
 
-        // Verify the cron event is unchanged (still the recurring event, not the single event).
-        $event_after = wp_get_scheduled_event(Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK);
-        self::assertNotFalse($event_after, 'A recurring event should still exist.');
-        self::assertSame('daily', $event_after->schedule, 'Should still be the configured daily recurrence.');
-        self::assertSame(
-            $previous_timestamp,
-            $event_after->timestamp,
-            'The event timestamp should be unchanged (single event was not written).'
-        );
+		// Verify the cron event is unchanged (still the recurring event, not the single event).
+		$event_after = wp_get_scheduled_event( Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK );
+		self::assertNotFalse( $event_after, 'A recurring event should still exist.' );
+		self::assertSame( 'daily', $event_after->schedule, 'Should still be the configured daily recurrence.' );
+		self::assertSame(
+			$previous_timestamp,
+			$event_after->timestamp,
+			'The event timestamp should be unchanged (single event was not written).'
+		);
 
-        // Clean up.
-        $current['schedule']['update_check']['recurrence'] = '';
-        updatronix_save_settings_array($current);
-    }
+		// Clean up.
+		$current['schedule']['update_check']['recurrence'] = '';
+		updatronix_save_settings_array( $current );
+	}
 
-    /**
-     * Weekly is a native WordPress cron schedule; unified mode should accept it and keep `wp_version_check` scheduled.
-     *
-     * @return void
-     */
-    public function test_weekly_recurrence_keeps_wp_version_check_and_suppresses_plugin_theme_crons(): void {
-        $schedules = wp_get_schedules();
-        if (!isset($schedules['weekly'])) {
-            self::markTestSkipped('Weekly schedule not registered in this WordPress version.');
-        }
+	/**
+	 * Weekly is a native WordPress cron schedule; unified mode should accept it and keep `wp_version_check` scheduled.
+	 *
+	 * @return void
+	 */
+	public function test_weekly_recurrence_keeps_wp_version_check_and_suppresses_plugin_theme_crons(): void {
+		$schedules = wp_get_schedules();
+		if ( ! isset( $schedules['weekly'] ) ) {
+			self::markTestSkipped( 'Weekly schedule not registered in this WordPress version.' );
+		}
 
-        wp_clear_scheduled_hook('wp_version_check');
-        wp_clear_scheduled_hook('wp_update_plugins');
-        wp_clear_scheduled_hook('wp_update_themes');
-        if (function_exists('wp_schedule_update_checks')) {
-            wp_schedule_update_checks();
-        }
+		wp_clear_scheduled_hook( 'wp_version_check' );
+		wp_clear_scheduled_hook( 'wp_update_plugins' );
+		wp_clear_scheduled_hook( 'wp_update_themes' );
+		if ( function_exists( 'wp_schedule_update_checks' ) ) {
+			wp_schedule_update_checks();
+		}
 
-        $current = updatronix_get_settings();
-        $current['schedule']['update_check']['recurrence'] = 'weekly';
-        $current['schedule']['update_check']['time'] = '04:15';
-        updatronix_save_settings_array($current);
+		$current = updatronix_get_settings();
+		$current['schedule']['update_check']['recurrence'] = 'weekly';
+		$current['schedule']['update_check']['time']       = '04:15';
+		updatronix_save_settings_array( $current );
 
-        self::assertTrue(Updatronix_Cron::is_unified_schedule_active());
-        self::assertIsInt(wp_next_scheduled(Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK));
-        self::assertFalse(wp_next_scheduled('wp_update_plugins'));
-        self::assertFalse(wp_next_scheduled('wp_update_themes'));
+		self::assertTrue( Updatronix_Cron::is_unified_schedule_active() );
+		self::assertIsInt( wp_next_scheduled( Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK ) );
+		self::assertFalse( wp_next_scheduled( 'wp_update_plugins' ) );
+		self::assertFalse( wp_next_scheduled( 'wp_update_themes' ) );
 
-        $current['schedule']['update_check']['recurrence'] = '';
-        updatronix_save_settings_array($current);
+		$current['schedule']['update_check']['recurrence'] = '';
+		updatronix_save_settings_array( $current );
 
-        self::assertIsInt(wp_next_scheduled('wp_version_check'));
-        self::assertIsInt(wp_next_scheduled('wp_update_plugins'));
-        self::assertIsInt(wp_next_scheduled('wp_update_themes'));
-    }
+		self::assertIsInt( wp_next_scheduled( 'wp_version_check' ) );
+		self::assertIsInt( wp_next_scheduled( 'wp_update_plugins' ) );
+		self::assertIsInt( wp_next_scheduled( 'wp_update_themes' ) );
+	}
 }

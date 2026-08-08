@@ -207,7 +207,7 @@ When every box above is ticked:
 
 Quality bar (automated) — for cross-reference, the canonical pipeline lives in **`workflow.md`**:
 
-- `composer run verify:php` (PHP CS Fixer + PHPStan + unit tests)
+- `composer run verify:php` (WPCS + PHPStan + unit tests)
 - `composer run lint:pcp` (Local / WP-CLI)
 - `npm run lint` / `npm run lint:css` / `npm run format` when JS/CSS changed
 - `bash .config/local-wp-cli.sh integration-test` (single-site integration tests)

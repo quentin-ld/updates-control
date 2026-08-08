@@ -1,6 +1,6 @@
 # Tests
 
-**Verification stack:** `composer run verify:php` runs PHP CS Fixer, PHPStan, and the **unit** suite; `composer run verify:all` adds the **integration** suite. **`npm run test:all`** runs every linter + unit + integration tests; **`npm run build:all`** adds POT regeneration + `npm run build` — see **`workflow.md`**.
+**Verification stack:** `composer run verify:php` runs WordPress Coding Standards (WPCS), PHPStan, and the **unit** suite; `composer run verify:all` adds the **integration** suite. **`npm run test:all`** runs every linter + unit + integration tests; **`npm run build:all`** adds POT regeneration + `npm run build` — see **`workflow.md`**.
 
 **First-time setup:** `composer install && npm install && bash bin/setup-dev.sh`. The setup script writes `.config/wp-tests.env` (from your site's DB credentials) and installs `wordpress-tests-lib`, after which integration tests run with no further configuration.
 

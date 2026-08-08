@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ruleset name="Updatronix">
+	<description>WordPress Coding Standards for the Updatronix plugin.</description>
+
+	<!-- Combined WordPress standard: Core + Extra + Docs (maximum standards). -->
+	<rule ref="WordPress"/>
+
+	<!-- Free requires PHP 8.1+ (AGENTS.md). -->
+	<config name="testVersion" value="8.1-"/>
+
+	<!-- Free uses the updatronix text domain. -->
+	<config name="text_domain" value="updatronix"/>
+
+	<!-- Warnings are informational; only errors fail the gate. -->
+	<config name="ignore_warnings_on_exit" value="1"/>
+
+	<!-- Files under enforced standards (resolved relative to this .config/ dir). -->
+	<file>../updatronix.php</file>
+	<file>../uninstall.php</file>
+	<file>../inc/</file>
+	<file>../tests/Unit/</file>
+	<file>../tests/Integration/</file>
+
+	<!-- Non-source / generated / dev-only paths. -->
+	<exclude-pattern>../vendor/*</exclude-pattern>
+	<exclude-pattern>../node_modules/*</exclude-pattern>
+	<exclude-pattern>../.config/*</exclude-pattern>
+	<exclude-pattern>../assets/build/*</exclude-pattern>
+	<!-- Unit bootstrap stubs WordPress functions; kept out of the gate. -->
+	<exclude-pattern>../tests/bootstrap.php</exclude-pattern>
+	<!-- Directory index placeholder. -->
+	<exclude-pattern>../index.php</exclude-pattern>
+</ruleset>

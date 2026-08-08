@@ -400,5 +400,4 @@ docs/*
 .agents/notes/
 FEATURE_REQUEST.md
 
-.php-cs-fixer.cache
 .phpactor.json
