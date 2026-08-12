@@ -4,7 +4,7 @@ Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, maintenance, security, audit-log
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -167,42 +167,23 @@ I welcome your ideas! If you have a suggestion for the roadmap, please visit the
 
 == Changelog ==
 
+= 1.1.3 =
+* Fix: Auto-updates: Scheduled auto-updates no longer error when update delay is enabled.
+* Documentation: Edit 1.1.1 changelogs.
+
 = 1.1.2 =
-* Dev: Adopt WordPress Coding Standards, confirm WP 7.0.2 compatibility, bump to 1.1.2.
+* Dev: Adopt WordPress Coding Standards, plugin tested up to WP 7.0.3.
 
 = 1.1.1 =
-* New: Updatronix 3000 (pro version) connector.
-* Schedule: Prevent recurrence from resetting to hourly after `update-core.php` visits or external tools clear the `wp_version_check` cron event. Block Core's single-event TTL scheduling at the source.
-* Schedule: First run for twice-daily recurrence now schedules `+12 hours` from the preferred time instead of waiting until the next day.
-* Schedule: Multisite self-heal guard now allows cron to run on any blog, not only the main site.
-* Schedule: REST API `recurrence` field validated against allowed values; `delay_value` sanitized via `absint`.
-* Admin: Notices no longer stack on repeated saves.
-* Admin: Improved error handling across the admin interface — invalid input, API failures, and extension crashes handled gracefully.
-* i18n: HTML markup removed from translation strings in the delay-updates admin notice.
-* REST API: Auto-update toggles now enforce `AUTOMATIC_UPDATER_DISABLED` and `DISALLOW_FILE_MODS` server-side.
-* REST API: Field `auto_update_available` renamed to `update_data_available`.
-* REST API: Export route declares schema for the `view` object.
-* Export: Modal shows the latest view filters; export loop stops after 100 chunks to prevent runaway requests.
-* Export: Transient payloads no longer lost on server crash mid-write.
-* Export: Preferences survive future format changes.
-* Export: REST handler decomposed into smaller methods for maintainability.
-* Export: Removed redundant `add_option()` call in the audit trail.
-* Export: Validates site_id on multisite before processing.
-* Logs: Activity log filters now send values to the server for accurate pagination and totals.
-* Logs: Detail modals show an error message when the fetch fails instead of falling back to summary data.
-* Logs: Missing `info` and `warning` status values added to the filter bar.
-* Logs: Detail view caches responses with a 30-second TTL.
-* Logs: Retention cleanup now uses the correct timezone.
-* Auto-updates: Stale entries for deleted plugins and themes are automatically cleaned up.
-* Auto-updates: Improved core version tracking in the delay ledger.
-* Security: Log messages redact internal server paths (ABSPATH, WP_PLUGIN_DIR, WP_CONTENT_DIR) before storage.
-* Security: HTML entities decoded before redaction scanning to prevent encoded bypasses.
-* Security: Server paths fully replaced with a safe placeholder; UI note added explaining redaction.
-* Security: Token redaction regex no longer falsely matches `?author=`, `?authorization=`, or similar query params.
-* Developer: `catch (\Exception)` updated to `catch (\Throwable)` for PHP 8.3+ compatibility.
-* Developer: Shared Site Health mock detection extracted to a reusable helper.
-* Developer: Internal code cleanup — dead code removal, redundant sanitization removed, email parsing cached, duplicated JS helper extracted.
-* Developer: Added comprehensive unit tests for the redaction pipeline.
+* New: Updatronix 3000 connector (Pro version).
+* Fix: Keep the schedule recurrence, preferred time, and hold delay after visiting update pages or when external tools clear the cron table.
+* Fix: Correct activity log filters, pagination, and totals, add the missing info and warning statuses, and show an error in log details when a fetch fails.
+* Fix: Remove stale auto-update entries for deleted plugins and themes, and improve core version tracking.
+* Improvement: Enforce WordPress auto-update restrictions server-side and stop admin notices from stacking.
+* Improvement: Harden log exports, use the current view filters, stop at a safe limit, and keep data if the server stops part-way through.
+* Security: Redact internal server paths and tokens stored in logs.
+* i18n: Remove HTML markup from translation strings.
+* Dev: PHP 8.3+ compatibility, internal code cleanup, and unit tests for log redaction.
 
 = 1.1 =
 * New: Schedule tab, set how often WordPress checks for updates (hourly, twice daily, daily, or weekly), pick a preferred time of day, and hold automatic installs for a chosen number of days. Active holds show a notice on the Updates, Plugins, and Themes screens, and WordPress schedule messaging stays in sync with your settings.
@@ -253,6 +234,9 @@ I welcome your ideas! If you have a suggestion for the roadmap, please visit the
 * Add: Initial release of Updatronix.
 
 == Upgrade Notice ==
+
+= 1.1.3 =
+On sites with automatic update delay enabled, a bug could interrupt the scheduled update process. This version fix it.
 
 = 1.1.1 =
 Fixes a schedule reset bug: if you use the Schedule tab to set a preferred time and recurrence, visiting some admin pages (or external tools touching the cron table) could reset the next check back to the WordPress default. A self-healing mechanism now catches and corrects it immediately.
