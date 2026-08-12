@@ -568,7 +568,7 @@ final class Updatronix_AutoUpdateDelay {
 	 *
 	 * @return mixed Same type when downstream veto not required.
 	 */
-	private static function filter_theme( $update, object $item ) {
+	public static function filter_theme( $update, object $item ) {
 		if ( true !== $update ) {
 			return $update;
 		}
@@ -584,7 +584,7 @@ final class Updatronix_AutoUpdateDelay {
 	 *
 	 * @return mixed Same type when downstream veto not required.
 	 */
-	private static function filter_core( $update, object $item ) {
+	public static function filter_core( $update, object $item ) {
 		if ( true !== $update ) {
 			return $update;
 		}
@@ -600,7 +600,7 @@ final class Updatronix_AutoUpdateDelay {
 	 *
 	 * @return mixed Same type when downstream veto not required.
 	 */
-	private static function filter_translation( $update, object $item ) {
+	public static function filter_translation( $update, object $item ) {
 		if ( true !== $update ) {
 			return $update;
 		}
