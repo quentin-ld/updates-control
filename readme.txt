@@ -4,7 +4,7 @@ Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, maintenance, security, audit-log
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -167,8 +167,12 @@ I welcome your ideas! If you have a suggestion for the roadmap, please visit the
 
 == Changelog ==
 
+= 1.1.3 =
+* Fix:
+* Documentation: Edit 1.1.1 changelogs.
+
 = 1.1.2 =
-* Dev: Adopt WordPress Coding Standards, confirm WP 7.0.2 compatibility, bump to 1.1.2.
+* Dev: Adopt WordPress Coding Standards, plugin tested up to WP 7.0.3.
 
 = 1.1.1 =
 * New: Updatronix 3000 (pro version) connector.
