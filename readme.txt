@@ -3,8 +3,8 @@ Contributors: quentinldd
 Donate link: https://buymeacoffee.com/quentinld
 Tags: updates, auto-update, maintenance, security, audit-log
 Requires at least: 6.2
-Tested up to: 7.0
-Stable tag: 1.1.3
+Tested up to: 7.1
+Stable tag: 1.1.4
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -166,6 +166,9 @@ In addition, if you like the plugin then I'd love for you to [leave a review](ht
 I welcome your ideas! If you have a suggestion for the roadmap, please visit the official support forum. If you are a developer, you can also contribute directly to the project on GitHub.
 
 == Changelog ==
+
+= 1.1.4 =
+* Tested up to WordPress 7.1.
 
 = 1.1.3 =
 * Fix: Auto-updates: Scheduled auto-updates no longer error when update delay is enabled.
