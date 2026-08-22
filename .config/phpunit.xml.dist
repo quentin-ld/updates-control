@@ -9,4 +9,19 @@
             <directory>../tests/Unit</directory>
         </testsuite>
     </testsuites>
+    <!--
+        Coverage collection is active only when a coverage driver (xdebug/pcov)
+        is enabled; see `composer test:coverage` and .github/workflows/test.yml.
+    -->
+    <coverage>
+        <include>
+            <directory suffix=".php">../inc</directory>
+            <file>../updatronix.php</file>
+            <file>../uninstall.php</file>
+        </include>
+        <report>
+            <clover outputFile="../build/coverage/unit.xml"/>
+            <text outputFile="../build/coverage/unit.txt"/>
+        </report>
+    </coverage>
 </phpunit>

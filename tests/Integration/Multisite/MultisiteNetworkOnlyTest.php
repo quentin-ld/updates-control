@@ -125,7 +125,11 @@ final class MultisiteNetworkOnlyTest extends WP_UnitTestCase {
 
 		$data = $response->get_data();
 		self::assertIsArray( $data );
-		self::assertArrayNotHasKey( 'schedule_ignored', $data );
+		self::assertSame(
+			'weekly',
+			$data['options']['schedule']['update_check']['recurrence'] ?? null,
+			'The settings POST response must echo the persisted network schedule.'
+		);
 
 		switch_to_blog( $subsite );
 		try {

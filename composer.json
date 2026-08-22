@@ -38,6 +38,9 @@
             "@test:integration"
         ],
         "test": "phpunit --configuration=.config/phpunit.xml.dist",
+        "test:coverage": "bash .config/local-wp-cli.sh coverage unit",
+        "test:coverage:integration": "bash .config/local-wp-cli.sh coverage integration",
+        "coverage:check": "bash bin/check-coverage.sh build/coverage/unit.txt ${COVERAGE_THRESHOLD:-10}",
         "test:integration": "bash .config/local-wp-cli.sh integration-test",
         "test:all": [
             "@test",

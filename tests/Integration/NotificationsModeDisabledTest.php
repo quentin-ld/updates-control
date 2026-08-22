@@ -2,7 +2,7 @@
 /**
  * Integration tests for `notifications_mode === 'disabled'` and the recovery-mode safety net.
  *
- * Companion to `.cursor/notes/2026-05-09-test-plan-opus-notifications-schedule-features.md`
+ * Companion to `.agents/notes/archive/2026-05-09-test-plan-opus-notifications-schedule-features.md`
  * (scenarios N-01 and N-04). Asserts the contract: disabling all update notification emails
  * suppresses every WordPress automatic-update mail filter return value, but does **not** touch
  * the recovery-mode email — that channel is the safety net the site administrator relies on

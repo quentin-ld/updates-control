@@ -173,8 +173,12 @@ if (!function_exists('add_filter')) {
         usort($callbacks, static function (array $a, array $b): int {
             return $a[1] <=> $b[1];
         });
-        foreach ($callbacks as [$cb]) {
-            $value = $cb($value);
+        // Mirror WordPress: each callback receives the filtered value plus up to
+        // (accepted_args - 1) extra args, floored at the value itself.
+        $full = array_merge([$value], array_values($_));
+        foreach ($callbacks as [$cb, , $acceptedArgs]) {
+            $cbArgs = array_slice($full, 0, max(1, (int) $acceptedArgs));
+            $value  = $cb(...$cbArgs);
         }
 
         return $value;
@@ -267,13 +271,26 @@ if (!function_exists('get_role')) {
 
 if (!function_exists('get_option')) {
     /**
+     * Global test option store backing get_option()/get_site_option() in unit tests.
+     *
+     * @var array<string, mixed>
+     */
+    $GLOBALS['updatronix_test_options'] = [];
+
+    /**
      * Stub for get_option used in unit tests.
+     *
+     * Reads the test option store; falls back to $default when unset.
      *
      * @param string $option  Option name.
      * @param mixed  $default Default value.
      * @return mixed
      */
     function get_option(string $option, $default = false) {
+        if (array_key_exists($option, $GLOBALS['updatronix_test_options'])) {
+            return $GLOBALS['updatronix_test_options'][$option];
+        }
+
         return $default;
     }
 }
@@ -282,12 +299,251 @@ if (!function_exists('update_option')) {
     /**
      * Stub for update_option used in unit tests.
      *
+     * Writes the test option store and reports success.
+     *
      * @param string $option   Option name.
      * @param mixed  $value    Option value.
      * @param mixed  $autoload Autoload flag.
-     * @return void
+     * @return bool
      */
-    function update_option(string $option, $value, $autoload = null): void {
+    function update_option(string $option, $value, $autoload = null): bool {
+        $GLOBALS['updatronix_test_options'][$option] = $value;
+
+        return true;
+    }
+}
+
+if (!function_exists('delete_option')) {
+    /**
+     * Stub for delete_option used in unit tests.
+     *
+     * @param string $option Option name.
+     * @return bool
+     */
+    function delete_option(string $option): bool {
+        unset( $GLOBALS['updatronix_test_options'][ $option ] );
+
+        return true;
+    }
+}
+
+if (!function_exists('delete_site_option')) {
+    /**
+     * Stub for delete_site_option used in unit tests (single-site semantics).
+     *
+     * @param string $option Option name.
+     * @return bool
+     */
+    function delete_site_option(string $option): bool {
+        return delete_option( $option );
+    }
+}
+
+if (!function_exists('get_site_option')) {
+    /**
+     * Stub for get_site_option used in unit tests (single-site semantics).
+     *
+     * @param string $option  Option name.
+     * @param mixed  $default Default value.
+     * @return mixed
+     */
+    function get_site_option(string $option, $default = false) {
+        return get_option($option, $default);
+    }
+}
+
+if (!function_exists('update_site_option')) {
+    /**
+     * Stub for update_site_option used in unit tests (single-site semantics).
+     *
+     * @param string $option Option name.
+     * @param mixed  $value  Option value.
+     * @return bool
+     */
+    function update_site_option(string $option, $value): bool {
+        update_option($option, $value);
+
+        return true;
+    }
+}
+
+if (!function_exists('is_multisite')) {
+    /**
+     * Global test override for is_multisite().
+     *
+     * @var bool|null
+     */
+    $GLOBALS['updatronix_test_is_multisite'] = null;
+
+    /**
+     * Stub for is_multisite used in unit tests.
+     *
+     * @return bool
+     */
+    function is_multisite(): bool {
+        return (bool) $GLOBALS['updatronix_test_is_multisite'];
+    }
+}
+
+if (!function_exists('get_site_transient')) {
+    /**
+     * Global test site-transient store backing get_site_transient()/set_site_transient().
+     *
+     * @var array<string, mixed>
+     */
+    $GLOBALS['updatronix_test_site_transients'] = [];
+
+    /**
+     * Stub for get_site_transient used in unit tests.
+     *
+     * @param string $key Transient key.
+     * @return mixed
+     */
+    function get_site_transient(string $key) {
+        if (array_key_exists($key, $GLOBALS['updatronix_test_site_transients'])) {
+            return $GLOBALS['updatronix_test_site_transients'][$key];
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('set_site_transient')) {
+    /**
+     * Stub for set_site_transient used in unit tests.
+     *
+     * @param string $key        Transient key.
+     * @param mixed  $value      Transient value.
+     * @param int    $expiration Expiration in seconds.
+     * @return bool
+     */
+    function set_site_transient(string $key, $value, int $expiration = 0): bool {
+        $GLOBALS['updatronix_test_site_transients'][$key] = $value;
+
+        return true;
+    }
+}
+
+if (!function_exists('wp_get_translation_updates')) {
+    /**
+     * Global test override for wp_get_translation_updates().
+     *
+     * @var list<object>
+     */
+    $GLOBALS['updatronix_test_translation_updates'] = [];
+
+    /**
+     * Stub for wp_get_translation_updates used in unit tests.
+     *
+     * @return list<object>
+     */
+    function wp_get_translation_updates(): array {
+        return $GLOBALS['updatronix_test_translation_updates'];
+    }
+}
+
+if (!function_exists('updatronix_is_site_health_mock')) {
+    /**
+     * Stub for updatronix_is_site_health_mock() used in unit tests.
+     *
+     * Only the well-known synthetic probes bypass the soak gate; the filesystem
+     * existence check is deliberately omitted so normal offers are never treated
+     * as mocks in the unit environment.
+     *
+     * @param string $type Update type: 'plugin', 'theme', 'core', 'translation'.
+     * @param object $item The update item object.
+     * @return bool True for known Site Health synthetic probes.
+     */
+    function updatronix_is_site_health_mock(string $type, object $item): bool {
+        if ('plugin' === $type && isset($item->plugin) && 'a-fake-plugin/a-fake-plugin.php' === $item->plugin) {
+            return true;
+        }
+
+        if ('theme' === $type && isset($item->theme) && 'a-fake-theme' === $item->theme) {
+            return true;
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('get_plugin_data')) {
+    /**
+     * Minimal get_plugin_data() stand-in for the deferred-offer audit-log path.
+     *
+     * @param string $plugin_file Plugin file path (unused).
+     * @param bool   $markup      Whether to markup (unused).
+     * @return array{Name: string, Version: string}
+     */
+    function get_plugin_data(string $plugin_file, bool $markup = false): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+        return array(
+            'Name'    => 'Akismet Test',
+            'Version' => '4.0',
+        );
+    }
+}
+
+if (!class_exists('Updatronix_Logger', false)) {
+    /**
+     * Stub for Updatronix_Logger used in unit tests.
+     *
+     * Records every log() call so tests can assert that deferred offers write an
+     * audit-log row without a database.
+     */
+    class Updatronix_Logger {
+        /**
+         * Recorded log() invocations.
+         *
+         * @var list<array<string, mixed>>
+         */
+        public static array $calls = [];
+
+        /**
+         * Stub log method.
+         *
+         * @param string $type        Log type.
+         * @param string $action      Action.
+         * @param string $name        Name.
+         * @param string $slug        Slug.
+         * @param string $old_version Old version.
+         * @param string $new_version New version.
+         * @param string $level       Level.
+         * @param string $message     Message.
+         * @param string $file        File.
+         * @param string $method      Method.
+         * @param string $mode        Mode.
+         * @param string $dedup_key   Dedup key.
+         * @return void
+         */
+        public static function log(
+            string $type,
+            string $action,
+            string $name,
+            string $slug,
+            string $old_version = '',
+            string $new_version = '',
+            string $level = 'info',
+            string $message = '',
+            string $file = '',
+            string $method = 'automatic',
+            string $mode = 'single',
+            string $dedup_key = ''
+        ): void {
+            self::$calls[] = array(
+                'type'        => $type,
+                'action'      => $action,
+                'name'        => $name,
+                'slug'        => $slug,
+                'old_version' => $old_version,
+                'new_version' => $new_version,
+                'level'       => $level,
+                'message'     => $message,
+                'file'        => $file,
+                'method'      => $method,
+                'mode'        => $mode,
+                'dedup_key'   => $dedup_key,
+            );
+        }
     }
 }
 
@@ -295,14 +551,65 @@ if (!function_exists('filter_input')) {
     /**
      * Stub for filter_input used in unit tests without WordPress loaded.
      *
-     * @param int    $type          Input type (unused).
-     * @param string $variable_name Variable name (unused).
-     * @param int    $filter        Filter (unused).
+     * Values are resolved from a test-controlled override registry
+     * (`$GLOBALS['_updatronix_filter_input'][$type][$variable_name]`) first, then
+     * from the real PHP superglobal matching `$type`. This makes HTTP-input
+     * branches (e.g. `updatronix_get_active_tab()`'s `?tab=`) reachable in tests.
+     *
+     * @param int    $type          Input type (INPUT_GET, INPUT_POST, ...).
+     * @param string $variable_name Variable name.
+     * @param int    $filter        Filter (default FILTER_UNSAFE_RAW).
      * @param mixed  $options       Options (unused).
-     * @return null Always null for unit tests (no superglobals in stubs).
+     * @return mixed|null The (optionally filtered) value, or null when absent.
      */
     function filter_input(int $type, string $variable_name, int $filter = 516, $options = null) {
-        return null;
+        if (isset($GLOBALS['_updatronix_filter_input'][$type]) && array_key_exists($variable_name, $GLOBALS['_updatronix_filter_input'][$type])) {
+            $value = $GLOBALS['_updatronix_filter_input'][$type][$variable_name];
+        } else {
+            switch ($type) {
+                case INPUT_POST:
+                    $superglobal = $_POST;
+                    break;
+                case INPUT_GET:
+                    $superglobal = $_GET;
+                    break;
+                case INPUT_COOKIE:
+                    $superglobal = $_COOKIE;
+                    break;
+                case INPUT_ENV:
+                    $superglobal = $_ENV;
+                    break;
+                case INPUT_SERVER:
+                    $superglobal = $_SERVER;
+                    break;
+                default:
+                    return null;
+            }
+            if (!isset($superglobal[$variable_name])) {
+                return null;
+            }
+            $value = $superglobal[$variable_name];
+        }
+
+        if (null === $value) {
+            return null;
+        }
+
+        // Apply the small subset of filters used by the plugin; everything else
+        // (including FILTER_UNSAFE_RAW, the default) is passed through raw.
+        switch ($filter) {
+            case FILTER_SANITIZE_NUMBER_INT:
+                $value = (string) preg_replace('/[^0-9+-]/', '', (string) $value);
+                break;
+            case FILTER_SANITIZE_NUMBER_FLOAT:
+                $value = (string) preg_replace('/[^0-9.+-]/', '', (string) $value);
+                break;
+            case FILTER_VALIDATE_BOOLEAN:
+                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                break;
+        }
+
+        return $value;
     }
 }
 
@@ -399,6 +706,143 @@ if (!function_exists('untrailingslashit')) {
      */
     function untrailingslashit(string $value): string {
         return rtrim($value, '/\\');
+    }
+}
+
+if (!function_exists('get_current_user_id')) {
+    /**
+     * Stub for get_current_user_id used in unit tests (no session).
+     *
+     * @return int Always 0 in the unit sandbox.
+     */
+    function get_current_user_id(): int {
+        return 0;
+    }
+}
+
+if (!function_exists('switch_to_user_locale')) {
+    /**
+     * Stub for switch_to_user_locale used in unit tests.
+     *
+     * Returns false (no WP locale machinery) so callers with a `finally`-style
+     * restore never invoke restore_previous_locale().
+     *
+     * @param string|false $locale Locale to switch to (ignored).
+     * @return bool Always false.
+     */
+    function switch_to_user_locale($locale = false): bool {
+        return false;
+    }
+}
+
+if (!function_exists('restore_previous_locale')) {
+    /**
+     * Stub for restore_previous_locale used in unit tests.
+     *
+     * @return void
+     */
+    function restore_previous_locale(): void {
+    }
+}
+
+if (!function_exists('get_userdata')) {
+    /**
+     * Stub for get_userdata used in unit tests (no WP user rows).
+     *
+     * @param int $user_id User ID.
+     * @return false Always false.
+     */
+    function get_userdata(int $user_id) {
+        return false;
+    }
+}
+
+if (!function_exists('cache_users')) {
+    /**
+     * Stub for cache_users used in unit tests (no user cache to prime).
+     *
+     * @param array<int, int> $user_ids User IDs.
+     * @return void
+     */
+    function cache_users(array $user_ids): void {
+    }
+}
+
+if (!function_exists('wp_timezone')) {
+    /**
+     * Stub for wp_timezone used in unit tests.
+     *
+     * @return null No real timezone object; callers pass it to wp_date() which ignores it.
+     */
+    function wp_timezone() {
+        return null;
+    }
+}
+
+if ( ! defined( 'UPDATRONIX_VERSION' ) ) {
+	$updatronix_version_source = (string) file_get_contents( dirname( __DIR__ ) . '/updatronix.php' );
+	if ( preg_match( '/Version:\s*([0-9.]+)/', $updatronix_version_source, $updatronix_version_match ) ) {
+		define( 'UPDATRONIX_VERSION', $updatronix_version_match[1] );
+	} else {
+		define( 'UPDATRONIX_VERSION', '0.0.0' );
+	}
+	unset( $updatronix_version_source, $updatronix_version_match );
+}
+
+if ( ! defined( 'UPDATRONIX_PLUGIN_FILE' ) ) {
+	define( 'UPDATRONIX_PLUGIN_FILE', dirname( __DIR__ ) . '/updatronix.php' );
+}
+
+if ( ! defined( 'UPDATRONIX_PLUGIN_DIR' ) ) {
+	define( 'UPDATRONIX_PLUGIN_DIR', dirname( __DIR__ ) . '/' );
+}
+
+// Pin the plugin capability + DB constants from the production constants file, so the
+// unit suite can never drift from what the plugin actually ships (no hard-coded copies).
+require_once dirname( __DIR__ ) . '/inc/core/constants.php';
+
+if (!function_exists('current_user_can')) {
+    /**
+     * Global test override for current_user_can(UPDATRONIX_CAP_MANAGE).
+     *
+     * @var bool
+     */
+    $GLOBALS['updatronix_test_can_manage'] = false;
+
+    /**
+     * Stub for current_user_can used in unit tests.
+     *
+     * Returns the test-controlled flag for the plugin cap; any other cap is false.
+     *
+     * @param string $capability Capability name.
+     * @param mixed  ...$_        Extra args (ignored).
+     * @return bool
+     */
+    function current_user_can(string $capability, ...$_): bool {
+        if (UPDATRONIX_CAP_MANAGE === $capability) {
+            return (bool) $GLOBALS['updatronix_test_can_manage'];
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('is_super_admin')) {
+    /**
+     * Global test override for is_super_admin().
+     *
+     * @var bool
+     */
+    $GLOBALS['updatronix_test_is_super_admin'] = false;
+
+    /**
+     * Stub for is_super_admin used in unit tests.
+     *
+     * @param int|false $user_id User ID (ignored).
+     * @return bool
+     */
+    function is_super_admin($user_id = false): bool {
+        return (bool) $GLOBALS['updatronix_test_is_super_admin'];
     }
 }
 

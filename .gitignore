@@ -404,3 +404,6 @@ FEATURE_REQUEST.md
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
+
+# Code-coverage output (composer test:coverage writes build/coverage/*).
+/build/

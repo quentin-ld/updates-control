@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-17T06:14:25+00:00\n"
+"POT-Creation-Date: 2026-08-22T19:42:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: updatronix\n"
@@ -96,7 +96,7 @@ msgstr ""
 #: inc/admin/menu.php:36
 #: inc/admin/native-update-delay-notice.php:88
 #: inc/core/tabs.php:33
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:368
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:375
 #: assets/src/js/pages/SettingsPage.js:56
 msgid "Update logs"
 msgstr ""
@@ -265,12 +265,12 @@ msgid "Core"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:556
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:140
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:146
 msgid "Plugin"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:557
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:126
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:132
 msgid "Theme"
 msgstr ""
 
@@ -291,10 +291,10 @@ msgid "User #%d"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:682
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:131
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:134
 #: assets/src/js/components/activityLog/ExportLogsModal.js:52
 #: assets/src/js/components/activityLog/LogDetailsContent.js:79
-#: assets/src/js/components/activityLog/logFilters.js:177
+#: assets/src/js/components/activityLog/logFilters.js:178
 msgid "Category"
 msgstr ""
 
@@ -303,22 +303,22 @@ msgid "Element"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:684
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:140
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:143
 #: assets/src/js/components/activityLog/ExportLogsModal.js:36
 #: assets/src/js/components/activityLog/LogDetailsContent.js:81
 msgid "Action"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:685
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:208
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:211
 msgid "Version"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:686
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:166
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:169
 #: assets/src/js/components/activityLog/LogDetailsContent.js:95
-#: assets/src/js/components/activityLog/logFilters.js:243
-#: assets/src/js/components/activityLog/logFilters.js:408
+#: assets/src/js/components/activityLog/logFilters.js:244
+#: assets/src/js/components/activityLog/logFilters.js:416
 msgid "Date"
 msgstr ""
 
@@ -328,35 +328,35 @@ msgid "Run context"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:688
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:199
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:203
 #: assets/src/js/components/activityLog/ExportLogsModal.js:44
-#: assets/src/js/components/activityLog/logFilters.js:218
+#: assets/src/js/components/activityLog/logFilters.js:219
 msgid "User"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:689
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:222
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:226
 #: assets/src/js/components/activityLog/ExportLogsModal.js:48
 #: assets/src/js/components/activityLog/LogDetailsContent.js:84
-#: assets/src/js/components/activityLog/logFilters.js:203
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:188
+#: assets/src/js/components/activityLog/logFilters.js:204
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:191
 msgid "Status"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:795
-#: assets/src/js/components/activityLog/logFilters.js:208
+#: assets/src/js/components/activityLog/logFilters.js:209
 #: assets/src/js/components/activityLog/utils.js:54
 msgid "Error"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:796
-#: assets/src/js/components/activityLog/logFilters.js:209
+#: assets/src/js/components/activityLog/logFilters.js:210
 #: assets/src/js/components/activityLog/utils.js:57
 msgid "Cancelled"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:797
-#: assets/src/js/components/activityLog/logFilters.js:207
+#: assets/src/js/components/activityLog/logFilters.js:208
 #: assets/src/js/components/activityLog/utils.js:48
 msgid "Success"
 msgstr ""
@@ -525,7 +525,7 @@ msgid "v%1$s → v%2$s"
 msgstr ""
 
 #: inc/classes/class-updatronix-settings.php:564
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:273
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:277
 msgid "The log entry could not be deleted. Try again or check your database connection."
 msgstr ""
 
@@ -608,13 +608,13 @@ msgid "Updated %1$s to %2$s"
 msgstr ""
 
 #: inc/core/tabs.php:39
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:86
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:92
 #: assets/src/js/pages/SettingsPage.js:62
 msgid "Auto-updates"
 msgstr ""
 
 #: inc/core/tabs.php:45
-#: assets/src/js/components/schedule/SchedulePanel.js:150
+#: assets/src/js/components/schedule/SchedulePanel.js:159
 #: assets/src/js/pages/SettingsPage.js:68
 msgid "Schedule"
 msgstr ""
@@ -625,73 +625,73 @@ msgstr ""
 msgid "Updatronix was activated on a subsite, but it only works from the Network Admin. Please go to <a href=\"%s\">Network Admin → Updatronix</a> to set it up."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:115
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:118
 msgid "Title"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:123
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:234
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:126
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:237
 msgid "Details"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:149
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:148
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:152
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:151
 msgid "Icon"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:182
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:185
 #: assets/src/js/components/activityLog/LogDetailsContent.js:88
-#: assets/src/js/components/activityLog/logFilters.js:252
+#: assets/src/js/components/activityLog/logFilters.js:255
 msgid "Triggered by"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:191
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:194
 #: assets/src/js/components/activityLog/LogDetailsContent.js:92
-#: assets/src/js/components/activityLog/logFilters.js:264
+#: assets/src/js/components/activityLog/logFilters.js:267
 msgid "Run type"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:243
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:244
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:251
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:247
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:248
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:254
 msgid "View details"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:260
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:261
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:302
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:264
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:265
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:309
 msgid "Delete log"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:272
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:276
 msgid "Log deleted."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:288
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:292
 msgid "Delete this log entry permanently? This action cannot be undone."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:295
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:302
 msgid "Cancel"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:344
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:351
 msgid "Update logging is off. Turn it on in Settings to keep a history of updates."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:371
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:378
 msgid "Review recent updates to WordPress core, plugins, themes, and translations."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:387
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:394
 msgid "No update logs yet. Entries appear after WordPress runs an update."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:413
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:420
 msgid "Search logs"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ActivityLogPanel.js:424
+#: assets/src/js/components/activityLog/ActivityLogPanel.js:431
 msgid "Export logs"
 msgstr ""
 
@@ -719,101 +719,101 @@ msgstr ""
 msgid "Column headings"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:154
+#: assets/src/js/components/activityLog/ExportLogsModal.js:157
 msgid "The export is too large and was stopped. Narrow your filters to export fewer logs."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:161
+#: assets/src/js/components/activityLog/ExportLogsModal.js:164
 msgid "Too many exports started recently. Wait a minute, and then try again."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:168
+#: assets/src/js/components/activityLog/ExportLogsModal.js:171
 msgid "This export session has expired. Start a new export."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:174
+#: assets/src/js/components/activityLog/ExportLogsModal.js:177
 msgid "The export could not be generated. Try again, or adjust your filters and try again."
 msgstr ""
 
 #. translators: 1: Rows included in export. 2: Rows matched before truncation.
-#: assets/src/js/components/activityLog/ExportLogsModal.js:247
+#: assets/src/js/components/activityLog/ExportLogsModal.js:250
 #, js-format
 msgid "The export was truncated to %1$d of %2$d rows. Narrow your filters to include the rest."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:261
+#: assets/src/js/components/activityLog/ExportLogsModal.js:264
 msgid "No logs match the current filters. The export is empty."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:268
+#: assets/src/js/components/activityLog/ExportLogsModal.js:271
 msgid "Export ready. Copy the report to save it. It expires after 15 minutes."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:309
+#: assets/src/js/components/activityLog/ExportLogsModal.js:312
 msgid "Plain export copied to the clipboard."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:313
+#: assets/src/js/components/activityLog/ExportLogsModal.js:316
 msgid "Formatted export copied to the clipboard."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:321
+#: assets/src/js/components/activityLog/ExportLogsModal.js:324
 msgid "Could not copy to the clipboard. Select the export output and copy it manually."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:340
+#: assets/src/js/components/activityLog/ExportLogsModal.js:343
 msgid "Export update logs"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:347
+#: assets/src/js/components/activityLog/ExportLogsModal.js:350
 msgid "Generate a plain-text summary of the logs that match your current filters and sort. Filters you have not set include all values."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:355
+#: assets/src/js/components/activityLog/ExportLogsModal.js:358
 msgid "Filters applied"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:359
+#: assets/src/js/components/activityLog/ExportLogsModal.js:362
 msgid "No filters applied — all logs in the current view are included."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:390
+#: assets/src/js/components/activityLog/ExportLogsModal.js:395
 msgid "Merge logs for the same item"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:391
+#: assets/src/js/components/activityLog/ExportLogsModal.js:396
 msgid "Combine repeated updates of the same plugin, theme, core release, or translation into a single line with the earliest and latest versions."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:402
+#: assets/src/js/components/activityLog/ExportLogsModal.js:407
 msgid "Report columns"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:404
+#: assets/src/js/components/activityLog/ExportLogsModal.js:409
 msgid "Choose which parts of the report to include. Element, version, and date columns are always shown."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:434
+#: assets/src/js/components/activityLog/ExportLogsModal.js:439
 msgid "Generating the export…"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:435
+#: assets/src/js/components/activityLog/ExportLogsModal.js:440
 msgid "Generate export"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:460
+#: assets/src/js/components/activityLog/ExportLogsModal.js:465
 msgid "Export output"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:463
+#: assets/src/js/components/activityLog/ExportLogsModal.js:468
 msgid "Copy the report to save it. It expires after 15 minutes."
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:483
+#: assets/src/js/components/activityLog/ExportLogsModal.js:488
 msgid "Copy with formatting"
 msgstr ""
 
-#: assets/src/js/components/activityLog/ExportLogsModal.js:490
+#: assets/src/js/components/activityLog/ExportLogsModal.js:495
 msgid "Copy without formatting"
 msgstr ""
 
@@ -858,43 +858,43 @@ msgstr ""
 msgid "No additional details are available for this log entry."
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:190
+#: assets/src/js/components/activityLog/logFilters.js:191
 msgid "Action type"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:210
+#: assets/src/js/components/activityLog/logFilters.js:211
 #: assets/src/js/components/activityLog/utils.js:60
 msgid "Info"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:211
+#: assets/src/js/components/activityLog/logFilters.js:212
 #: assets/src/js/components/activityLog/utils.js:51
 msgid "Warning"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:354
+#: assets/src/js/components/activityLog/logFilters.js:357
 msgid "Search"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:394
+#: assets/src/js/components/activityLog/logFilters.js:402
 msgid "Page"
 msgstr ""
 
 #. translators: 1: Current page number, 2: Items per page.
-#: assets/src/js/components/activityLog/logFilters.js:397
+#: assets/src/js/components/activityLog/logFilters.js:405
 #, js-format
 msgid "Page %1$d (%2$d per page)"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:412
+#: assets/src/js/components/activityLog/logFilters.js:420
 msgid "oldest first"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:413
+#: assets/src/js/components/activityLog/logFilters.js:421
 msgid "newest first"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:416
+#: assets/src/js/components/activityLog/logFilters.js:424
 msgid "Sort"
 msgstr ""
 
@@ -903,31 +903,31 @@ msgctxt "empty value fallback"
 msgid "—"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:64
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:68
 msgid "Retry"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:78
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:83
 msgid "Loading auto-update settings…"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:89
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:95
 msgid "Choose what updates automatically on your site: WordPress core, plugins, themes, and translations."
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:125
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:131
 msgid "Themes"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:127
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:133
 msgid "Search themes"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:139
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:145
 msgid "Plugins"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:141
+#: assets/src/js/components/autoUpdates/AutoUpdatesPanel.js:147
 msgid "Search plugins"
 msgstr ""
 
@@ -972,48 +972,48 @@ msgstr ""
 msgid "This choice is set in your wp-config.php file. Edit that file to change it."
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:83
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:86
 msgid "Auto-update"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:89
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:92
 msgid "Automatic updates are not available for this item (for example, it is not hosted on WordPress.org)."
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:94
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:97
 msgid "Unavailable"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:109
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:112
 msgid "Locked by Safe Mode due to incompatibility"
 msgstr ""
 
 #. translators: %s: plugin or theme name
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:122
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:125
 #, js-format
 msgid "Disable auto-update for %s"
 msgstr ""
 
 #. translators: %s: plugin or theme name
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:131
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:134
 #, js-format
 msgid "Enable auto-update for %s"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:193
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:196
 msgid "Active"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:197
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:200
 msgid "Inactive"
 msgstr ""
 
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:221
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:224
 msgid "Description"
 msgstr ""
 
 #. translators: %s: plugin or theme name
-#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:244
+#: assets/src/js/components/autoUpdates/ItemsDataViewSection.js:247
 #, js-format
 msgid "View details for %s (opens in a new tab)"
 msgstr ""
@@ -1030,83 +1030,83 @@ msgstr ""
 msgid "WordPress downloads translation updates automatically by default. Turn this off to skip automatic downloads."
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:104
+#: assets/src/js/components/schedule/SchedulePanel.js:113
 msgid "Use WordPress default schedule"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:115
+#: assets/src/js/components/schedule/SchedulePanel.js:124
 msgid "Preferred time"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:116
+#: assets/src/js/components/schedule/SchedulePanel.js:125
 msgid "Uses your site timezone from Settings, General."
 msgstr ""
 
 #. translators: %s: localized date/time of the next scheduled automatic update check
-#: assets/src/js/components/schedule/SchedulePanel.js:132
+#: assets/src/js/components/schedule/SchedulePanel.js:141
 #, js-format
 msgid "Next automatic update check: %s"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:136
+#: assets/src/js/components/schedule/SchedulePanel.js:145
 msgid "WordPress picks when update checks and automatic updates run."
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:141
+#: assets/src/js/components/schedule/SchedulePanel.js:150
 msgid "Schedule information is not yet available."
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:153
+#: assets/src/js/components/schedule/SchedulePanel.js:162
 msgid "Pick how often WordPress checks for updates and whether automatic installs wait."
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:162
+#: assets/src/js/components/schedule/SchedulePanel.js:171
 msgid "Update checks"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:174
+#: assets/src/js/components/schedule/SchedulePanel.js:183
 msgid "How often"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:175
+#: assets/src/js/components/schedule/SchedulePanel.js:184
 msgid "Sets how often WordPress checks for updates and runs automatic updates. WordPress default keeps Core timing. Daily, twice daily, and weekly schedules use the preferred time below."
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:213
+#: assets/src/js/components/schedule/SchedulePanel.js:222
 msgid "Hour"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:255
+#: assets/src/js/components/schedule/SchedulePanel.js:264
 msgid "Minute"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:293
+#: assets/src/js/components/schedule/SchedulePanel.js:302
 msgid "Recurring runs may shift by up to one hour after daylight saving transitions, since WordPress recurrences are fixed-length intervals."
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:299
+#: assets/src/js/components/schedule/SchedulePanel.js:308
 msgid "Next automatic update schedule"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:319
-#: assets/src/js/components/schedule/SchedulePanel.js:323
+#: assets/src/js/components/schedule/SchedulePanel.js:328
+#: assets/src/js/components/schedule/SchedulePanel.js:332
 msgid "Delay updates"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:324
+#: assets/src/js/components/schedule/SchedulePanel.js:333
 msgid "When enabled, installs wait your chosen full days after WordPress first sees each update. Core, plugins, themes, and translations count separately. Countdowns on Updates, Plugins, and Themes show the next check, not the install moment. See Update logs."
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:358
+#: assets/src/js/components/schedule/SchedulePanel.js:367
 msgid "Days to wait"
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:359
+#: assets/src/js/components/schedule/SchedulePanel.js:368
 msgid "Enter a number from 1 to 365."
 msgstr ""
 
-#: assets/src/js/components/schedule/SchedulePanel.js:404
-#: assets/src/js/components/SettingsPanel.js:299
+#: assets/src/js/components/schedule/SchedulePanel.js:413
+#: assets/src/js/components/SettingsPanel.js:308
 msgid "Save Changes"
 msgstr ""
 
@@ -1186,39 +1186,39 @@ msgstr ""
 msgid "When enabled, WordPress sends notification emails to the address below. Use the boxes to choose which update types send mail."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:214
+#: assets/src/js/components/SettingsPanel.js:216
 msgid "Send notification emails to"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:215
+#: assets/src/js/components/SettingsPanel.js:220
 msgid "Update notification emails are sent to this address instead of the default admin email."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:227
+#: assets/src/js/components/SettingsPanel.js:232
 msgid "admin@example.com"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:231
+#: assets/src/js/components/SettingsPanel.js:236
 msgid "Notification types"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:234
+#: assets/src/js/components/SettingsPanel.js:239
 msgid "Choose which kinds of updates trigger email. For each run, WordPress sends one email: the detailed report when available, otherwise the usual summary. These options mirror WordPress’s default behavior."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:261
+#: assets/src/js/components/SettingsPanel.js:270
 msgid "Disable all update notification emails"
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:265
+#: assets/src/js/components/SettingsPanel.js:274
 msgid "Only enable this option if you actively monitor this site's updates elsewhere and do not want WordPress to send update notification emails. Recovery mode is not affected."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:280
+#: assets/src/js/components/SettingsPanel.js:289
 msgid "Recovery mode still emails the site administrator after a fatal error so you can regain access."
 msgstr ""
 
-#: assets/src/js/components/SettingsPanel.js:298
+#: assets/src/js/components/SettingsPanel.js:307
 msgid "Saving…"
 msgstr ""
 
@@ -1263,12 +1263,12 @@ msgstr ""
 msgid "Translation auto-update setting saved."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:181
+#: assets/src/js/hooks/useAutoUpdates.js:184
 msgid "The translation auto-update setting could not be changed. Try again."
 msgstr ""
 
-#: assets/src/js/hooks/useAutoUpdates.js:209
-#: assets/src/js/hooks/usePluginSettings.js:237
+#: assets/src/js/hooks/useAutoUpdates.js:214
+#: assets/src/js/hooks/usePluginSettings.js:249
 msgid "The notice could not be dismissed. Try again."
 msgstr ""
 
@@ -1280,22 +1280,22 @@ msgstr ""
 msgid "Could not clear logs. Try again."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:187
+#: assets/src/js/hooks/usePluginSettings.js:194
 msgid "Settings saved."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:192
+#: assets/src/js/hooks/usePluginSettings.js:199
 msgid "Your settings were saved, but the server did not return the updated values. Refresh the page to confirm."
 msgstr ""
 
-#: assets/src/js/hooks/usePluginSettings.js:202
+#: assets/src/js/hooks/usePluginSettings.js:209
 msgid "Your settings could not be saved. Check your connection and try again."
 msgstr ""
 
-#: assets/src/js/pages/SettingsPage.js:277
+#: assets/src/js/pages/SettingsPage.js:278
 msgid "An error occurred."
 msgstr ""
 
-#: assets/src/js/pages/SettingsPage.js:315
+#: assets/src/js/pages/SettingsPage.js:316
 msgid "Updatronix settings sections"
 msgstr ""

@@ -20,7 +20,7 @@ const FIXED_FIELDS = [
 	'details',
 ];
 
-export function ItemsDataViewSection({
+export function ItemsDataViewSection( {
 	items,
 	itemIdKey,
 	icon,
@@ -32,11 +32,14 @@ export function ItemsDataViewSection({
 	sections,
 	onToggle,
 	busy,
-}) {
-	const getItemId = useCallback((item) => item[itemIdKey], [itemIdKey]);
-	const locked = isSectionLocked(constants, sections[0]);
+} ) {
+	const getItemId = useCallback(
+		( item ) => item[ itemIdKey ],
+		[ itemIdKey ]
+	);
+	const locked = isSectionLocked( constants, sections[ 0 ] );
 
-	const [view, setView] = useState({
+	const [ view, setView ] = useState( {
 		type: 'table',
 		page: 1,
 		perPage: 50,
@@ -54,10 +57,10 @@ export function ItemsDataViewSection({
 				description: { maxWidth: '400px' },
 			},
 		},
-	});
+	} );
 
-	const handleChangeView = useCallback((nextView) => {
-		setView(() => ({
+	const handleChangeView = useCallback( ( nextView ) => {
+		setView( () => ( {
 			...nextView,
 			fields: FIXED_FIELDS,
 			layout: {
@@ -73,32 +76,32 @@ export function ItemsDataViewSection({
 					description: { maxWidth: '400px' },
 				},
 			},
-		}));
-	}, []);
+		} ) );
+	}, [] );
 
 	const fields = useMemo(
 		() => [
 			{
 				id: 'auto_update',
-				label: __('Auto-update', 'updatronix'),
-				render: ({ item }) => (
+				label: __( 'Auto-update', 'updatronix' ),
+				render: ( { item } ) => (
 					<span className="updatronix-autoupdates__toggle">
-						{item.update_data_available === false ? (
+						{ item.update_data_available === false ? (
 							<span
 								className="updatronix-autoupdates__unavailable"
-								title={__(
+								title={ __(
 									'Automatic updates are not available for this item (for example, it is not hosted on WordPress.org).',
 									'updatronix'
-								)}
+								) }
 							>
-								{__('Unavailable', 'updatronix')}
+								{ __( 'Unavailable', 'updatronix' ) }
 							</span>
 						) : (
 							<ToggleControl
 								__nextHasNoMarginBottom
-								checked={item.auto_update}
-								onChange={(checked) =>
-									onToggle(item[itemIdKey], checked)
+								checked={ item.auto_update }
+								onChange={ ( checked ) =>
+									onToggle( item[ itemIdKey ], checked )
 								}
 								disabled={
 									locked || busy || item.auto_update_locked
@@ -106,17 +109,17 @@ export function ItemsDataViewSection({
 								title={
 									item.auto_update_locked
 										? item.auto_update_locked_reason ||
-											__(
+										  __(
 												'Locked by Safe Mode due to incompatibility',
 												'updatronix'
-											)
+										  )
 										: undefined
 								}
-								aria-label={(() => {
-									if (item.auto_update_locked) {
+								aria-label={ ( () => {
+									if ( item.auto_update_locked ) {
 										return item.auto_update_locked_reason;
 									}
-									if (item.auto_update) {
+									if ( item.auto_update ) {
 										return sprintf(
 											/* translators: %s: plugin or theme name */
 											__(
@@ -134,9 +137,9 @@ export function ItemsDataViewSection({
 										),
 										item.name
 									);
-								})()}
+								} )() }
 							/>
-						)}
+						) }
 					</span>
 				),
 				enableSorting: false,
@@ -145,25 +148,25 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'icon',
-				label: __('Icon', 'updatronix'),
-				render: ({ item }) => (
+				label: __( 'Icon', 'updatronix' ),
+				render: ( { item } ) => (
 					<span className="updatronix-autoupdates__icon">
-						{item.icon ? (
+						{ item.icon ? (
 							<img
 								className="updatronix-autoupdates__icon-img"
-								src={item.icon}
+								src={ item.icon }
 								alt=""
-								width={32}
-								height={32}
+								width={ 32 }
+								height={ 32 }
 								loading="lazy"
 							/>
 						) : (
 							<Icon
-								icon={icon}
-								size={32}
+								icon={ icon }
+								size={ 32 }
 								className="updatronix-autoupdates__icon-fallback"
 							/>
-						)}
+						) }
 					</span>
 				),
 				enableSorting: false,
@@ -173,10 +176,10 @@ export function ItemsDataViewSection({
 			{
 				id: 'name',
 				label: itemLabel,
-				getValue: ({ item }) => item.name,
-				render: ({ item }) => (
+				getValue: ( { item } ) => item.name,
+				render: ( { item } ) => (
 					<span className="updatronix-autoupdates__name">
-						{item.name}
+						{ item.name }
 					</span>
 				),
 				enableSorting: false,
@@ -185,18 +188,18 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'status',
-				label: __('Status', 'updatronix'),
-				render: ({ item }) => (
+				label: __( 'Status', 'updatronix' ),
+				render: ( { item } ) => (
 					<span className="updatronix-autoupdates__status">
-						{item.active ? (
+						{ item.active ? (
 							<StatusBadge intent="success">
-								{__('Active', 'updatronix')}
+								{ __( 'Active', 'updatronix' ) }
 							</StatusBadge>
 						) : (
 							<StatusBadge intent="warning">
-								{__('Inactive', 'updatronix')}
+								{ __( 'Inactive', 'updatronix' ) }
 							</StatusBadge>
-						)}
+						) }
 					</span>
 				),
 				enableSorting: false,
@@ -205,11 +208,11 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'version',
-				label: __('Version', 'updatronix'),
-				getValue: ({ item }) => item.version,
-				render: ({ item }) => (
+				label: __( 'Version', 'updatronix' ),
+				getValue: ( { item } ) => item.version,
+				render: ( { item } ) => (
 					<span className="updatronix-autoupdates__version">
-						{item.version}
+						{ item.version }
 					</span>
 				),
 				enableSorting: false,
@@ -218,11 +221,11 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'description',
-				label: __('Description', 'updatronix'),
-				getValue: ({ item }) => item.description,
-				render: ({ item }) => (
+				label: __( 'Description', 'updatronix' ),
+				getValue: ( { item } ) => item.description,
+				render: ( { item } ) => (
 					<span className="updatronix-autoupdates__description">
-						{item.description}
+						{ item.description }
 					</span>
 				),
 				enableSorting: false,
@@ -231,24 +234,24 @@ export function ItemsDataViewSection({
 			},
 			{
 				id: 'details',
-				label: __('Details', 'updatronix'),
-				render: ({ item }) =>
-					item[uriKey] ? (
+				label: __( 'Details', 'updatronix' ),
+				render: ( { item } ) =>
+					item[ uriKey ] ? (
 						<a
 							className="updatronix-autoupdates__details-link"
-							href={item[uriKey]}
+							href={ item[ uriKey ] }
 							target="_blank"
 							rel="noopener noreferrer"
-							aria-label={sprintf(
+							aria-label={ sprintf(
 								/* translators: %s: plugin or theme name */
 								__(
 									'View details for %s (opens in a new tab)',
 									'updatronix'
 								),
 								item.name
-							)}
+							) }
 						>
-							{__('View details', 'updatronix')}
+							{ __( 'View details', 'updatronix' ) }
 						</a>
 					) : (
 						<span className="updatronix-autoupdates__details-empty">
@@ -260,35 +263,35 @@ export function ItemsDataViewSection({
 				enableGlobalSearch: false,
 			},
 		],
-		[onToggle, locked, busy, itemIdKey, icon, itemLabel, uriKey]
+		[ onToggle, locked, busy, itemIdKey, icon, itemLabel, uriKey ]
 	);
 
 	const { data: shownData, paginationInfo } = useMemo(
-		() => filterSortAndPaginate(items, view, fields),
-		[items, view, fields]
+		() => filterSortAndPaginate( items, view, fields ),
+		[ items, view, fields ]
 	);
 
 	return (
 		<div className="updatronix-autoupdates-section">
 			<h3 className="updatronix-autoupdates-section-title">
-				<Icon icon={icon} size={24} />
-				{sectionTitle}
+				<Icon icon={ icon } size={ 24 } />
+				{ sectionTitle }
 			</h3>
 			<ConstantNotices
-				constants={constants}
-				sections={sections}
+				constants={ constants }
+				sections={ sections }
 				lockingOnly
 			/>
 			<DataViews
-				getItemId={getItemId}
-				view={view}
-				onChangeView={handleChangeView}
-				fields={fields}
-				data={shownData}
-				paginationInfo={paginationInfo}
-				defaultLayouts={{ table: {} }}
+				getItemId={ getItemId }
+				view={ view }
+				onChangeView={ handleChangeView }
+				fields={ fields }
+				data={ shownData }
+				paginationInfo={ paginationInfo }
+				defaultLayouts={ { table: {} } }
 				search
-				searchLabel={searchLabel}
+				searchLabel={ searchLabel }
 			/>
 		</div>
 	);

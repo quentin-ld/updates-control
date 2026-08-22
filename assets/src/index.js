@@ -9,8 +9,8 @@ const updatronixSettings =
 		? window.updatronixSettings
 		: {};
 
-if (updatronixSettings.nonce) {
-	apiFetch.use(apiFetch.createNonceMiddleware(updatronixSettings.nonce));
+if ( updatronixSettings.nonce ) {
+	apiFetch.use( apiFetch.createNonceMiddleware( updatronixSettings.nonce ) );
 }
 
 /**
@@ -18,20 +18,20 @@ if (updatronixSettings.nonce) {
  *
  * wp-notices is a script dependency so the default store context is available.
  */
-domReady(() => {
-	const rootEl = document.getElementById('updatronix-settings');
-	if (!rootEl || !(rootEl instanceof HTMLElement)) {
+domReady( () => {
+	const rootEl = document.getElementById( 'updatronix-settings' );
+	if ( ! rootEl || ! ( rootEl instanceof HTMLElement ) ) {
 		return;
 	}
 
-	const root = createRoot(rootEl);
-	root.render(null);
+	const root = createRoot( rootEl );
+	root.render( null );
 
-	import('./js/pages/SettingsPage')
-		.then(({ SettingsPage }) => {
-			root.render(<SettingsPage />);
-		})
-		.catch(() => {
+	import( './js/pages/SettingsPage' )
+		.then( ( { SettingsPage } ) => {
+			root.render( <SettingsPage /> );
+		} )
+		.catch( () => {
 			rootEl.textContent = 'Updatronix failed to load.';
-		});
-});
+		} );
+} );

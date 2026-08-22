@@ -29,17 +29,17 @@ export const DEFAULT_EXPORT_COLUMNS = {
  * @param {unknown} input Raw stored value.
  * @return {ExportColumnPrefs} Sanitised column toggles.
  */
-function normalizeColumns(input) {
+function normalizeColumns( input ) {
 	/** @type {ExportColumnPrefs} */
 	const out = { ...DEFAULT_EXPORT_COLUMNS };
 
-	if (!input || typeof input !== 'object') {
+	if ( ! input || typeof input !== 'object' ) {
 		return out;
 	}
 
-	for (const key of Object.keys(DEFAULT_EXPORT_COLUMNS)) {
-		if (typeof input[key] === 'boolean') {
-			out[key] = input[key];
+	for ( const key of Object.keys( DEFAULT_EXPORT_COLUMNS ) ) {
+		if ( typeof input[ key ] === 'boolean' ) {
+			out[ key ] = input[ key ];
 		}
 	}
 
@@ -53,16 +53,16 @@ function normalizeColumns(input) {
  */
 export function loadExportPreferences() {
 	try {
-		const raw = window.localStorage?.getItem(STORAGE_KEY);
-		if (!raw) {
+		const raw = window.localStorage?.getItem( STORAGE_KEY );
+		if ( ! raw ) {
 			return {
 				merge: true,
 				columns: { ...DEFAULT_EXPORT_COLUMNS },
 			};
 		}
 
-		const parsed = JSON.parse(raw);
-		if (parsed?.version !== STORAGE_VERSION) {
+		const parsed = JSON.parse( raw );
+		if ( parsed?.version !== STORAGE_VERSION ) {
 			return {
 				merge: true,
 				columns: { ...DEFAULT_EXPORT_COLUMNS },
@@ -71,7 +71,7 @@ export function loadExportPreferences() {
 
 		return {
 			merge: typeof parsed?.merge === 'boolean' ? parsed.merge : true,
-			columns: normalizeColumns(parsed?.columns),
+			columns: normalizeColumns( parsed?.columns ),
 		};
 	} catch {
 		return {
@@ -87,15 +87,15 @@ export function loadExportPreferences() {
  * @param {ExportPreferences} prefs Preferences to store.
  * @return {void}
  */
-export function saveExportPreferences(prefs) {
+export function saveExportPreferences( prefs ) {
 	try {
 		window.localStorage?.setItem(
 			STORAGE_KEY,
-			JSON.stringify({
+			JSON.stringify( {
 				version: STORAGE_VERSION,
 				merge: prefs.merge,
 				columns: prefs.columns,
-			})
+			} )
 		);
 	} catch {
 		// Storage may be unavailable (private mode, quota); ignore.
@@ -108,7 +108,7 @@ export function saveExportPreferences(prefs) {
  * @param {ExportColumnPrefs} columns Client-side column toggles.
  * @return {Record<string, boolean>} REST payload fragment.
  */
-export function columnsToApiPayload(columns) {
+export function columnsToApiPayload( columns ) {
 	return {
 		table_heading: columns.headingTable,
 		action_type: columns.action,

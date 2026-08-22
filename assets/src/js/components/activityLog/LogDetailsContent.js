@@ -15,28 +15,28 @@ import { formatDate, getStatusLabel } from './utils';
  * @param {Function} props.fetchLogDetails Fetch detail payload.
  * @return {JSX.Element|null} Message and trace sections, or null when no data.
  */
-export function LogDetailsContent({ log, logId, fetchLogDetails }) {
-	const [detailLog, setDetailLog] = useState(null);
-	const [loading, setLoading] = useState(false);
-	const [fetchError, setFetchError] = useState(null);
+export function LogDetailsContent( { log, logId, fetchLogDetails } ) {
+	const [ detailLog, setDetailLog ] = useState( null );
+	const [ loading, setLoading ] = useState( false );
+	const [ fetchError, setFetchError ] = useState( null );
 
-	useEffect(() => {
+	useEffect( () => {
 		let isMounted = true;
-		if (!logId || !fetchLogDetails) {
-			setLoading(false);
+		if ( ! logId || ! fetchLogDetails ) {
+			setLoading( false );
 			return undefined;
 		}
 
-		setLoading(true);
-		setFetchError(null);
-		fetchLogDetails(logId)
-			.then((nextLog) => {
-				if (isMounted && nextLog) {
-					setDetailLog(nextLog);
+		setLoading( true );
+		setFetchError( null );
+		fetchLogDetails( logId )
+			.then( ( nextLog ) => {
+				if ( isMounted && nextLog ) {
+					setDetailLog( nextLog );
 				}
-			})
-			.catch(() => {
-				if (isMounted) {
+			} )
+			.catch( () => {
+				if ( isMounted ) {
 					setFetchError(
 						__(
 							'Could not load the log details. Try again, or check your database connection.',
@@ -44,125 +44,125 @@ export function LogDetailsContent({ log, logId, fetchLogDetails }) {
 						)
 					);
 				}
-			})
-			.finally(() => {
-				if (isMounted) {
-					setLoading(false);
+			} )
+			.finally( () => {
+				if ( isMounted ) {
+					setLoading( false );
 				}
-			});
+			} );
 
 		return () => {
 			isMounted = false;
 		};
-	}, [fetchLogDetails, logId]);
+	}, [ fetchLogDetails, logId ] );
 
-	if (loading) {
-		return <p>{__('Loading log details…', 'updatronix')}</p>;
+	if ( loading ) {
+		return <p>{ __( 'Loading log details…', 'updatronix' ) }</p>;
 	}
 
-	if (fetchError) {
+	if ( fetchError ) {
 		return (
-			<Notice status="error" isDismissible={false}>
-				{fetchError}
+			<Notice status="error" isDismissible={ false }>
+				{ fetchError }
 			</Notice>
 		);
 	}
 
 	const currentLog = detailLog || log;
 
-	if (!currentLog) {
+	if ( ! currentLog ) {
 		return null;
 	}
 
 	const summaryRows = [
-		[__('Item', 'updatronix'), currentLog.item_name],
-		[__('Category', 'updatronix'), currentLog.log_type],
+		[ __( 'Item', 'updatronix' ), currentLog.item_name ],
+		[ __( 'Category', 'updatronix' ), currentLog.log_type ],
 		[
-			__('Action', 'updatronix'),
+			__( 'Action', 'updatronix' ),
 			currentLog.action_type_display || currentLog.action_type,
 		],
-		[__('Status', 'updatronix'), getStatusLabel(currentLog.status)],
-		[__('From version', 'updatronix'), currentLog.version_before],
-		[__('To version', 'updatronix'), currentLog.version_after],
+		[ __( 'Status', 'updatronix' ), getStatusLabel( currentLog.status ) ],
+		[ __( 'From version', 'updatronix' ), currentLog.version_before ],
+		[ __( 'To version', 'updatronix' ), currentLog.version_after ],
 		[
-			__('Triggered by', 'updatronix'),
+			__( 'Triggered by', 'updatronix' ),
 			currentLog.performed_as_display || currentLog.performed_as,
 		],
 		[
-			__('Run type', 'updatronix'),
+			__( 'Run type', 'updatronix' ),
 			currentLog.update_context_display || currentLog.update_context,
 		],
-		[__('Date', 'updatronix'), formatDate(currentLog.created_at)],
+		[ __( 'Date', 'updatronix' ), formatDate( currentLog.created_at ) ],
 	];
 
 	return (
 		<div className="updatronix-notes-content updatronix-notes-modal">
 			<div className="updatronix-notes-section">
-				<h3>{__('Summary', 'updatronix')}</h3>
+				<h3>{ __( 'Summary', 'updatronix' ) }</h3>
 				<dl className="updatronix-notes-summary">
-					{summaryRows.map(
-						([label, value]) =>
+					{ summaryRows.map(
+						( [ label, value ] ) =>
 							value && (
 								<div
-									key={label}
+									key={ label }
 									className="updatronix-notes-summary__row"
 								>
 									<dt className="updatronix-notes-summary__term">
-										{label}
+										{ label }
 									</dt>
 									<dd className="updatronix-notes-summary__description">
-										{value}
+										{ value }
 									</dd>
 								</div>
 							)
-					)}
+					) }
 				</dl>
 			</div>
-			{currentLog.message && (
+			{ currentLog.message && (
 				<div className="updatronix-notes-section">
-					<h3>{__('Process details', 'updatronix')}</h3>
+					<h3>{ __( 'Process details', 'updatronix' ) }</h3>
 					<pre
 						className="updatronix-notes-text"
-						style={{
+						style={ {
 							whiteSpace: 'pre-wrap',
 							wordBreak: 'break-word',
-						}}
+						} }
 					>
-						{currentLog.message}
+						{ currentLog.message }
 					</pre>
 				</div>
-			)}
-			{currentLog.trace && (
+			) }
+			{ currentLog.trace && (
 				<details className="updatronix-notes-section">
 					<summary className="updatronix-notes-toggle">
-						{__('Advanced details', 'updatronix')}
+						{ __( 'Advanced details', 'updatronix' ) }
 					</summary>
 					<p className="updatronix-notes-redaction-note">
-						{__(
+						{ __(
 							'Server paths have been redacted for security.',
 							'updatronix'
-						)}
+						) }
 					</p>
 					<pre
 						className="updatronix-notes-trace"
-						style={{
+						style={ {
 							whiteSpace: 'pre-wrap',
 							wordBreak: 'break-all',
 							fontSize: '12px',
-						}}
+						} }
 					>
-						{currentLog.trace}
+						{ currentLog.trace }
 					</pre>
 				</details>
-			)}
-			{!currentLog.message && !currentLog.trace && (
+			) }
+			{ ! currentLog.message && ! currentLog.trace && (
 				<p>
-					{__(
+					{ __(
 						'No additional details are available for this log entry.',
 						'updatronix'
-					)}
+					) }
 				</p>
-			)}
+			) }
 		</div>
 	);
 }

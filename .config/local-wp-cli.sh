@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 # Runs WP-CLI with Local by Flywheel's site environment (same as "Open Site Shell").
 # Resolves the site via ~/.config/Local/ssh-entry/*.sh or ~/.config/Local/sites.json.
-# Usage: bash .config/local-wp-cli.sh pcp|pot|integration-test|setup [args...]
+# Usage: bash .config/local-wp-cli.sh pcp|pot|integration-test|coverage|setup [args...]
 #   setup            Generate .config/wp-tests.env and install the WordPress test
 #                    library + core into the cache dir (pass --force to overwrite env).
 #   integration-test Run the PHPUnit integration suite ([phpunit args...] forwarded).
+#   coverage         Run a PHPUnit suite (unit|integration) with coverage and enforce a
+#                    line-coverage threshold (env COVERAGE_THRESHOLD, default 50).
 
 set -euo pipefail
 
 MODE="${1:-}"
-if [[ "$MODE" != "pcp" && "$MODE" != "pot" && "$MODE" != "integration-test" && "$MODE" != "setup" ]]; then
-	echo "Usage: bash .config/local-wp-cli.sh pcp|pot|integration-test|setup [args...]" >&2
+if [[ "$MODE" != "pcp" && "$MODE" != "pot" && "$MODE" != "integration-test" && "$MODE" != "coverage" && "$MODE" != "setup" ]]; then
+	echo "Usage: bash .config/local-wp-cli.sh pcp|pot|integration-test|coverage|setup [args...]" >&2
 	exit 1
 fi
 shift || true
@@ -191,8 +193,8 @@ REQUIRE_FILE="${PLUGIN_ROOT}/.config/pcp-setup.php"
 # Paths and files not part of the distributable plugin (dev / repo tooling).
 # - tests/: PHPUnit bootstraps + integration tests (not shipped in the zip from .distignore).
 # - bin/: install-wp-tests.sh triggers application_detected in PCP.
-PCP_EXCLUDE_DIRS=".config,.github,.cursor,.agents,bin,tests"
-PCP_EXCLUDE_FILES="workflow.md,.distignore,.gitignore,.gitattributes,.editorconfig,updatronix.zip"
+PCP_EXCLUDE_DIRS=".config,.claude,.github,.cursor,.agents,graft,bin,tests"
+PCP_EXCLUDE_FILES="workflow.md,.distignore,.ignore,.mcp.json,.gitignore,.gitattributes,.editorconfig,updatronix.zip"
 
 # Legitimate use of core update APIs for an updates-management plugin (not a bundled updater).
 PCP_IGNORE_CODES="plugin_updater_detected,update_modification_detected,hidden_files,unexpected_markdown_file"
@@ -220,6 +222,58 @@ case "$MODE" in
 		fi
 		cd "$PLUGIN_ROOT" || exit 1
 		exec "${PLUGIN_ROOT}/vendor/bin/phpunit" --configuration="${PLUGIN_ROOT}/.config/phpunit.integration.xml.dist" "$@"
+		;;
+	coverage)
+		# Run one PHPUnit suite (unit|integration) under code coverage and enforce a
+		# line-coverage threshold. Uses Local's PHP, which ships an xdebug extension.
+		# Requires a coverage driver (xdebug/pcov) enabled in the PHP in PATH.
+		# Threshold overridable via COVERAGE_THRESHOLD (default 10; current measured
+		# unit coverage ~13%. Raise as the suite grows.)
+		COVERAGE_SUITE="${1:-unit}"
+		shift || true
+		mkdir -p "${PLUGIN_ROOT}/build/coverage"
+
+		case "$COVERAGE_SUITE" in
+			unit)
+				CONF="${PLUGIN_ROOT}/.config/phpunit.xml.dist"
+				COVERAGE_PREFIX="unit"
+				;;
+			integration)
+				if [[ -f "${PLUGIN_ROOT}/.config/wp-tests.env" ]]; then
+					# shellcheck disable=SC1090
+					source "${PLUGIN_ROOT}/.config/wp-tests.env"
+				fi
+				if [[ -z "${WP_TESTS_DIR:-}" ]] || [[ ! -f "${WP_TESTS_DIR}/includes/functions.php" ]]; then
+					echo "Skipping integration coverage: WP test environment not set up." >&2
+					echo "Run 'bash bin/setup-dev.sh' once to install the WordPress test stack." >&2
+					exit 0
+				fi
+				CONF="${PLUGIN_ROOT}/.config/phpunit.integration.xml.dist"
+				COVERAGE_PREFIX="integration"
+				;;
+			*)
+				echo "Usage: bash .config/local-wp-cli.sh coverage unit|integration" >&2
+				exit 2
+				;;
+		esac
+
+		PHP_BIN="${UPDATRONIX_TEST_PHP:-php}"
+		if ! "$PHP_BIN" -r 'exit(extension_loaded("xdebug") || extension_loaded("pcov") ? 0 : 1);' 2>/dev/null; then
+			echo "ERROR: no coverage driver (xdebug/pcov) in PHP '$PHP_BIN'." >&2
+			echo "Enable xdebug in Local, or set UPDATRONIX_TEST_PHP to a PHP with a coverage driver." >&2
+			exit 1
+		fi
+
+		cd "$PLUGIN_ROOT" || exit 1
+		"$PHP_BIN" -d xdebug.mode=coverage -d xdebug.start_with_request=yes -d memory_limit=512M \
+			"${PLUGIN_ROOT}/vendor/bin/phpunit" --configuration="$CONF" "$@"
+		PHPUNIT_STATUS=$?
+		if [[ $PHPUNIT_STATUS -ne 0 ]]; then
+			exit $PHPUNIT_STATUS
+		fi
+
+		bash "${PLUGIN_ROOT}/bin/check-coverage.sh" \
+			"${PLUGIN_ROOT}/build/coverage/${COVERAGE_PREFIX}.txt" "${COVERAGE_THRESHOLD:-10}"
 		;;
 	setup)
 		# Generate .config/wp-tests.env (DB credentials read from the live Local

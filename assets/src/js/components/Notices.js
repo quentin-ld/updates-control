@@ -8,15 +8,15 @@ import { NoticeList } from '@wordpress/components';
  * @return {JSX.Element|null} List of notices or null if none exist.
  */
 export const Notices = () => {
-	const { removeNotice } = useDispatch(noticesStore);
+	const { removeNotice } = useDispatch( noticesStore );
 	const notices = useSelect(
-		(select) => select(noticesStore).getNotices(),
+		( select ) => select( noticesStore ).getNotices(),
 		[]
 	);
 
-	if (!notices || notices.length === 0) {
+	if ( ! notices || notices.length === 0 ) {
 		return null;
 	}
 
-	return <NoticeList notices={notices} onRemove={removeNotice} />;
+	return <NoticeList notices={ notices } onRemove={ removeNotice } />;
 };

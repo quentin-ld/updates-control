@@ -2,6 +2,8 @@
 .agents
 .cache/
 .cache
+.claude/
+.claude
 .config/
 .config
 .cursor/
@@ -24,6 +26,8 @@ bin/
 bin
 docs/
 docs
+graft/
+graft
 node_modules/
 node_modules
 tests/
@@ -74,5 +78,7 @@ Thumbs.db
 workflow.md
 wp-cli.local.yml
 yarn.lock
+.ignore
+.mcp.json
 .phpactor.json
 AGENTS.md

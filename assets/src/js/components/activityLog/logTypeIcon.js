@@ -23,10 +23,11 @@ const LOG_TYPE_ICONS = {
  * @param {number} size    Icon size in pixels.
  * @return {JSX.Element|null} Icon element or null.
  */
-export function getIconForLogType(logType, size = 24) {
-	const IconComponent = LOG_TYPE_ICONS[String(logType || '').toLowerCase()];
-	if (!IconComponent) {
+export function getIconForLogType( logType, size = 24 ) {
+	const IconComponent =
+		LOG_TYPE_ICONS[ String( logType || '' ).toLowerCase() ];
+	if ( ! IconComponent ) {
 		return null;
 	}
-	return <Icon icon={IconComponent} size={size} />;
+	return <Icon icon={ IconComponent } size={ size } />;
 }

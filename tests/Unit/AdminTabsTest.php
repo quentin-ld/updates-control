@@ -62,6 +62,46 @@ final class AdminTabsTest extends TestCase {
 	}
 
 	/**
+	 * The ?tab= query-string branch of updatronix_get_active_tab() is reachable via $_GET.
+	 *
+	 * The production function reads the query string directly (not the frozen
+	 * request-time input stream filter_input() reads), so mutating $_GET in a test
+	 * genuinely drives the branch.
+	 */
+	public function test_active_tab_resolves_overrideable_filter_input_branch(): void {
+		$backup = $_GET;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Test fixture drives the ?tab= branch.
+		$_GET['tab'] = 'settings';
+		try {
+			$tabs   = updatronix_get_admin_tabs();
+			$active = updatronix_get_active_tab( $tabs );
+			$this->assertSame( 'settings', $active, 'The ?tab= input branch must resolve a known tab.' );
+
+			unset( $_GET['tab'] );
+			$active = updatronix_get_active_tab( $tabs );
+			$this->assertSame( 'logs', $active, 'Without a tab param the first tab must win.' );
+		} finally {
+			$_GET = $backup;
+		}
+	}
+
+	/**
+	 * An unknown tab from the query string falls back to the first tab.
+	 */
+	public function test_active_tab_falls_back_when_requested_tab_unknown(): void {
+		$backup = $_GET;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Test fixture drives the ?tab= branch.
+		$_GET['tab'] = 'does-not-exist';
+		try {
+			$tabs   = updatronix_get_admin_tabs();
+			$active = updatronix_get_active_tab( $tabs );
+			$this->assertSame( 'logs', $active );
+		} finally {
+			$_GET = $backup;
+		}
+	}
+
+	/**
 	 * Default tab definitions all have priority.
 	 */
 	public function test_default_tab_definitions_have_priority(): void {

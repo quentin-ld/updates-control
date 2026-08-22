@@ -5,7 +5,7 @@ import { __, _x, sprintf } from '@wordpress/i18n';
 import { ACTION_LABELS, LOG_TYPE_PREFIX } from './constants';
 
 /** Translated fallback for empty values (em dash). */
-export const EMPTY_FALLBACK = _x('—', 'empty value fallback', 'updatronix');
+export const EMPTY_FALLBACK = _x( '—', 'empty value fallback', 'updatronix' );
 
 /**
  * Map log status to badge intent (success, warning, error, default).
@@ -13,21 +13,21 @@ export const EMPTY_FALLBACK = _x('—', 'empty value fallback', 'updatronix');
  * @param {string} status Log status value.
  * @return {string} Badge intent.
  */
-export function statusToBadgeIntent(status) {
-	if (!status) {
+export function statusToBadgeIntent( status ) {
+	if ( ! status ) {
 		return 'default';
 	}
-	const s = String(status).toLowerCase();
-	if (s === 'success' || s === 'updated' || s === 'ok') {
+	const s = String( status ).toLowerCase();
+	if ( s === 'success' || s === 'updated' || s === 'ok' ) {
 		return 'success';
 	}
-	if (s === 'warning' || s === 'warn') {
+	if ( s === 'warning' || s === 'warn' ) {
 		return 'warning';
 	}
-	if (s === 'error' || s === 'failed' || s === 'errors') {
+	if ( s === 'error' || s === 'failed' || s === 'errors' ) {
 		return 'error';
 	}
-	if (s === 'info') {
+	if ( s === 'info' ) {
 		return 'info';
 	}
 	return 'default';
@@ -39,27 +39,27 @@ export function statusToBadgeIntent(status) {
  * @param {string} status Stored status (e.g. success, error, cancelled).
  * @return {string} Translated label or {@link EMPTY_FALLBACK}.
  */
-export function getStatusLabel(status) {
-	if (!status) {
+export function getStatusLabel( status ) {
+	if ( ! status ) {
 		return EMPTY_FALLBACK;
 	}
-	const s = String(status).toLowerCase();
-	if (s === 'success' || s === 'updated' || s === 'ok') {
-		return __('Success', 'updatronix');
+	const s = String( status ).toLowerCase();
+	if ( s === 'success' || s === 'updated' || s === 'ok' ) {
+		return __( 'Success', 'updatronix' );
 	}
-	if (s === 'warning' || s === 'warn') {
-		return __('Warning', 'updatronix');
+	if ( s === 'warning' || s === 'warn' ) {
+		return __( 'Warning', 'updatronix' );
 	}
-	if (s === 'error' || s === 'failed' || s === 'errors') {
-		return __('Error', 'updatronix');
+	if ( s === 'error' || s === 'failed' || s === 'errors' ) {
+		return __( 'Error', 'updatronix' );
 	}
-	if (s === 'cancelled') {
-		return __('Cancelled', 'updatronix');
+	if ( s === 'cancelled' ) {
+		return __( 'Cancelled', 'updatronix' );
 	}
-	if (s === 'info') {
-		return __('Info', 'updatronix');
+	if ( s === 'info' ) {
+		return __( 'Info', 'updatronix' );
 	}
-	return String(status);
+	return String( status );
 }
 
 /**
@@ -68,12 +68,12 @@ export function getStatusLabel(status) {
  * @param {string} dateStr ISO date string.
  * @return {string} Formatted date or fallback.
  */
-export function formatDate(dateStr) {
-	if (!dateStr) {
+export function formatDate( dateStr ) {
+	if ( ! dateStr ) {
 		return EMPTY_FALLBACK;
 	}
 	try {
-		return new Date(dateStr).toLocaleString();
+		return new Date( dateStr ).toLocaleString();
 	} catch {
 		return dateStr;
 	}
@@ -85,12 +85,12 @@ export function formatDate(dateStr) {
  * @param {string} updateContext Raw context.
  * @return {string} Label.
  */
-export function getContextLabel(updateContext) {
-	if (updateContext === 'bulk') {
-		return __('Bulk action', 'updatronix');
+export function getContextLabel( updateContext ) {
+	if ( updateContext === 'bulk' ) {
+		return __( 'Bulk action', 'updatronix' );
 	}
-	if (updateContext === 'single') {
-		return __('Single action', 'updatronix');
+	if ( updateContext === 'single' ) {
+		return __( 'Single action', 'updatronix' );
 	}
 	return updateContext || EMPTY_FALLBACK;
 }
@@ -102,17 +102,17 @@ export function getContextLabel(updateContext) {
  * @param {Object} item Log item.
  * @return {string} Title.
  */
-export function getActivityTitle(item) {
-	const name = item.item_name || __('Item', 'updatronix');
+export function getActivityTitle( item ) {
+	const name = item.item_name || __( 'Item', 'updatronix' );
 	const actionLabel =
-		ACTION_LABELS[item.action_type] ||
+		ACTION_LABELS[ item.action_type ] ||
 		item.action_display ||
 		item.action_type ||
 		'';
-	const base = actionLabel ? `${name} — ${actionLabel}` : name;
-	const typeKey = String(item.log_type || '').toLowerCase();
-	const prefix = LOG_TYPE_PREFIX[typeKey];
-	return prefix ? `${prefix} ${base}` : base;
+	const base = actionLabel ? `${ name } — ${ actionLabel }` : name;
+	const typeKey = String( item.log_type || '' ).toLowerCase();
+	const prefix = LOG_TYPE_PREFIX[ typeKey ];
+	return prefix ? `${ prefix } ${ base }` : base;
 }
 
 /**
@@ -121,58 +121,58 @@ export function getActivityTitle(item) {
  * @param {Object} item Log item.
  * @return {string} Description.
  */
-export function getActivityDescription(item) {
-	if (item.summary_text) {
+export function getActivityDescription( item ) {
+	if ( item.summary_text ) {
 		return item.summary_text;
 	}
 
 	const from = item.version_before;
 	const to = item.version_after;
-	if (item.log_type === 'translation' && (!from || from === to)) {
-		if (to) {
+	if ( item.log_type === 'translation' && ( ! from || from === to ) ) {
+		if ( to ) {
 			return sprintf(
 				/* translators: 1: item name, 2: version number */
-				__('Language pack updated for %1$s %2$s', 'updatronix'),
-				item.item_name || __('WordPress', 'updatronix'),
+				__( 'Language pack updated for %1$s %2$s', 'updatronix' ),
+				item.item_name || __( 'WordPress', 'updatronix' ),
 				to
 			);
 		}
 
 		return sprintf(
 			/* translators: %s: item name */
-			__('Language pack updated for %s', 'updatronix'),
-			item.item_name || __('WordPress', 'updatronix')
+			__( 'Language pack updated for %s', 'updatronix' ),
+			item.item_name || __( 'WordPress', 'updatronix' )
 		);
 	}
-	if (item.action_type === 'same_version') {
+	if ( item.action_type === 'same_version' ) {
 		const version = to || from;
 		return version
 			? sprintf(
 					/* translators: %s: version number */
-					__('v%s', 'updatronix'),
+					__( 'v%s', 'updatronix' ),
 					version
-				)
+			  )
 			: EMPTY_FALLBACK;
 	}
-	if (from && to) {
+	if ( from && to ) {
 		return sprintf(
 			/* translators: 1: previous version number, 2: new version number */
-			__('v%1$s → v%2$s', 'updatronix'),
+			__( 'v%1$s → v%2$s', 'updatronix' ),
 			from,
 			to
 		);
 	}
-	if (to) {
+	if ( to ) {
 		return sprintf(
 			/* translators: %s: version number */
-			__('v%s', 'updatronix'),
+			__( 'v%s', 'updatronix' ),
 			to
 		);
 	}
-	if (from) {
+	if ( from ) {
 		return sprintf(
 			/* translators: %s: version number */
-			__('v%s', 'updatronix'),
+			__( 'v%s', 'updatronix' ),
 			from
 		);
 	}

@@ -100,7 +100,7 @@ Front-end JS follows **`@wordpress/eslint-plugin`**; SCSS follows **`@wordpress/
 | `.config/phpstan-bootstrap.php` | PHPStan bootstrap |
 | `.config/phpunit.xml.dist` | PHPUnit **unit** tests |
 | `.config/phpunit.integration.xml.dist` | PHPUnit **integration** tests |
-| `.config/.eslintrc.js` | ESLint (`plugin:@wordpress/eslint-plugin/recommended`) |
+| `.config/eslint.config.mjs` | ESLint flat config (`@wordpress/eslint-plugin` recommended preset) |
 | `.config/stylelintrc.json` | Stylelint (`@wordpress/stylelint-config/scss-stylistic` + project overrides) |
 | `package.json` | `"prettier": "@wordpress/prettier-config"` for ESLint / editor Prettier |
 | `.editorconfig` | Tabs for source; spaces for `package.json` / YAML |
@@ -137,7 +137,7 @@ Multisite tests **self-skip** when the bootstrap is not in multisite mode, so th
 
 ### Front-end — ESLint, Stylelint, Prettier
 
-- **ESLint** — `.config/.eslintrc.js` extends the WordPress `recommended` preset (Prettier runs inside ESLint when `prettier` is installed; do not duplicate `prettier/prettier` rules locally).
+- **ESLint** — `.config/eslint.config.mjs` (flat config, ESLint 10) extends the WordPress `recommended` preset (Prettier runs inside ESLint when `prettier` is installed; do not duplicate `prettier/prettier` rules locally).
 - **Stylelint** — `.config/stylelintrc.json`; lints SCSS under `assets/src/` (scripts pass `--config`).
 - **Prettier** — configured via `package.json` and `@wordpress/prettier-config`; `format` / `format:fix` apply to JavaScript/JSX only so SCSS stays aligned with Stylelint stylistic rules.
 

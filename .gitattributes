@@ -1,11 +1,14 @@
 # Directories
 /.git export-ignore
+/.agents export-ignore
+/.claude export-ignore
 /.config export-ignore
 /.github export-ignore
 /.cursor export-ignore
 /.vscode export-ignore
 /.wordpress-org export-ignore
 /bin export-ignore
+/graft export-ignore
 /node_modules export-ignore
 /tests export-ignore
 /vendor export-ignore
@@ -46,3 +49,6 @@ prettierrc.js export-ignore
 Thumbs.db export-ignore
 workflow.md export-ignore
 wp-cli.local.yml export-ignore
+.ignore export-ignore
+.mcp.json export-ignore
+AGENTS.md export-ignore

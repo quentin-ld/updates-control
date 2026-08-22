@@ -19,12 +19,12 @@ const COLUMN_SPLIT_PATTERN = /(?:\u00A0{2,}|\s{2,}|\t+)/;
  * @param {string} line Single export line.
  * @return {boolean} True when the line contains only dashes and whitespace.
  */
-function isDashSeparatorLine(line) {
+function isDashSeparatorLine( line ) {
 	const trimmed = line.trim();
 	return (
 		trimmed !== '' &&
-		/^[-\s\u00A0]+$/.test(trimmed) &&
-		trimmed.includes('-')
+		/^[-\s\u00A0]+$/.test( trimmed ) &&
+		trimmed.includes( '-' )
 	);
 }
 
@@ -34,13 +34,13 @@ function isDashSeparatorLine(line) {
  * @param {string} line Aligned export line.
  * @return {string} Fields separated by two regular spaces.
  */
-function unformatLine(line) {
+function unformatLine( line ) {
 	const parts = line
-		.split(COLUMN_SPLIT_PATTERN)
-		.map((part) => part.replace(/\u00A0/g, ' ').trim())
-		.filter(Boolean);
+		.split( COLUMN_SPLIT_PATTERN )
+		.map( ( part ) => part.replace( /\u00A0/g, ' ' ).trim() )
+		.filter( Boolean );
 
-	return parts.join('  ');
+	return parts.join( '  ' );
 }
 
 /**
@@ -52,24 +52,24 @@ function unformatLine(line) {
  * @param {string} formatted Aligned export body from the REST API.
  * @return {string} Plain-text export without dash separators or column padding.
  */
-export function stripExportFormatting(formatted) {
+export function stripExportFormatting( formatted ) {
 	return formatted
-		.split('\n')
-		.filter((line) => !isDashSeparatorLine(line))
-		.map((line) => {
+		.split( '\n' )
+		.filter( ( line ) => ! isDashSeparatorLine( line ) )
+		.map( ( line ) => {
 			const trimmed = line.trim();
 
-			if (trimmed === '') {
+			if ( trimmed === '' ) {
 				return '';
 			}
 
-			if (SECTION_HEADING_PATTERN.test(trimmed)) {
+			if ( SECTION_HEADING_PATTERN.test( trimmed ) ) {
 				return trimmed;
 			}
 
-			return unformatLine(line);
-		})
-		.join('\n');
+			return unformatLine( line );
+		} )
+		.join( '\n' );
 }
 
 /**
@@ -78,11 +78,11 @@ export function stripExportFormatting(formatted) {
  * @param {string} text Raw export text.
  * @return {string} HTML-escaped text safe for a `<pre>` block.
  */
-function escapeHtml(text) {
+function escapeHtml( text ) {
 	return text
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;');
+		.replace( /&/g, '&amp;' )
+		.replace( /</g, '&lt;' )
+		.replace( />/g, '&gt;' );
 }
 
 /**
@@ -91,8 +91,8 @@ function escapeHtml(text) {
  * @param {string} text Formatted export text.
  * @return {string} HTML clipboard fragment wrapping the export in `<pre>`.
  */
-function buildFormattedHtml(text) {
-	const escaped = escapeHtml(text);
+function buildFormattedHtml( text ) {
+	const escaped = escapeHtml( text );
 
 	return (
 		'<pre style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;' +
@@ -108,21 +108,21 @@ function buildFormattedHtml(text) {
  * @param {string} text Text to copy.
  * @return {Promise<void>}
  */
-export async function copyTextToClipboard(text) {
-	if (navigator.clipboard?.writeText) {
-		await navigator.clipboard.writeText(text);
+export async function copyTextToClipboard( text ) {
+	if ( navigator.clipboard?.writeText ) {
+		await navigator.clipboard.writeText( text );
 		return;
 	}
 
-	const textarea = document.createElement('textarea');
+	const textarea = document.createElement( 'textarea' );
 	textarea.value = text;
-	textarea.setAttribute('readonly', '');
+	textarea.setAttribute( 'readonly', '' );
 	textarea.style.position = 'fixed';
 	textarea.style.left = '-9999px';
-	document.body.appendChild(textarea);
+	document.body.appendChild( textarea );
 	textarea.select();
-	document.execCommand('copy');
-	document.body.removeChild(textarea);
+	document.execCommand( 'copy' );
+	document.body.removeChild( textarea );
 }
 
 /**
@@ -135,17 +135,17 @@ export async function copyTextToClipboard(text) {
  * @param {string} text Formatted export body.
  * @return {Promise<void>}
  */
-export async function copyFormattedToClipboard(text) {
-	if (typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
-		const html = buildFormattedHtml(text);
-		await navigator.clipboard.write([
-			new ClipboardItem({
-				'text/plain': new Blob([text], { type: 'text/plain' }),
-				'text/html': new Blob([html], { type: 'text/html' }),
-			}),
-		]);
+export async function copyFormattedToClipboard( text ) {
+	if ( typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write ) {
+		const html = buildFormattedHtml( text );
+		await navigator.clipboard.write( [
+			new ClipboardItem( {
+				'text/plain': new Blob( [ text ], { type: 'text/plain' } ),
+				'text/html': new Blob( [ html ], { type: 'text/html' } ),
+			} ),
+		] );
 		return;
 	}
 
-	await copyTextToClipboard(text);
+	await copyTextToClipboard( text );
 }

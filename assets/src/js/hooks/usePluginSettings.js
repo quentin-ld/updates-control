@@ -34,25 +34,30 @@ const DEFAULT_SCHEDULE_META = {
  */
 export function usePluginSettings() {
 	const { createSuccessNotice, createErrorNotice, createWarningNotice } =
-		useDispatch(noticesStore);
+		useDispatch( noticesStore );
 
-	const initial = useMemo(() => {
+	const initial = useMemo( () => {
 		const opts =
 			typeof window !== 'undefined' && window.updatronixSettings?.options;
 		const meta =
 			typeof window !== 'undefined' &&
 			window.updatronixSettings?.schedule_meta;
 
-		const allowedNotifyOn = ['core', 'plugin_theme', 'debug', 'technical'];
+		const allowedNotifyOn = [
+			'core',
+			'plugin_theme',
+			'debug',
+			'technical',
+		];
 		let notifyOn = [];
-		if (opts && Array.isArray(opts.notify_on)) {
-			notifyOn = opts.notify_on.filter((x) =>
-				allowedNotifyOn.includes(x)
+		if ( opts && Array.isArray( opts.notify_on ) ) {
+			notifyOn = opts.notify_on.filter( ( x ) =>
+				allowedNotifyOn.includes( x )
 			);
 		}
 
 		let schedule = DEFAULT_SCHEDULE;
-		if (opts && opts.schedule && typeof opts.schedule === 'object') {
+		if ( opts && opts.schedule && typeof opts.schedule === 'object' ) {
 			schedule = {
 				update_check: {
 					recurrence: String(
@@ -64,30 +69,32 @@ export function usePluginSettings() {
 					),
 				},
 				delay_updates: {
-					enabled: !!opts.schedule.delay_updates?.enabled,
+					enabled: !! opts.schedule.delay_updates?.enabled,
 					delay_value:
-						Number(opts.schedule.delay_updates?.delay_value) || 0,
+						Number( opts.schedule.delay_updates?.delay_value ) || 0,
 				},
 			};
 		}
 
 		const settingsBase = opts
 			? {
-					logging_enabled: !!opts.logging_enabled,
-					retention_days: Number(opts.retention_days) || 90,
+					logging_enabled: !! opts.logging_enabled,
+					retention_days: Number( opts.retention_days ) || 90,
 					notificationsMode:
 						opts.notifications_mode === 'disabled'
 							? 'disabled'
 							: 'default',
-					notify_enabled: !!opts.notify_enabled,
-					notify_emails: String(opts.notify_emails || ''),
+					notify_enabled: !! opts.notify_enabled,
+					notify_emails: String( opts.notify_emails || '' ),
 					notifyOn,
-					auto_update_translations: !!opts.auto_update_translations,
-					dismissed_constants: Array.isArray(opts.dismissed_constants)
+					auto_update_translations: !! opts.auto_update_translations,
+					dismissed_constants: Array.isArray(
+						opts.dismissed_constants
+					)
 						? opts.dismissed_constants
 						: [],
 					schedule,
-				}
+			  }
 			: {
 					logging_enabled: true,
 					retention_days: 90,
@@ -98,22 +105,22 @@ export function usePluginSettings() {
 					auto_update_translations: true,
 					dismissed_constants: [],
 					schedule,
-				};
+			  };
 
 		const scheduleMeta = {
 			...DEFAULT_SCHEDULE_META,
-			...(meta && typeof meta === 'object' ? meta : {}),
+			...( meta && typeof meta === 'object' ? meta : {} ),
 		};
 
 		return { settings: settingsBase, scheduleMeta };
-	}, []);
+	}, [] );
 
-	const [settings, setSettings] = useState(initial.settings);
-	const [scheduleMeta, setScheduleMeta] = useState(initial.scheduleMeta);
-	const [saving, setSaving] = useState(false);
+	const [ settings, setSettings ] = useState( initial.settings );
+	const [ scheduleMeta, setScheduleMeta ] = useState( initial.scheduleMeta );
+	const [ saving, setSaving ] = useState( false );
 
-	const saveSettings = useCallback(async () => {
-		setSaving(true);
+	const saveSettings = useCallback( async () => {
+		setSaving( true );
 		try {
 			const payload = {
 				logging_enabled: settings.logging_enabled,
@@ -124,12 +131,12 @@ export function usePluginSettings() {
 				notify_on: settings.notifyOn,
 				schedule: settings.schedule,
 			};
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: 'updatronix/v1/settings',
 				method: 'PUT',
 				data: payload,
-			});
-			if (response?.options) {
+			} );
+			if ( response?.options ) {
 				const {
 					notify_on: notifyOnFromApi,
 					notifications_mode: notificationsModeFromApi,
@@ -152,7 +159,7 @@ export function usePluginSettings() {
 								},
 								delay_updates: {
 									enabled:
-										!!response.options.schedule
+										!! response.options.schedule
 											.delay_updates?.enabled,
 									delay_value:
 										Number(
@@ -160,9 +167,9 @@ export function usePluginSettings() {
 												.delay_updates?.delay_value
 										) || 0,
 								},
-							}
+						  }
 						: settings.schedule;
-				setSettings({
+				setSettings( {
 					...rest,
 					notificationsMode:
 						notificationsModeFromApi === 'disabled'
@@ -171,22 +178,22 @@ export function usePluginSettings() {
 					notifyOn: notifyOnFromApi,
 					schedule: nextSchedule,
 					auto_update_translations:
-						!!response.options.auto_update_translations,
+						!! response.options.auto_update_translations,
 					dismissed_constants: Array.isArray(
 						response.options.dismissed_constants
 					)
 						? response.options.dismissed_constants
 						: [],
-				});
-				if (response.schedule_meta) {
-					setScheduleMeta({
+				} );
+				if ( response.schedule_meta ) {
+					setScheduleMeta( {
 						...DEFAULT_SCHEDULE_META,
 						...response.schedule_meta,
-					});
+					} );
 				}
-				createSuccessNotice(__('Settings saved.', 'updatronix'), {
+				createSuccessNotice( __( 'Settings saved.', 'updatronix' ), {
 					id: 'updatronix-settings-save',
-				});
+				} );
 			} else {
 				createWarningNotice(
 					__(
@@ -196,42 +203,47 @@ export function usePluginSettings() {
 					{ id: 'updatronix-settings-save' }
 				);
 			}
-		} catch (e) {
+		} catch ( e ) {
 			const message =
 				e?.message ||
 				__(
 					'Your settings could not be saved. Check your connection and try again.',
 					'updatronix'
 				);
-			createErrorNotice(message, { id: 'updatronix-settings-save' });
+			createErrorNotice( message, { id: 'updatronix-settings-save' } );
 		} finally {
-			setSaving(false);
+			setSaving( false );
 		}
-	}, [settings, createSuccessNotice, createErrorNotice, createWarningNotice]);
+	}, [
+		settings,
+		createSuccessNotice,
+		createErrorNotice,
+		createWarningNotice,
+	] );
 
-	const wpConfigConstants = useMemo(() => {
-		if (typeof window === 'undefined') {
+	const wpConfigConstants = useMemo( () => {
+		if ( typeof window === 'undefined' ) {
 			return {};
 		}
 		const c = window.updatronixSettings?.constants;
 		return c && typeof c === 'object' ? c : {};
-	}, []);
+	}, [] );
 
 	const dismissConstantNotice = useCallback(
-		async (constantName) => {
+		async ( constantName ) => {
 			try {
-				const response = await apiFetch({
+				const response = await apiFetch( {
 					path: 'updatronix/v1/auto-updates/dismiss-constant',
 					method: 'POST',
 					data: { constant: constantName },
-				});
-				if (Array.isArray(response?.dismissed_constants)) {
-					setSettings((prev) => ({
+				} );
+				if ( Array.isArray( response?.dismissed_constants ) ) {
+					setSettings( ( prev ) => ( {
 						...prev,
 						dismissed_constants: response.dismissed_constants,
-					}));
+					} ) );
 				}
-			} catch (e) {
+			} catch ( e ) {
 				createErrorNotice(
 					e?.message ||
 						__(
@@ -242,7 +254,7 @@ export function usePluginSettings() {
 				);
 			}
 		},
-		[createErrorNotice]
+		[ createErrorNotice ]
 	);
 
 	return {
