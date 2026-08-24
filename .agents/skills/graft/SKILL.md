@@ -87,6 +87,8 @@ stale if you have edited that file this turn.
 `build` is for the LLM layer (`--deep` adds a concept map; skip unless asked);
 `check` fails when `graft/` is stale, for CI.
 
+The "use graft before raw grep/code-read" rule is authoritative as stated in AGENTS.md's graft block; this skill is the full reference.
+
 ## Scenarios: the shortest path through a coding task
 
 | When you're… | Reach for | Calls |
