@@ -1,8 +1,12 @@
 # Directories
 /.git export-ignore
 /.agents export-ignore
+/.cache export-ignore
 /.claude export-ignore
 /.config export-ignore
+/.phpunit.cache export-ignore
+/.reasonix export-ignore
+/.sublime export-ignore
 /.github export-ignore
 /.cursor export-ignore
 /.vscode export-ignore

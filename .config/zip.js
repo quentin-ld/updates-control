@@ -34,6 +34,7 @@ const ignore = [
 	'.github/**',
 	'.git/**',
 	'.phpunit.cache/**',
+	'.reasonix/**',
 	'.sublime/**',
 	'.vscode/**',
 	'.wordpress-org/**',

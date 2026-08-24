@@ -394,12 +394,12 @@ assets/bower_components/*
 library/vendors/composer
 assets/img/.DS_Store
 
-docs/*
 .cursor/
+.claude/
+.reasonix/
 .agents/tasks/
 .agents/notes/
 FEATURE_REQUEST.md
-
 .phpactor.json
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
