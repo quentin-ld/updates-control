@@ -407,3 +407,6 @@ FEATURE_REQUEST.md
 
 # Code-coverage output (composer test:coverage writes build/coverage/*).
 /build/
+
+.ignore
+reasonix.toml

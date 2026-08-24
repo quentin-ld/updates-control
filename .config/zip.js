@@ -92,6 +92,8 @@ const ignore = [
 	'.mcp.json',
 	'.phpactor.json',
 	'AGENTS.md',
+	'.ignore',
+	'reasonix.toml'
 ];
 
 function isIgnored(filePath, ignorePatterns) {

@@ -84,3 +84,6 @@ yarn.lock
 .mcp.json
 .phpactor.json
 AGENTS.md
+
+.ignore
+reasonix.toml

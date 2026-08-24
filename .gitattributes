@@ -56,3 +56,5 @@ wp-cli.local.yml export-ignore
 .ignore export-ignore
 .mcp.json export-ignore
 AGENTS.md export-ignore
+reasonix.toml export-ignore
+.ignore export-ignore
