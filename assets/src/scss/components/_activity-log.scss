@@ -1,8 +1,7 @@
 @use "../abstracts/variables" as *;
 
-.dataviews-view-activity {
-	padding-left: var(--wpds-dimension-padding-xs, 4px);
-	padding-right: var(--wpds-dimension-padding-xs, 4px);
+.updatronix-activitylog-panel .dataviews-view-activity {
+	padding-inline: 0;
 
 	&__item {
 
@@ -24,9 +23,8 @@
 	}
 }
 
-.dataviews__view-actions {
-	padding-left: var(--wpds-dimension-padding-xs, 4px);
-	padding-right: var(--wpds-dimension-padding-xs, 4px);
+.updatronix-activitylog-panel .dataviews__view-actions {
+	padding-inline: 0;
 }
 
 .updatronix-activitylog-panel .dataviews-wrapper {
