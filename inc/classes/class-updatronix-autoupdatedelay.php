@@ -449,7 +449,7 @@ final class Updatronix_AutoUpdateDelay {
 			$slug,
 			$vb,
 			$va,
-			'cancelled',
+			'delayed',
 			$msg,
 			'',
 			'automatic',

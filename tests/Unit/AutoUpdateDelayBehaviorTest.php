@@ -201,7 +201,7 @@ final class AutoUpdateDelayBehaviorTest extends TestCase {
 		$log_call = Updatronix_Logger::$calls[0];
 		$this->assertSame( 'plugin', $log_call['type'] );
 		$this->assertSame( 'update', $log_call['action'] );
-		$this->assertSame( 'cancelled', $log_call['level'] );
+		$this->assertSame( 'delayed', $log_call['level'] );
 	}
 
 	/**

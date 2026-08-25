@@ -161,6 +161,38 @@ final class LogsRestApiTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The log list filters by status: a delayed row is isolated by
+	 * status=delayed and a cancelled row by status=cancelled.
+	 */
+	public function test_logs_list_filters_by_delayed_and_cancelled_status(): void {
+		$this->create_admin();
+
+		Updatronix_Logger::log( 'plugin', 'update', 'Delay Plugin', 'delay', '1.0', '1.1', 'delayed' );
+		Updatronix_Logger::log( 'plugin', 'update', 'Cancel Plugin', 'cancel', '1.0', '1.1', 'cancelled' );
+		Updatronix_Logger::log( 'plugin', 'update', 'Good Plugin', 'good', '1.0', '1.1', 'success' );
+
+		// status=delayed returns only the held-back row.
+		$request = new WP_REST_Request( 'GET', '/updatronix/v1/logs' );
+		$request->set_param( 'status', 'delayed' );
+		$response = rest_do_request( $request );
+
+		self::assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		self::assertSame( 1, $data['total'] );
+		self::assertSame( 'Delay Plugin', (string) $data['logs'][0]->item_name );
+
+		// Legacy status=cancelled filtering still works.
+		$request = new WP_REST_Request( 'GET', '/updatronix/v1/logs' );
+		$request->set_param( 'status', 'cancelled' );
+		$response = rest_do_request( $request );
+
+		self::assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		self::assertSame( 1, $data['total'] );
+		self::assertSame( 'Cancel Plugin', (string) $data['logs'][0]->item_name );
+	}
+
+	/**
 	 * A single log request returns the enriched detail fields.
 	 *
 	 * @return void

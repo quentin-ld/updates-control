@@ -68,7 +68,7 @@ final class Updatronix_Settings {
 					),
 					'status'       => array(
 						'type' => 'string',
-						'enum' => array( '', 'success', 'error', 'cancelled', 'info', 'warning' ),
+						'enum' => array( '', 'success', 'error', 'cancelled', 'delayed', 'info', 'warning' ),
 					),
 					'site_id'      => array(
 						'type'    => 'integer',

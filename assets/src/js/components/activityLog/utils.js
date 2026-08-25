@@ -27,7 +27,7 @@ export function statusToBadgeIntent( status ) {
 	if ( s === 'error' || s === 'failed' || s === 'errors' ) {
 		return 'error';
 	}
-	if ( s === 'info' ) {
+	if ( s === 'info' || s === 'delayed' ) {
 		return 'info';
 	}
 	return 'default';
@@ -36,7 +36,7 @@ export function statusToBadgeIntent( status ) {
 /**
  * Get the localized label for a log status. Raw API values remain English keys; UI uses translations.
  *
- * @param {string} status Stored status (e.g. success, error, cancelled).
+ * @param {string} status Stored status (e.g. success, error, cancelled, delayed).
  * @return {string} Translated label or {@link EMPTY_FALLBACK}.
  */
 export function getStatusLabel( status ) {
@@ -55,6 +55,9 @@ export function getStatusLabel( status ) {
 	}
 	if ( s === 'cancelled' ) {
 		return __( 'Cancelled', 'updatronix' );
+	}
+	if ( s === 'delayed' ) {
+		return __( 'Delayed', 'updatronix' );
 	}
 	if ( s === 'info' ) {
 		return __( 'Info', 'updatronix' );

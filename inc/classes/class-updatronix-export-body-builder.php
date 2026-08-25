@@ -788,12 +788,13 @@ final class Updatronix_Export_Body_Builder {
 	 * Status label matching the admin UI ({@see Updatronix_Settings} and the log filters).
 	 *
 	 * @param string $status Raw status value.
-	 * @return string Localised `Success`, `Error`, or `Cancelled`.
+	 * @return string Localised `Success`, `Error`, `Cancelled`, or `Delayed`.
 	 */
 	private static function status_label( string $status ): string {
 		return match ( strtolower( sanitize_key( $status ) ) ) {
 			'error', 'failed', 'errors' => __( 'Error', 'updatronix' ),
 			'cancelled' => __( 'Cancelled', 'updatronix' ),
+			'delayed'   => __( 'Delayed', 'updatronix' ),
 			default => __( 'Success', 'updatronix' ),
 		};
 	}
@@ -807,7 +808,7 @@ final class Updatronix_Export_Body_Builder {
 	private static function status_rank( string $status ): int {
 		return match ( strtolower( sanitize_key( $status ) ) ) {
 			'error', 'failed', 'errors' => 2,
-			'cancelled' => 1,
+			'cancelled', 'delayed' => 1,
 			default => 0,
 		};
 	}

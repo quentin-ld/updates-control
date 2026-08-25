@@ -32,7 +32,7 @@ final class Updatronix_Security {
 	 *
 	 * @var array<string>
 	 */
-	public const ALLOWED_STATUSES = array( 'success', 'error', 'cancelled', 'info', 'warning' );
+	public const ALLOWED_STATUSES = array( 'success', 'error', 'cancelled', 'delayed', 'info', 'warning' );
 
 	/**
 	 * Allowed performed_as values: manual, automatic, or file upload (update.php upload flow).

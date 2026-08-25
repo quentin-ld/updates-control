@@ -51,7 +51,7 @@ final class Updatronix_Logger {
 	 * @param string $item_slug      Slug/identifier.
 	 * @param string $version_before Previous version.
 	 * @param string $version_after  New version after update.
-	 * @param string $status         success, error, cancelled.
+	 * @param string $status         success, error, cancelled, delayed.
 	 * @param string $message        Optional message (e.g. process log, error details).
 	 * @param string $trace          Optional call stack trace.
 	 * @param string $performed_as   manual, automatic, or upload.

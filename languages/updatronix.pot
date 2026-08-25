@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-24T12:58:44+00:00\n"
+"POT-Creation-Date: 2026-08-25T11:30:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: updatronix\n"
@@ -217,8 +217,8 @@ msgstr ""
 #: inc/classes/class-updatronix-autoupdatedelay.php:514
 #: inc/classes/class-updatronix-settings.php:495
 #: inc/classes/class-updatronix-settings.php:503
-#: assets/src/js/components/activityLog/utils.js:136
-#: assets/src/js/components/activityLog/utils.js:144
+#: assets/src/js/components/activityLog/utils.js:139
+#: assets/src/js/components/activityLog/utils.js:147
 msgid "WordPress"
 msgstr ""
 
@@ -317,8 +317,8 @@ msgstr ""
 #: inc/classes/class-updatronix-export-body-builder.php:686
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:169
 #: assets/src/js/components/activityLog/LogDetailsContent.js:95
-#: assets/src/js/components/activityLog/logFilters.js:244
-#: assets/src/js/components/activityLog/logFilters.js:416
+#: assets/src/js/components/activityLog/logFilters.js:245
+#: assets/src/js/components/activityLog/logFilters.js:417
 msgid "Date"
 msgstr ""
 
@@ -330,7 +330,7 @@ msgstr ""
 #: inc/classes/class-updatronix-export-body-builder.php:688
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:203
 #: assets/src/js/components/activityLog/ExportLogsModal.js:44
-#: assets/src/js/components/activityLog/logFilters.js:219
+#: assets/src/js/components/activityLog/logFilters.js:220
 msgid "User"
 msgstr ""
 
@@ -356,104 +356,110 @@ msgid "Cancelled"
 msgstr ""
 
 #: inc/classes/class-updatronix-export-body-builder.php:797
+#: assets/src/js/components/activityLog/logFilters.js:211
+#: assets/src/js/components/activityLog/utils.js:60
+msgid "Delayed"
+msgstr ""
+
+#: inc/classes/class-updatronix-export-body-builder.php:798
 #: assets/src/js/components/activityLog/logFilters.js:208
 #: assets/src/js/components/activityLog/utils.js:48
 msgid "Success"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:924
+#: inc/classes/class-updatronix-export-body-builder.php:925
 msgid "manual"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:925
+#: inc/classes/class-updatronix-export-body-builder.php:926
 msgid "automatic"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:926
+#: inc/classes/class-updatronix-export-body-builder.php:927
 msgid "upload"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:944
+#: inc/classes/class-updatronix-export-body-builder.php:945
 msgid "bulk"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:945
+#: inc/classes/class-updatronix-export-body-builder.php:946
 msgid "single"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:973
+#: inc/classes/class-updatronix-export-body-builder.php:974
 #: inc/classes/class-updatronix-settings.php:447
 #: assets/src/js/components/activityLog/constants.js:19
 msgid "Update"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:974
+#: inc/classes/class-updatronix-export-body-builder.php:975
 #: inc/classes/class-updatronix-settings.php:448
 #: assets/src/js/components/activityLog/constants.js:20
 msgid "Rollback"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:975
+#: inc/classes/class-updatronix-export-body-builder.php:976
 #: inc/classes/class-updatronix-settings.php:449
 #: assets/src/js/components/activityLog/constants.js:21
 msgid "Install"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:976
+#: inc/classes/class-updatronix-export-body-builder.php:977
 #: inc/classes/class-updatronix-settings.php:450
 #: assets/src/js/components/activityLog/constants.js:22
 msgid "Reinstall"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:977
+#: inc/classes/class-updatronix-export-body-builder.php:978
 #: inc/classes/class-updatronix-settings.php:451
 #: assets/src/js/components/activityLog/constants.js:23
 msgid "Failed"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:978
+#: inc/classes/class-updatronix-export-body-builder.php:979
 #: inc/classes/class-updatronix-settings.php:452
 #: assets/src/js/components/activityLog/constants.js:24
 msgid "Uninstall"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:979
+#: inc/classes/class-updatronix-export-body-builder.php:980
 #: inc/classes/class-updatronix-settings.php:453
 #: assets/src/js/components/activityLog/constants.js:26
 msgid "Prevented"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:980
+#: inc/classes/class-updatronix-export-body-builder.php:981
 #: inc/classes/class-updatronix-settings.php:454
 #: assets/src/js/components/activityLog/constants.js:27
 msgid "Incompatible"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:981
+#: inc/classes/class-updatronix-export-body-builder.php:982
 #: inc/classes/class-updatronix-settings.php:455
 #: assets/src/js/components/activityLog/constants.js:28
 msgid "Disabled"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:982
+#: inc/classes/class-updatronix-export-body-builder.php:983
 #: inc/classes/class-updatronix-settings.php:456
 #: assets/src/js/components/activityLog/constants.js:29
 msgid "Auto-updates disabled by Safe Mode"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:995
+#: inc/classes/class-updatronix-export-body-builder.php:996
 msgid "CORE"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:996
+#: inc/classes/class-updatronix-export-body-builder.php:997
 msgid "PLUGINS"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:997
+#: inc/classes/class-updatronix-export-body-builder.php:998
 msgid "THEMES"
 msgstr ""
 
-#: inc/classes/class-updatronix-export-body-builder.php:998
+#: inc/classes/class-updatronix-export-body-builder.php:999
 msgid "TRANSLATIONS"
 msgstr ""
 
@@ -476,13 +482,13 @@ msgstr ""
 
 #: inc/classes/class-updatronix-settings.php:462
 #: assets/src/js/components/activityLog/logFilters.js:81
-#: assets/src/js/components/activityLog/utils.js:90
+#: assets/src/js/components/activityLog/utils.js:93
 msgid "Bulk action"
 msgstr ""
 
 #: inc/classes/class-updatronix-settings.php:464
 #: assets/src/js/components/activityLog/logFilters.js:85
-#: assets/src/js/components/activityLog/utils.js:93
+#: assets/src/js/components/activityLog/utils.js:96
 msgid "Single action"
 msgstr ""
 
@@ -494,14 +500,14 @@ msgstr ""
 
 #. translators: 1: item name, 2: version number
 #: inc/classes/class-updatronix-settings.php:494
-#: assets/src/js/components/activityLog/utils.js:135
+#: assets/src/js/components/activityLog/utils.js:138
 #, php-format,js-format
 msgid "Language pack updated for %1$s %2$s"
 msgstr ""
 
 #. translators: %s: item name
 #: inc/classes/class-updatronix-settings.php:502
-#: assets/src/js/components/activityLog/utils.js:143
+#: assets/src/js/components/activityLog/utils.js:146
 #, php-format,js-format
 msgid "Language pack updated for %s"
 msgstr ""
@@ -510,16 +516,16 @@ msgstr ""
 #: inc/classes/class-updatronix-settings.php:513
 #: inc/classes/class-updatronix-settings.php:531
 #: inc/classes/class-updatronix-settings.php:539
-#: assets/src/js/components/activityLog/utils.js:152
-#: assets/src/js/components/activityLog/utils.js:168
-#: assets/src/js/components/activityLog/utils.js:175
+#: assets/src/js/components/activityLog/utils.js:155
+#: assets/src/js/components/activityLog/utils.js:171
+#: assets/src/js/components/activityLog/utils.js:178
 #, php-format,js-format
 msgid "v%s"
 msgstr ""
 
 #. translators: 1: previous version number, 2: new version number
 #: inc/classes/class-updatronix-settings.php:522
-#: assets/src/js/components/activityLog/utils.js:160
+#: assets/src/js/components/activityLog/utils.js:163
 #, php-format,js-format
 msgid "v%1$s → v%2$s"
 msgstr ""
@@ -641,13 +647,13 @@ msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:185
 #: assets/src/js/components/activityLog/LogDetailsContent.js:88
-#: assets/src/js/components/activityLog/logFilters.js:255
+#: assets/src/js/components/activityLog/logFilters.js:256
 msgid "Triggered by"
 msgstr ""
 
 #: assets/src/js/components/activityLog/ActivityLogPanel.js:194
 #: assets/src/js/components/activityLog/LogDetailsContent.js:92
-#: assets/src/js/components/activityLog/logFilters.js:267
+#: assets/src/js/components/activityLog/logFilters.js:268
 msgid "Run type"
 msgstr ""
 
@@ -826,7 +832,7 @@ msgid "Loading log details…"
 msgstr ""
 
 #: assets/src/js/components/activityLog/LogDetailsContent.js:78
-#: assets/src/js/components/activityLog/utils.js:106
+#: assets/src/js/components/activityLog/utils.js:109
 msgid "Item"
 msgstr ""
 
@@ -862,39 +868,39 @@ msgstr ""
 msgid "Action type"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:211
-#: assets/src/js/components/activityLog/utils.js:60
+#: assets/src/js/components/activityLog/logFilters.js:212
+#: assets/src/js/components/activityLog/utils.js:63
 msgid "Info"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:212
+#: assets/src/js/components/activityLog/logFilters.js:213
 #: assets/src/js/components/activityLog/utils.js:51
 msgid "Warning"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:357
+#: assets/src/js/components/activityLog/logFilters.js:358
 msgid "Search"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:402
+#: assets/src/js/components/activityLog/logFilters.js:403
 msgid "Page"
 msgstr ""
 
 #. translators: 1: Current page number, 2: Items per page.
-#: assets/src/js/components/activityLog/logFilters.js:405
+#: assets/src/js/components/activityLog/logFilters.js:406
 #, js-format
 msgid "Page %1$d (%2$d per page)"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:420
+#: assets/src/js/components/activityLog/logFilters.js:421
 msgid "oldest first"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:421
+#: assets/src/js/components/activityLog/logFilters.js:422
 msgid "newest first"
 msgstr ""
 
-#: assets/src/js/components/activityLog/logFilters.js:424
+#: assets/src/js/components/activityLog/logFilters.js:425
 msgid "Sort"
 msgstr ""
 

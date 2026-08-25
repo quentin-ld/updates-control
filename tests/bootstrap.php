@@ -81,6 +81,7 @@ if (!defined('ABSPATH')) {
 }
 
 require_once __DIR__ . '/stubs/WP_Error.php';
+require_once __DIR__ . '/stubs/WP_REST_Request.php';
 
 if (!function_exists('wp_strip_all_tags')) {
     /**
@@ -843,6 +844,54 @@ if (!function_exists('is_super_admin')) {
      */
     function is_super_admin($user_id = false): bool {
         return (bool) $GLOBALS['updatronix_test_is_super_admin'];
+    }
+}
+
+if (!function_exists('get_current_blog_id')) {
+    /**
+     * Global test override for get_current_blog_id().
+     *
+     * @var int
+     */
+    $GLOBALS['updatronix_test_current_blog_id'] = 1;
+
+    /**
+     * Stub for get_current_blog_id used in unit tests (defaults to the main site).
+     *
+     * @return int
+     */
+    function get_current_blog_id(): int {
+        return (int) $GLOBALS['updatronix_test_current_blog_id'];
+    }
+}
+
+if (!function_exists('get_main_site_id')) {
+    /**
+     * Global test override for get_main_site_id().
+     *
+     * @var int
+     */
+    $GLOBALS['updatronix_test_main_site_id'] = 1;
+
+    /**
+     * Stub for get_main_site_id used in unit tests.
+     *
+     * @return int
+     */
+    function get_main_site_id(): int {
+        return (int) $GLOBALS['updatronix_test_main_site_id'];
+    }
+}
+
+if (!function_exists('absint')) {
+    /**
+     * Stub for absint used in unit tests (no WordPress loaded).
+     *
+     * @param mixed $maybeint Value to coerce.
+     * @return int Non-negative integer, or 0 when the value cannot be coerced.
+     */
+    function absint($maybeint): int {
+        return abs((int) $maybeint);
     }
 }
 

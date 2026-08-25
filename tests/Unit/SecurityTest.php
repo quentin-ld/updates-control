@@ -306,6 +306,7 @@ final class SecurityTest extends TestCase {
 			'success'   => array( 'success' ),
 			'error'     => array( 'error' ),
 			'cancelled' => array( 'cancelled' ),
+			'delayed'   => array( 'delayed' ),
 			'info'      => array( 'info' ),
 			'warning'   => array( 'warning' ),
 		);

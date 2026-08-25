@@ -189,4 +189,38 @@ final class ExportBodyBuilderRenderTest extends TestCase {
 		$this->assertStringContainsString( '2.0', $result['body'] );
 		$this->assertStringNotContainsString( '2.0 → 2.0', $result['body'] );
 	}
+
+	/**
+	 * A held-back (delayed) row renders its localized status label, not the
+	 * fallback "Success", so soak-window deferrals are identifiable on export.
+	 */
+	public function test_render_delayed_status_labels_as_delayed(): void {
+		$result = Updatronix_Export_Body_Builder::render(
+			array( $this->row( array( 'status' => 'delayed' ) ) ),
+			false,
+			array(),
+			'',
+			100000
+		);
+
+		$this->assertStringContainsString( 'Delayed', $result['body'] );
+		$this->assertStringNotContainsString( 'Success', $result['body'] );
+	}
+
+	/**
+	 * A cancelled row still exports its localized "Cancelled" label — the status
+	 * vocabulary was extended, not replaced, so legacy rows keep their meaning.
+	 */
+	public function test_render_cancelled_status_labels_as_cancelled(): void {
+		$result = Updatronix_Export_Body_Builder::render(
+			array( $this->row( array( 'status' => 'cancelled' ) ) ),
+			false,
+			array(),
+			'',
+			100000
+		);
+
+		$this->assertStringContainsString( 'Cancelled', $result['body'] );
+		$this->assertStringNotContainsString( 'Success', $result['body'] );
+	}
 }
