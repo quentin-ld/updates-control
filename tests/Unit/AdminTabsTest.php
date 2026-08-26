@@ -69,8 +69,8 @@ final class AdminTabsTest extends TestCase {
 	 * genuinely drives the branch.
 	 */
 	public function test_active_tab_resolves_overrideable_filter_input_branch(): void {
-		$backup = $_GET;
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Test fixture drives the ?tab= branch.
+		$backup      = $_GET;
 		$_GET['tab'] = 'settings';
 		try {
 			$tabs   = updatronix_get_admin_tabs();
@@ -89,8 +89,8 @@ final class AdminTabsTest extends TestCase {
 	 * An unknown tab from the query string falls back to the first tab.
 	 */
 	public function test_active_tab_falls_back_when_requested_tab_unknown(): void {
-		$backup = $_GET;
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Test fixture drives the ?tab= branch.
+		$backup      = $_GET;
 		$_GET['tab'] = 'does-not-exist';
 		try {
 			$tabs   = updatronix_get_admin_tabs();
