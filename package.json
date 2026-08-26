@@ -18,7 +18,7 @@
 		"zip": "node .config/zip.js"
 	},
 	"prettier": "@wordpress/prettier-config",
-	"author": "Quentin Le Duff",
+	"author": "--Q--",
 	"license": "GPL-2.0-or-later",
 	"devDependencies": {
 		"@wordpress/eslint-plugin": "^25.9.0",
