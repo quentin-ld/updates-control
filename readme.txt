@@ -167,6 +167,13 @@ I welcome your ideas! If you have a suggestion for the roadmap, please visit the
 
 == Changelog ==
 
+= 1.1.5 =
+* Improvement: Enforce multisite compatibility.
+* Improvement: Update WordPress UI components.
+* Documentation: Screenshots update.
+* Documentation: Readme update.
+* Dev: Harden tests suite.
+
 = 1.1.4 =
 * Tested up to WordPress 7.1.
 
