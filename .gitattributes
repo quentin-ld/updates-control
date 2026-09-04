@@ -11,7 +11,10 @@
 /.cursor export-ignore
 /.vscode export-ignore
 /.wordpress-org export-ignore
+/assets/src export-ignore
 /bin export-ignore
+/build export-ignore
+/docs export-ignore
 /graft export-ignore
 /node_modules export-ignore
 /tests export-ignore

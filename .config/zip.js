@@ -40,6 +40,7 @@ const ignore = [
 	'.wordpress-org/**',
 	'assets/src/**',
 	'bin/**',
+	'build/**',
 	'docs/**',
 	'graft/**',
 	'node_modules/**',
