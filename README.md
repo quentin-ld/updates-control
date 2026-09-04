@@ -1,5 +1,3 @@
-<div align="center">
-
 # Updatronix — Update Manager Enhanced
 
 <p align="center">
@@ -27,8 +25,6 @@ Updatronix is built on WordPress's own update engine, so everything keeps workin
 [![Plugin version](https://img.shields.io/badge/version-1.1.5-2E77BC)](https://wordpress.org/plugins/updatronix/)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-brightgreen)](https://www.gnu.org/licenses/gpl-2.0.html)
 [![WordPress downloads](https://img.shields.io/wordpress/plugin/dt/updatronix)](https://wordpress.org/plugins/updatronix/)
-
-</div>
 
 ## Table of Contents
 
