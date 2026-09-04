@@ -1,8 +1,6 @@
 # Updatronix — Update Manager Enhanced
 
-<p align="center">
-  <img src=".wordpress-org/icon-256x256.png" alt="Updatronix logo" height="160" />
-</p>
+<img src=".wordpress-org/icon-256x256.png" alt="Updatronix logo" height="160" />
 
 **WordPress updates made easy — monitor every change, control all updates, and fine-tune your maintenance workflow.**
 
