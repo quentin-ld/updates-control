@@ -26,7 +26,8 @@ final class AutoUpdatesRestApiTest extends WP_UnitTestCase {
 	private $rest_test_server_backup = array();
 
 	/**
-	 * Restore $_SERVER keys and clean up REST auth globals.
+	 * Restore $_SERVER keys, clean up REST auth globals, and reset plugin settings
+	 * so state persisted by one test cannot leak into later classes (e.g. `dismissed_constants`).
 	 *
 	 * @return void
 	 */
@@ -40,6 +41,9 @@ final class AutoUpdatesRestApiTest extends WP_UnitTestCase {
 		}
 		$this->rest_test_server_backup = array();
 		unset( $GLOBALS['wp_rest_auth_cookie'] );
+
+		$defaults = UPDATRONIX_SETTINGS_DEFAULTS;
+		updatronix_save_settings_array( $defaults );
 
 		parent::tearDown();
 	}

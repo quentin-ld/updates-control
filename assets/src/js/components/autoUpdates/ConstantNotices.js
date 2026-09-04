@@ -40,51 +40,51 @@ const CONSTANT_DESCRIPTIONS = {
  * @param {Function}                      [props.onDismiss]       Called with constant name when dismissed.
  * @return {JSX.Element[]|null} Warning notices, or null if none apply.
  */
-export function ConstantNotices({
+export function ConstantNotices( {
 	constants,
 	sections,
 	dismissibleOnly = false,
 	lockingOnly = false,
 	dismissed = [],
 	onDismiss,
-}) {
-	if (!constants || Object.keys(constants).length === 0) {
+} ) {
+	if ( ! constants || Object.keys( constants ).length === 0 ) {
 		return null;
 	}
 
-	const matchesFilter = (info) => {
-		if (dismissibleOnly) {
-			return !info.locks;
+	const matchesFilter = ( info ) => {
+		if ( dismissibleOnly ) {
+			return ! info.locks;
 		}
-		if (lockingOnly) {
+		if ( lockingOnly ) {
 			return info.locks;
 		}
 		return true;
 	};
 
-	const relevant = Object.entries(constants).filter(
-		([name, info]) =>
-			info.affects.some((s) => sections.includes(s)) &&
-			matchesFilter(info) &&
-			!dismissed.includes(name)
+	const relevant = Object.entries( constants ).filter(
+		( [ name, info ] ) =>
+			info.affects.some( ( s ) => sections.includes( s ) ) &&
+			matchesFilter( info ) &&
+			! dismissed.includes( name )
 	);
 
-	if (relevant.length === 0) {
+	if ( relevant.length === 0 ) {
 		return null;
 	}
 
-	return relevant.map(([name, info]) => (
+	return relevant.map( ( [ name, info ] ) => (
 		<Notice
-			key={name}
+			key={ name }
 			status="warning"
-			isDismissible={!info.locks}
+			isDismissible={ ! info.locks }
 			onDismiss={
-				!info.locks && onDismiss ? () => onDismiss(name) : undefined
+				! info.locks && onDismiss ? () => onDismiss( name ) : undefined
 			}
 		>
-			<strong>{name}</strong>
+			<strong>{ name }</strong>
 			<br />
-			{CONSTANT_DESCRIPTIONS[name] || name}
+			{ CONSTANT_DESCRIPTIONS[ name ] || name }
 		</Notice>
-	));
+	) );
 }

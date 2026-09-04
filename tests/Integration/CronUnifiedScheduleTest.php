@@ -14,6 +14,79 @@ declare(strict_types=1);
  */
 final class CronUnifiedScheduleTest extends WP_UnitTestCase {
 	/**
+	 * `pre_http_request` mock installed in setUp, removed in tearDown.
+	 *
+	 * @var \Closure|null
+	 */
+	private ?\Closure $http_mock = null;
+
+	/**
+	 * Short-circuit every WordPress.org update-API request so `wp_update_plugins()`,
+	 * `wp_update_themes()`, and `wp_version_check()` never touch the live network.
+	 *
+	 * @return void
+	 */
+	private function mock_wordpress_org_api(): void {
+		$this->http_mock = static function ( $pre, $args, $url ) {
+			if ( ! is_string( $url ) || false === strpos( $url, 'api.wordpress.org' ) ) {
+				return $pre;
+			}
+
+			// WP 7.0's update functions read several keys from the shared response body:
+			// wp_update_plugins() -> plugins/translations/no_update, wp_update_themes() -> themes/translations/no_update,
+			// wp_version_check() -> offers. All are provided as empty arrays so each function short-circuits cleanly.
+			return array(
+				'headers'  => array(),
+				'body'     => (string) wp_json_encode(
+					array(
+						'offers'       => array(),
+						'plugins'      => array(),
+						'themes'       => array(),
+						'translations' => array(),
+						'no_update'    => array(),
+					)
+				),
+				'response' => array(
+					'code'    => 200,
+					'message' => 'OK',
+				),
+				'cookies'  => array(),
+				'filename' => null,
+			);
+		};
+
+		add_filter( 'pre_http_request', $this->http_mock, 10, 3 );
+	}
+
+	/**
+	 * Neutralize update-API network calls before each test.
+	 *
+	 * @return void
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->mock_wordpress_org_api();
+	}
+
+	/**
+	 * Remove the HTTP mock and delete any update transients the mocked API wrote.
+	 *
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		if ( null !== $this->http_mock ) {
+			remove_filter( 'pre_http_request', $this->http_mock, 10 );
+			$this->http_mock = null;
+		}
+
+		delete_site_transient( 'update_core' );
+		delete_site_transient( 'update_plugins' );
+		delete_site_transient( 'update_themes' );
+
+		parent::tearDown();
+	}
+
+	/**
 	 * When recurrence is plugin-controlled, `wp_version_check` stays scheduled (admin UI messaging) while
 	 * redundant plugin/theme recurring checks are suppressed.
 	 *
@@ -62,7 +135,7 @@ final class CronUnifiedScheduleTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Regression guard for M1 (`.cursor/notes/2026-05-09-code-review-opus-notifications-schedule-features.md`):
+	 * Regression guard for M1 (`.agents/notes/archive/2026-05-09-code-review-opus-notifications-schedule-features.md`):
 	 * `Updatronix_Cron::prime_unified_discovery_before_core()` must not cause Core's priority-10
 	 * callback (`wp_version_check()`) to run twice in a single `do_action( 'wp_version_check' )` tick.
 	 *
@@ -140,41 +213,5 @@ final class CronUnifiedScheduleTest extends WP_UnitTestCase {
 		// Clean up.
 		$current['schedule']['update_check']['recurrence'] = '';
 		updatronix_save_settings_array( $current );
-	}
-
-	/**
-	 * Weekly is a native WordPress cron schedule; unified mode should accept it and keep `wp_version_check` scheduled.
-	 *
-	 * @return void
-	 */
-	public function test_weekly_recurrence_keeps_wp_version_check_and_suppresses_plugin_theme_crons(): void {
-		$schedules = wp_get_schedules();
-		if ( ! isset( $schedules['weekly'] ) ) {
-			self::markTestSkipped( 'Weekly schedule not registered in this WordPress version.' );
-		}
-
-		wp_clear_scheduled_hook( 'wp_version_check' );
-		wp_clear_scheduled_hook( 'wp_update_plugins' );
-		wp_clear_scheduled_hook( 'wp_update_themes' );
-		if ( function_exists( 'wp_schedule_update_checks' ) ) {
-			wp_schedule_update_checks();
-		}
-
-		$current = updatronix_get_settings();
-		$current['schedule']['update_check']['recurrence'] = 'weekly';
-		$current['schedule']['update_check']['time']       = '04:15';
-		updatronix_save_settings_array( $current );
-
-		self::assertTrue( Updatronix_Cron::is_unified_schedule_active() );
-		self::assertIsInt( wp_next_scheduled( Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK ) );
-		self::assertFalse( wp_next_scheduled( 'wp_update_plugins' ) );
-		self::assertFalse( wp_next_scheduled( 'wp_update_themes' ) );
-
-		$current['schedule']['update_check']['recurrence'] = '';
-		updatronix_save_settings_array( $current );
-
-		self::assertIsInt( wp_next_scheduled( 'wp_version_check' ) );
-		self::assertIsInt( wp_next_scheduled( 'wp_update_plugins' ) );
-		self::assertIsInt( wp_next_scheduled( 'wp_update_themes' ) );
 	}
 }

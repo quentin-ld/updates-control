@@ -12,8 +12,8 @@ import { published, caution, error as errorIcon } from '@wordpress/icons';
  * @param {string} intent success, warning, error, default.
  * @return {Object|null} Icon definition or null for default.
  */
-function intentIcon(intent) {
-	switch (intent) {
+function intentIcon( intent ) {
+	switch ( intent ) {
 		case 'success':
 			return published;
 		case 'warning':
@@ -33,28 +33,30 @@ function intentIcon(intent) {
  * @param {*}      props.children Content.
  * @return {JSX.Element} Span with badge styling and optional icon.
  */
-export const StatusBadge = memo(function StatusBadge({
+export const StatusBadge = memo( function StatusBadgeView( {
 	intent = 'default',
 	children,
-}) {
-	const icon = intentIcon(intent);
-	const hasIcon = !!icon;
+} ) {
+	const icon = intentIcon( intent );
+	const hasIcon = !! icon;
 
 	return (
 		<span
-			className={`components-badge is-${intent}${hasIcon ? ' has-icon' : ''}`}
+			className={ `components-badge is-${ intent }${
+				hasIcon ? ' has-icon' : ''
+			}` }
 		>
 			<span className="components-badge__flex-wrapper">
-				{hasIcon && (
+				{ hasIcon && (
 					<Icon
-						icon={icon}
-						size={16}
+						icon={ icon }
+						size={ 16 }
 						fill="currentColor"
 						className="components-badge__icon"
 					/>
-				)}
-				<span className="components-badge__content">{children}</span>
+				) }
+				<span className="components-badge__content">{ children }</span>
 			</span>
 		</span>
 	);
-});
+} );

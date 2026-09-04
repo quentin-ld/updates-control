@@ -40,7 +40,7 @@ function updatronix_render_delay_context_admin_notice(): void {
 	$delay = updatronix_get_settings()['schedule']['delay_updates'];
 	$days  = max( 1, min( 365, (int) $delay['delay_value'] ) );
 
-	echo '<div style="display: inline-flex; flex-direction: column;" class="notice notice-info updatronix-delay-context-notice components-notice is-info"><p>';
+	echo '<div style="display: flex; flex-direction: column; width: 920px; max-width: 100%; text-align: left; justify-content: flex-start; align-items: flex-start;" class="notice notice-info updatronix-delay-context-notice components-notice is-info"><p>';
 	echo esc_html(
 		sprintf(
 			/* translators: %d: full days to wait after WordPress first sees an update (1–365). */

@@ -2,6 +2,8 @@
 .agents
 .cache/
 .cache
+.claude/
+.claude
 .config/
 .config
 .cursor/
@@ -12,6 +14,8 @@
 .git
 .phpunit.cache/
 .phpunit.cache
+.reasonix/
+.reasonix
 .sublime/
 .sublime
 .vscode/
@@ -22,8 +26,12 @@ assets/src/
 assets/src
 bin/
 bin
+build/
+build
 docs/
 docs
+graft/
+graft
 node_modules/
 node_modules
 tests/
@@ -74,5 +82,10 @@ Thumbs.db
 workflow.md
 wp-cli.local.yml
 yarn.lock
+.ignore
+.mcp.json
 .phpactor.json
 AGENTS.md
+
+.ignore
+reasonix.toml

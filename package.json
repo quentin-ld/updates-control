@@ -4,8 +4,8 @@
 	"type": "wordpress-plugin",
 	"main": "assets/build/index.js",
 	"scripts": {
-		"lint": "wp-scripts lint-js --config .config/.eslintrc.js assets/src/**/*.js",
-		"lint:fix": "wp-scripts lint-js --config .config/.eslintrc.js assets/src/**/*.js --fix",
+		"lint": "wp-scripts lint-js --config .config/eslint.config.mjs assets/src/**/*.js",
+		"lint:fix": "wp-scripts lint-js --config .config/eslint.config.mjs assets/src/**/*.js --fix",
 		"lint:css": "wp-scripts lint-style --config .config/stylelintrc.json 'assets/src/**/*.scss'",
 		"lint:css:fix": "wp-scripts lint-style --config .config/stylelintrc.json 'assets/src/**/*.scss' --fix",
 		"format": "wp-scripts format 'assets/src/**/*.{js,jsx}'",
@@ -18,26 +18,27 @@
 		"zip": "node .config/zip.js"
 	},
 	"prettier": "@wordpress/prettier-config",
-	"author": "Quentin Le Duff",
+	"author": "--Q--",
 	"license": "GPL-2.0-or-later",
 	"devDependencies": {
-		"@wordpress/eslint-plugin": "^24.5.0",
-		"@wordpress/prettier-config": "^4.43.0",
-		"@wordpress/scripts": "^31.8.0",
-		"@wordpress/stylelint-config": "^23.35.0",
+		"@wordpress/eslint-plugin": "^25.9.0",
+		"@wordpress/prettier-config": "^4.53.0",
+		"@wordpress/scripts": "^34.1.0",
+		"@wordpress/stylelint-config": "^24.2.0",
 		"archiver": "^7.0.1",
-		"typescript": "~5.5.4"
+		"prettier": "npm:wp-prettier@^3.0.3",
+		"typescript": "~5.9.3"
 	},
 	"dependencies": {
-		"@wordpress/api-fetch": "^7.43.0",
-		"@wordpress/components": "^32.5.0",
-		"@wordpress/data": "^10.43.0",
-		"@wordpress/dataviews": "^14.0.0",
-		"@wordpress/dom-ready": "^4.43.0",
-		"@wordpress/element": "^6.43.0",
-		"@wordpress/i18n": "^6.16.0",
-		"@wordpress/icons": "^12.1.0",
-		"@wordpress/notices": "^5.43.0",
-		"@wordpress/ui": "^0.10.0"
+		"@wordpress/api-fetch": "^7.53.0",
+		"@wordpress/components": "^39.0.0",
+		"@wordpress/data": "^10.53.0",
+		"@wordpress/dataviews": "^18.0.0",
+		"@wordpress/dom-ready": "^4.53.0",
+		"@wordpress/element": "^8.5.0",
+		"@wordpress/i18n": "^6.26.0",
+		"@wordpress/icons": "^15.4.0",
+		"@wordpress/notices": "^5.53.0",
+		"@wordpress/ui": "^0.20.0"
 	}
 }

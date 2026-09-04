@@ -15,22 +15,22 @@ const API_BASE = 'updatronix/v1/auto-updates';
  * @param {(dismissed: string[]) => void} [onDismissedConstantsChange] Called after a wp-config notice is dismissed so parent state can stay in sync.
  * @return {Object} Auto-update state and mutation helpers.
  */
-export function useAutoUpdates(onDismissedConstantsChange) {
+export function useAutoUpdates( onDismissedConstantsChange ) {
 	const { createSuccessNotice, createErrorNotice } =
-		useDispatch(noticesStore);
+		useDispatch( noticesStore );
 
-	const [data, setData] = useState(null);
-	const [loading, setLoading] = useState(true);
-	const [busy, setBusy] = useState(false);
-	const [fetchError, setFetchError] = useState(null);
+	const [ data, setData ] = useState( null );
+	const [ loading, setLoading ] = useState( true );
+	const [ busy, setBusy ] = useState( false );
+	const [ fetchError, setFetchError ] = useState( null );
 
-	const fetchData = useCallback(async () => {
-		setLoading(true);
-		setFetchError(null);
+	const fetchData = useCallback( async () => {
+		setLoading( true );
+		setFetchError( null );
 		try {
-			const response = await apiFetch({ path: API_BASE });
-			setData(response);
-		} catch (e) {
+			const response = await apiFetch( { path: API_BASE } );
+			setData( response );
+		} catch ( e ) {
 			setFetchError(
 				e?.message ||
 					__(
@@ -47,29 +47,29 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 				{ id: 'updatronix-autoupdate-toggle' }
 			);
 		} finally {
-			setLoading(false);
+			setLoading( false );
 		}
-	}, [createErrorNotice]);
+	}, [ createErrorNotice ] );
 
-	useEffect(() => {
+	useEffect( () => {
 		fetchData();
-	}, [fetchData]);
+	}, [ fetchData ] );
 
 	const setCoreMode = useCallback(
-		async (mode) => {
-			setBusy(true);
+		async ( mode ) => {
+			setBusy( true );
 			try {
-				const response = await apiFetch({
-					path: `${API_BASE}/core`,
+				const response = await apiFetch( {
+					path: `${ API_BASE }/core`,
 					method: 'POST',
 					data: { mode },
-				});
-				setData(response);
+				} );
+				setData( response );
 				createSuccessNotice(
-					__('Core auto-update setting saved.', 'updatronix'),
+					__( 'Core auto-update setting saved.', 'updatronix' ),
 					{ id: 'updatronix-autoupdate-toggle' }
 				);
-			} catch (e) {
+			} catch ( e ) {
 				createErrorNotice(
 					e?.message ||
 						__(
@@ -79,35 +79,35 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} finally {
-				setBusy(false);
+				setBusy( false );
 			}
 		},
-		[createSuccessNotice, createErrorNotice]
+		[ createSuccessNotice, createErrorNotice ]
 	);
 
 	const togglePlugin = useCallback(
-		async (pluginFile, enable) => {
-			setBusy(true);
+		async ( pluginFile, enable ) => {
+			setBusy( true );
 			try {
-				const response = await apiFetch({
-					path: `${API_BASE}/plugin`,
+				const response = await apiFetch( {
+					path: `${ API_BASE }/plugin`,
 					method: 'POST',
 					data: { plugin: pluginFile, enable },
-				});
-				setData(response);
+				} );
+				setData( response );
 				createSuccessNotice(
 					enable
 						? __(
 								'Auto-update enabled for this plugin.',
 								'updatronix'
-							)
+						  )
 						: __(
 								'Auto-update disabled for this plugin.',
 								'updatronix'
-							),
+						  ),
 					{ id: 'updatronix-autoupdate-toggle' }
 				);
-			} catch (e) {
+			} catch ( e ) {
 				createErrorNotice(
 					e?.message ||
 						__(
@@ -117,35 +117,35 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} finally {
-				setBusy(false);
+				setBusy( false );
 			}
 		},
-		[createSuccessNotice, createErrorNotice]
+		[ createSuccessNotice, createErrorNotice ]
 	);
 
 	const toggleTheme = useCallback(
-		async (stylesheet, enable) => {
-			setBusy(true);
+		async ( stylesheet, enable ) => {
+			setBusy( true );
 			try {
-				const response = await apiFetch({
-					path: `${API_BASE}/theme`,
+				const response = await apiFetch( {
+					path: `${ API_BASE }/theme`,
 					method: 'POST',
 					data: { stylesheet, enable },
-				});
-				setData(response);
+				} );
+				setData( response );
 				createSuccessNotice(
 					enable
 						? __(
 								'Auto-update enabled for this theme.',
 								'updatronix'
-							)
+						  )
 						: __(
 								'Auto-update disabled for this theme.',
 								'updatronix'
-							),
+						  ),
 					{ id: 'updatronix-autoupdate-toggle' }
 				);
-			} catch (e) {
+			} catch ( e ) {
 				createErrorNotice(
 					e?.message ||
 						__(
@@ -155,27 +155,30 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} finally {
-				setBusy(false);
+				setBusy( false );
 			}
 		},
-		[createSuccessNotice, createErrorNotice]
+		[ createSuccessNotice, createErrorNotice ]
 	);
 
 	const toggleTranslation = useCallback(
-		async (enable) => {
-			setBusy(true);
+		async ( enable ) => {
+			setBusy( true );
 			try {
-				const response = await apiFetch({
-					path: `${API_BASE}/translation`,
+				const response = await apiFetch( {
+					path: `${ API_BASE }/translation`,
 					method: 'POST',
 					data: { enable },
-				});
-				setData(response);
+				} );
+				setData( response );
 				createSuccessNotice(
-					__('Translation auto-update setting saved.', 'updatronix'),
+					__(
+						'Translation auto-update setting saved.',
+						'updatronix'
+					),
 					{ id: 'updatronix-autoupdate-toggle' }
 				);
-			} catch (e) {
+			} catch ( e ) {
 				createErrorNotice(
 					e?.message ||
 						__(
@@ -185,25 +188,27 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 					{ id: 'updatronix-autoupdate-toggle' }
 				);
 			} finally {
-				setBusy(false);
+				setBusy( false );
 			}
 		},
-		[createSuccessNotice, createErrorNotice]
+		[ createSuccessNotice, createErrorNotice ]
 	);
 
 	const dismissConstant = useCallback(
-		async (constant) => {
+		async ( constant ) => {
 			try {
-				const response = await apiFetch({
-					path: `${API_BASE}/dismiss-constant`,
+				const response = await apiFetch( {
+					path: `${ API_BASE }/dismiss-constant`,
 					method: 'POST',
 					data: { constant },
-				});
-				setData(response);
-				if (Array.isArray(response?.dismissed_constants)) {
-					onDismissedConstantsChange?.(response.dismissed_constants);
+				} );
+				setData( response );
+				if ( Array.isArray( response?.dismissed_constants ) ) {
+					onDismissedConstantsChange?.(
+						response.dismissed_constants
+					);
 				}
-			} catch (e) {
+			} catch ( e ) {
 				createErrorNotice(
 					e?.message ||
 						__(
@@ -214,7 +219,7 @@ export function useAutoUpdates(onDismissedConstantsChange) {
 				);
 			}
 		},
-		[createErrorNotice, onDismissedConstantsChange]
+		[ createErrorNotice, onDismissedConstantsChange ]
 	);
 
 	return {

@@ -6,7 +6,7 @@ You delegate. The agent plans, codes, lints, and fixes. Your job: describe outco
 
 1. Open the **plugin root** (`updatronix/`) in your editor.
 2. Confirm the project's `AGENTS.md` is loaded as agent instructions.
-3. Skills available: `architect`, `resume`, `reviewer`, `security`, `qa`, `release`.
+3. Skills available: `architect`, `resume`, `reviewer`, `security`, `qa`, `release`, `graft`.
 4. Trust the workspace when prompted.
 
 ## Model tiers — what to pick per thread
@@ -113,6 +113,8 @@ When tested, reviewed (if required), and you **explicitly authorize** the versio
 ## Reference docs
 
 `.agents/docs/` holds large mirrors. **You don't open them.** Agents grep one section when needed. Source in `inc/` is primary.
+
+Workflow essentials: `workflow.md`; full command reference: `.agents/docs/BUILD.md`; audit checklists: `.agents/docs/audit-checklists.md`.
 
 ## What you never do
 

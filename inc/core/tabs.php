@@ -103,9 +103,13 @@ function updatronix_get_admin_tabs(): array {
  * @return string Active tab slug.
  */
 function updatronix_get_active_tab( array $tabs ): string {
-	$tab_input = filter_input( INPUT_GET, 'tab', FILTER_UNSAFE_RAW );
-	if ( is_string( $tab_input ) && '' !== $tab_input ) {
-		$requested_tab = sanitize_key( $tab_input );
+	// Read-only admin tab switch: reads the query string directly (equivalent to
+	// filter_input( INPUT_GET, 'tab', FILTER_UNSAFE_RAW )) so the branch stays
+	// exerciseable in unit tests instead of a frozen request-time input stream.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput -- Display-only tab param; sanitize_key() below.
+	$tab_raw = isset( $_GET['tab'] ) && is_string( $_GET['tab'] ) ? wp_unslash( $_GET['tab'] ) : null;
+	if ( is_string( $tab_raw ) && '' !== $tab_raw ) {
+		$requested_tab = sanitize_key( $tab_raw );
 		if ( isset( $tabs[ $requested_tab ] ) ) {
 			return $requested_tab;
 		}

@@ -18,9 +18,9 @@ import { isSectionLocked } from './utils';
  * @param {boolean}  props.busy        Whether a request is in progress.
  * @return {JSX.Element}                The core auto-update section.
  */
-export function CoreSection({ core, constants, setCoreMode, busy }) {
+export function CoreSection( { core, constants, setCoreMode, busy } ) {
 	const locked =
-		core.overridden_by_constant || isSectionLocked(constants, 'core');
+		core.overridden_by_constant || isSectionLocked( constants, 'core' );
 
 	const options = [
 		{
@@ -38,7 +38,7 @@ export function CoreSection({ core, constants, setCoreMode, busy }) {
 			value: 'all',
 		},
 		{
-			label: __('Disabled (no core auto-updates)', 'updatronix'),
+			label: __( 'Disabled (no core auto-updates)', 'updatronix' ),
 			value: 'disabled',
 		},
 	];
@@ -46,26 +46,26 @@ export function CoreSection({ core, constants, setCoreMode, busy }) {
 	return (
 		<div className="updatronix-autoupdates-section">
 			<h3 className="updatronix-autoupdates-section-title">
-				<Icon icon={coreIcon} size={24} />
-				{__('Core updates', 'updatronix')}
+				<Icon icon={ coreIcon } size={ 24 } />
+				{ __( 'Core updates', 'updatronix' ) }
 			</h3>
 			<ConstantNotices
-				constants={constants}
-				sections={['core']}
+				constants={ constants }
+				sections={ [ 'core' ] }
 				lockingOnly
 			/>
 			<RadioControl
-				label={__('Core auto-update mode', 'updatronix')}
-				selected={core.mode}
-				options={options}
-				onChange={(value) => setCoreMode(value)}
-				disabled={locked || busy}
+				label={ __( 'Core auto-update mode', 'updatronix' ) }
+				selected={ core.mode }
+				options={ options }
+				onChange={ ( value ) => setCoreMode( value ) }
+				disabled={ locked || busy }
 				help={
 					locked
 						? __(
 								'This choice is set in your wp-config.php file. Edit that file to change it.',
 								'updatronix'
-							)
+						  )
 						: ''
 				}
 			/>

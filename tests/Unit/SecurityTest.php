@@ -82,16 +82,22 @@ final class SecurityTest extends TestCase {
 
 	/**
 	 * Paths under ABSPATH/WP_PLUGIN_DIR/WP_CONTENT_DIR are replaced with basename + [redacted].
-	 * The basename of ABSPATH (/tmp) is 'tmp', so the full path portion is replaced with 'tmp[redacted]'.
+	 *
+	 * Inputs and expectations are derived from the bootstrap constants (ABSPATH,
+	 * WP_PLUGIN_DIR, WP_CONTENT_DIR) rather than hardcoded, so a change to the test
+	 * root path does not silently break the redaction guard.
 	 *
 	 * @return array<string, array{string, string}>
 	 */
 	public static function provide_path_redaction(): array {
+		$web = untrailingslashit( ABSPATH );
+		$red = basename( $web ) . '[redacted]';
+
 		return array(
-			'abspath-root'   => array( '/tmp/index.php (42)', 'tmp[redacted] (42)' ),
-			'abspath-nested' => array( '/tmp/wp-admin/admin.php', 'tmp[redacted]' ),
-			'plugin-dir'     => array( '/tmp/plugins/akismet/akismet.php', 'tmp[redacted]' ),
-			'content-dir'    => array( '/tmp/wp-content/themes/twentytwentyfour/style.css', 'tmp[redacted]' ),
+			'abspath-root'   => array( $web . '/index.php (42)', $red . ' (42)' ),
+			'abspath-nested' => array( $web . '/wp-admin/admin.php', $red ),
+			'plugin-dir'     => array( untrailingslashit( WP_PLUGIN_DIR ) . '/akismet/akismet.php', $red ),
+			'content-dir'    => array( untrailingslashit( WP_CONTENT_DIR ) . '/themes/twentytwentyfour/style.css', $red ),
 		);
 	}
 
@@ -112,8 +118,9 @@ final class SecurityTest extends TestCase {
 	 * The full ABSPATH should NOT appear in the output.
 	 */
 	public function test_redact_sensitive_text_does_not_expose_abspath(): void {
-		$result = Updatronix_Security::sanitize_trace( '/tmp/wp-content/plugins/test.php' );
-		$this->assertStringNotContainsString( '/tmp/', $result );
+		$input  = untrailingslashit( WP_CONTENT_DIR ) . '/plugins/test.php';
+		$result = Updatronix_Security::sanitize_trace( $input );
+		$this->assertStringNotContainsString( untrailingslashit( ABSPATH ), $result );
 	}
 
 	// --- sanitize_message (includes html_entity_decode before redaction) ---
@@ -191,5 +198,309 @@ final class SecurityTest extends TestCase {
 		$input  = str_repeat( 'x', 70000 );
 		$result = Updatronix_Security::sanitize_message( $input );
 		$this->assertSame( 65535, mb_strlen( $result ) );
+	}
+
+	// --- sanitize_log_type ---
+
+	/**
+	 * Allowed log types pass through unchanged.
+	 *
+	 * @dataProvider provide_log_types
+	 *
+	 * @param string $value Raw value.
+	 */
+	public function test_sanitize_log_type_accepts_allowed( string $value ): void {
+		$this->assertSame( $value, Updatronix_Security::sanitize_log_type( $value ) );
+	}
+
+	/**
+	 * Provides the allowed log types.
+	 *
+	 * @return array<string, array{string}>
+	 */
+	public static function provide_log_types(): array {
+		return array(
+			'core'        => array( 'core' ),
+			'plugin'      => array( 'plugin' ),
+			'theme'       => array( 'theme' ),
+			'translation' => array( 'translation' ),
+		);
+	}
+
+	/**
+	 * Uppercase input is normalised by sanitize_key before the allowlist check.
+	 */
+	public function test_sanitize_log_type_normalises_case(): void {
+		$this->assertSame( 'plugin', Updatronix_Security::sanitize_log_type( 'PLUGIN' ) );
+	}
+
+	/**
+	 * Unknown log types fall back to 'plugin'.
+	 */
+	public function test_sanitize_log_type_falls_back_for_unknown(): void {
+		$this->assertSame( 'plugin', Updatronix_Security::sanitize_log_type( 'evil' ) );
+		$this->assertSame( 'plugin', Updatronix_Security::sanitize_log_type( 'plugin()' ) );
+	}
+
+	// --- sanitize_action_type ---
+
+	/**
+	 * Allowed action types pass through unchanged.
+	 *
+	 * @dataProvider provide_action_types
+	 *
+	 * @param string $value Raw value.
+	 */
+	public function test_sanitize_action_type_accepts_allowed( string $value ): void {
+		$this->assertSame( $value, Updatronix_Security::sanitize_action_type( $value ) );
+	}
+
+	/**
+	 * Provides the allowed action types.
+	 *
+	 * @return array<string, array{string}>
+	 */
+	public static function provide_action_types(): array {
+		return array(
+			'update'             => array( 'update' ),
+			'downgrade'          => array( 'downgrade' ),
+			'install'            => array( 'install' ),
+			'same_version'       => array( 'same_version' ),
+			'failed'             => array( 'failed' ),
+			'uninstall'          => array( 'uninstall' ),
+			'prevented'          => array( 'prevented' ),
+			'incompatible'       => array( 'incompatible' ),
+			'disabled'           => array( 'disabled' ),
+			'safe_mode_disabled' => array( 'safe_mode_disabled' ),
+		);
+	}
+
+	/**
+	 * Unknown action types fall back to 'update'.
+	 */
+	public function test_sanitize_action_type_falls_back_for_unknown(): void {
+		$this->assertSame( 'update', Updatronix_Security::sanitize_action_type( 'delete *' ) );
+		$this->assertSame( 'update', Updatronix_Security::sanitize_action_type( '' ) );
+	}
+
+	// --- sanitize_status ---
+
+	/**
+	 * Allowed statuses pass through unchanged.
+	 *
+	 * @dataProvider provide_statuses
+	 *
+	 * @param string $value Raw value.
+	 */
+	public function test_sanitize_status_accepts_allowed( string $value ): void {
+		$this->assertSame( $value, Updatronix_Security::sanitize_status( $value ) );
+	}
+
+	/**
+	 * Provides the allowed statuses.
+	 *
+	 * @return array<string, array{string}>
+	 */
+	public static function provide_statuses(): array {
+		return array(
+			'success'   => array( 'success' ),
+			'error'     => array( 'error' ),
+			'cancelled' => array( 'cancelled' ),
+			'delayed'   => array( 'delayed' ),
+			'info'      => array( 'info' ),
+			'warning'   => array( 'warning' ),
+		);
+	}
+
+	/**
+	 * Unknown statuses fall back to 'success'.
+	 */
+	public function test_sanitize_status_falls_back_for_unknown(): void {
+		$this->assertSame( 'success', Updatronix_Security::sanitize_status( 'hacked' ) );
+	}
+
+	// --- sanitize_performed_as ---
+
+	/**
+	 * Allowed performed_as values pass through unchanged.
+	 *
+	 * @dataProvider provide_performed_as
+	 *
+	 * @param string $value Raw value.
+	 */
+	public function test_sanitize_performed_as_accepts_allowed( string $value ): void {
+		$this->assertSame( $value, Updatronix_Security::sanitize_performed_as( $value ) );
+	}
+
+	/**
+	 * Provides the allowed performed_as values.
+	 *
+	 * @return array<string, array{string}>
+	 */
+	public static function provide_performed_as(): array {
+		return array(
+			'manual'    => array( 'manual' ),
+			'automatic' => array( 'automatic' ),
+			'upload'    => array( 'upload' ),
+		);
+	}
+
+	/**
+	 * Unknown performed_as values fall back to 'manual'.
+	 */
+	public function test_sanitize_performed_as_falls_back_for_unknown(): void {
+		$this->assertSame( 'manual', Updatronix_Security::sanitize_performed_as( 'cron' ) );
+	}
+
+	// --- sanitize_update_context ---
+
+	/**
+	 * Bulk, single, and empty update contexts pass through unchanged.
+	 *
+	 * @dataProvider provide_update_contexts
+	 *
+	 * @param string $value Raw value.
+	 */
+	public function test_sanitize_update_context_accepts_allowed( string $value ): void {
+		$this->assertSame( $value, Updatronix_Security::sanitize_update_context( $value ) );
+	}
+
+	/**
+	 * Provides the update contexts.
+	 *
+	 * @return array<string, array{string}>
+	 */
+	public static function provide_update_contexts(): array {
+		return array(
+			'bulk'   => array( 'bulk' ),
+			'single' => array( 'single' ),
+			'empty'  => array( '' ),
+		);
+	}
+
+	/**
+	 * Unknown update contexts fall back to an empty string.
+	 */
+	public function test_sanitize_update_context_falls_back_for_unknown(): void {
+		$this->assertSame( '', Updatronix_Security::sanitize_update_context( 'both' ) );
+	}
+
+	// --- sanitize_string ---
+
+	/**
+	 * Control characters are stripped, though internal whitespace is preserved.
+	 */
+	public function test_sanitize_string_strips_control_characters(): void {
+		$this->assertSame( 'hi there', Updatronix_Security::sanitize_string( "\x00hi\x1f there" ) );
+	}
+
+	/**
+	 * Oversized strings are truncated to the default max length.
+	 */
+	public function test_sanitize_string_truncates_to_default_max(): void {
+		$result = Updatronix_Security::sanitize_string( str_repeat( 'a', 300 ) );
+		$this->assertSame( 255, mb_strlen( $result ) );
+	}
+
+	/**
+	 * Oversized strings respect a custom max length.
+	 */
+	public function test_sanitize_string_truncates_to_custom_max(): void {
+		$result = Updatronix_Security::sanitize_string( str_repeat( 'a', 300 ), 10 );
+		$this->assertSame( 10, mb_strlen( $result ) );
+	}
+
+	// --- sanitize_version ---
+
+	/**
+	 * Valid version strings are preserved.
+	 */
+	public function test_sanitize_version_preserves_valid(): void {
+		$this->assertSame( '1.2.3-beta.4', Updatronix_Security::sanitize_version( '1.2.3-beta.4' ) );
+	}
+
+	/**
+	 * Illegal characters are stripped from version strings.
+	 */
+	public function test_sanitize_version_strips_illegal_characters(): void {
+		$this->assertSame( '1.2.3x', Updatronix_Security::sanitize_version( '1.2.3 x;' ) );
+	}
+
+	/**
+	 * Path traversal separators never survive version sanitization.
+	 */
+	public function test_sanitize_version_blocks_path_traversal(): void {
+		$result = Updatronix_Security::sanitize_version( '../etc/passwd' );
+		$this->assertStringNotContainsString( '/', $result );
+		$this->assertMatchesRegularExpression( '/^[a-zA-Z0-9._-]*$/', $result );
+	}
+
+	/**
+	 * Oversized version strings are truncated to 64 characters.
+	 */
+	public function test_sanitize_version_truncates_to_64(): void {
+		$this->assertSame( 64, mb_strlen( Updatronix_Security::sanitize_version( str_repeat( '1', 100 ) ) ) );
+	}
+
+	// --- user_can_manage_logs ---
+
+	/**
+	 * Restores the capability globals after permission assertions.
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->reset_permission_state();
+	}
+
+	/**
+	 * Resets the test capability globals.
+	 */
+	private function reset_permission_state(): void {
+		$GLOBALS['updatronix_test_is_multisite']   = false;
+		$GLOBALS['updatronix_test_can_manage']     = false;
+		$GLOBALS['updatronix_test_is_super_admin'] = false;
+	}
+
+	/**
+	 * Single-site: a user holding the plugin cap can manage logs.
+	 */
+	public function test_user_can_manage_logs_single_site_with_cap(): void {
+		$GLOBALS['updatronix_test_can_manage'] = true;
+		$this->assertTrue( Updatronix_Security::user_can_manage_logs() );
+	}
+
+	/**
+	 * Single-site: a user without the plugin cap cannot manage logs.
+	 */
+	public function test_user_can_manage_logs_single_site_without_cap(): void {
+		$this->assertFalse( Updatronix_Security::user_can_manage_logs() );
+	}
+
+	/**
+	 * Multisite: a non-super-admin is denied even with the plugin cap.
+	 */
+	public function test_user_can_manage_logs_multisite_non_super_admin_denied(): void {
+		$GLOBALS['updatronix_test_is_multisite'] = true;
+		$GLOBALS['updatronix_test_can_manage']   = true;
+		$this->assertFalse( Updatronix_Security::user_can_manage_logs() );
+	}
+
+	/**
+	 * Multisite: a super-admin without the explicit plugin cap is denied.
+	 */
+	public function test_user_can_manage_logs_multisite_super_admin_without_cap_denied(): void {
+		$GLOBALS['updatronix_test_is_multisite']   = true;
+		$GLOBALS['updatronix_test_is_super_admin'] = true;
+		$this->assertFalse( Updatronix_Security::user_can_manage_logs() );
+	}
+
+	/**
+	 * Multisite: a super-admin holding the plugin cap can manage logs.
+	 */
+	public function test_user_can_manage_logs_multisite_super_admin_with_cap(): void {
+		$GLOBALS['updatronix_test_is_multisite']   = true;
+		$GLOBALS['updatronix_test_can_manage']     = true;
+		$GLOBALS['updatronix_test_is_super_admin'] = true;
+		$this->assertTrue( Updatronix_Security::user_can_manage_logs() );
 	}
 }

@@ -12,4 +12,21 @@
             <directory>../tests/Integration</directory>
         </testsuite>
     </testsuites>
+    <!--
+        Coverage collection is active only when a coverage driver (xdebug/pcov)
+        is enabled; see `composer test:coverage:integration` and
+        .github/workflows/test.yml. The integration run loads the full plugin,
+        so this also covers the same source paths as the unit suite.
+    -->
+    <coverage>
+        <include>
+            <directory suffix=".php">../inc</directory>
+            <file>../updatronix.php</file>
+            <file>../uninstall.php</file>
+        </include>
+        <report>
+            <clover outputFile="../build/coverage/integration.xml"/>
+            <text outputFile="../build/coverage/integration.txt"/>
+        </report>
+    </coverage>
 </phpunit>

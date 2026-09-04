@@ -4,7 +4,7 @@
  * input is bounded by {@see UPDATRONIX_NOTIFY_EMAILS_MAX_BYTES}, and the recipient list cap of
  * {@see UPDATRONIX_NOTIFY_EMAILS_MAX_RECIPIENTS} is enforced.
  *
- * Companion to `.cursor/notes/2026-05-09-test-plan-opus-notifications-schedule-features.md`
+ * Companion to `.agents/notes/archive/2026-05-09-test-plan-opus-notifications-schedule-features.md`
  * (scenarios N-05, N-06, N-09).
  *
  * @package updatronix

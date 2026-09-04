@@ -17,19 +17,19 @@ const DETAIL_CACHE_TTL = 30_000;
  * @param {string}                                                          field   Filter field name.
  * @return {string} The filter value, or empty string if no matching filter is found.
  */
-export function getFilterValue(filters, field) {
-	if (!Array.isArray(filters)) {
+export function getFilterValue( filters, field ) {
+	if ( ! Array.isArray( filters ) ) {
 		return '';
 	}
-	for (const f of filters) {
-		if (!f || f.field !== field) {
+	for ( const f of filters ) {
+		if ( ! f || f.field !== field ) {
 			continue;
 		}
 		const val = f.value;
-		if (Array.isArray(val)) {
-			return String(val[0] ?? '');
+		if ( Array.isArray( val ) ) {
+			return String( val[ 0 ] ?? '' );
 		}
-		return String(val ?? '');
+		return String( val ?? '' );
 	}
 	return '';
 }
@@ -40,30 +40,30 @@ export function getFilterValue(filters, field) {
  * @return {Object} Logs state and actions.
  */
 export function useLogs() {
-	const [logs, setLogs] = useState([]);
-	const [total, setTotal] = useState(0);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
-	const detailsCacheRef = useRef({});
+	const [ logs, setLogs ] = useState( [] );
+	const [ total, setTotal ] = useState( 0 );
+	const [ loading, setLoading ] = useState( false );
+	const [ error, setError ] = useState( null );
+	const detailsCacheRef = useRef( {} );
 
-	const fetchLogs = useCallback(async (params = {}) => {
-		setLoading(true);
-		setError(null);
+	const fetchLogs = useCallback( async ( params = {} ) => {
+		setLoading( true );
+		setError( null );
 		try {
-			const query = new URLSearchParams({
-				per_page: String(params.per_page || 50),
-				page: String(params.page || 1),
+			const query = new URLSearchParams( {
+				per_page: String( params.per_page || 50 ),
+				page: String( params.page || 1 ),
 				log_type: params.log_type || '',
 				status: params.status || '',
 				performed_as: params.performed_as || '',
 				search: params.search || '',
-			}).toString();
-			const response = await apiFetch({
-				path: `updatronix/v1/logs?${query}`,
-			});
-			setLogs(response.logs || []);
-			setTotal(response.total ?? 0);
-		} catch (e) {
+			} ).toString();
+			const response = await apiFetch( {
+				path: `updatronix/v1/logs?${ query }`,
+			} );
+			setLogs( response.logs || [] );
+			setTotal( response.total ?? 0 );
+		} catch ( e ) {
 			setError(
 				e?.message ||
 					__(
@@ -72,63 +72,63 @@ export function useLogs() {
 					)
 			);
 		} finally {
-			setLoading(false);
+			setLoading( false );
 		}
-	}, []);
+	}, [] );
 
-	const fetchLogDetails = useCallback(async (id) => {
-		const cacheKey = String(id);
-		const cached = detailsCacheRef.current[cacheKey];
-		if (cached && Date.now() - cached.ts < DETAIL_CACHE_TTL) {
+	const fetchLogDetails = useCallback( async ( id ) => {
+		const cacheKey = String( id );
+		const cached = detailsCacheRef.current[ cacheKey ];
+		if ( cached && Date.now() - cached.ts < DETAIL_CACHE_TTL ) {
 			return cached.log;
 		}
 
-		const response = await apiFetch({
-			path: `updatronix/v1/logs/${id}`,
-		});
+		const response = await apiFetch( {
+			path: `updatronix/v1/logs/${ id }`,
+		} );
 		const log = response?.log || null;
-		if (log) {
-			detailsCacheRef.current[cacheKey] = { log, ts: Date.now() };
+		if ( log ) {
+			detailsCacheRef.current[ cacheKey ] = { log, ts: Date.now() };
 		}
 
 		return log;
-	}, []);
+	}, [] );
 
-	const deleteLog = useCallback(async (id) => {
+	const deleteLog = useCallback( async ( id ) => {
 		try {
-			await apiFetch({
-				path: `updatronix/v1/logs/${id}`,
+			await apiFetch( {
+				path: `updatronix/v1/logs/${ id }`,
 				method: 'DELETE',
-			});
-			setLogs((prev) =>
-				prev.filter((log) => Number(log.id) !== Number(id))
+			} );
+			setLogs( ( prev ) =>
+				prev.filter( ( log ) => Number( log.id ) !== Number( id ) )
 			);
-			delete detailsCacheRef.current[String(id)];
-			setTotal((prev) => Math.max(0, prev - 1));
+			delete detailsCacheRef.current[ String( id ) ];
+			setTotal( ( prev ) => Math.max( 0, prev - 1 ) );
 			return true;
-		} catch (e) {
+		} catch {
 			return false;
 		}
-	}, []);
+	}, [] );
 
-	const clearAllLogs = useCallback(async () => {
+	const clearAllLogs = useCallback( async () => {
 		try {
-			await apiFetch({
+			await apiFetch( {
 				path: 'updatronix/v1/logs/all',
 				method: 'DELETE',
-			});
-			setLogs([]);
-			setTotal(0);
+			} );
+			setLogs( [] );
+			setTotal( 0 );
 			detailsCacheRef.current = {};
 			return true;
-		} catch (e) {
+		} catch ( e ) {
 			setError(
 				e?.message ||
-					__('Could not clear logs. Try again.', 'updatronix')
+					__( 'Could not clear logs. Try again.', 'updatronix' )
 			);
 			return false;
 		}
-	}, []);
+	}, [] );
 
 	return {
 		logs,

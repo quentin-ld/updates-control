@@ -104,8 +104,7 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
 		$request  = new WP_REST_Request( 'GET', '/updatronix/v1/settings' );
 		$response = rest_do_request( $request );
 
-		$status = $response->get_status();
-		self::assertContains( $status, array( 401, 403 ), 'Anonymous user must not read settings.' );
+		self::assertSame( 401, $response->get_status(), 'Anonymous user must not read settings (rest_authorization_required_code() returns 401 when unauthenticated).' );
 	}
 
 	/**
@@ -200,6 +199,10 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
 		$data = $response->get_data();
 		self::assertIsArray( $data );
 		self::assertArrayHasKey( 'options', $data );
+		self::assertTrue(
+			updatronix_get_settings()['logging_enabled'],
+			'The POSTed logging_enabled=true must be persisted (a 200 with no side effect would mask a regression).'
+		);
 	}
 
 	/**
@@ -222,11 +225,7 @@ final class RestSettingsAuthTest extends WP_UnitTestCase {
 
 		$response = rest_do_request( $request );
 
-		self::assertContains(
-			$response->get_status(),
-			array( 401, 403 ),
-			'Mutating REST request with cookie auth but no nonce must not succeed.'
-		);
+		self::assertSame( 401, $response->get_status(), 'Mutating REST request with cookie auth but no nonce logs the user out and must be rejected with 401 (unauthenticated).' );
 	}
 
 	/**

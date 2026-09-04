@@ -1,35 +1,35 @@
 .updatronix-autoupdates-panel {
 
 	> .components-notice {
-		margin-bottom: var(--wpds-dimension-gap-md);
+		margin-bottom: var(--wpds-dimension-gap-md, 12px);
 	}
 }
 
 .updatronix-autoupdates-loading {
 	display: flex;
 	align-items: center;
-	gap: var(--wpds-dimension-gap-sm);
-	padding: var(--wpds-dimension-padding-lg);
-	color: var(--wpds-color-fg-content-neutral-weak);
+	gap: var(--wpds-dimension-gap-sm, 8px);
+	padding: var(--wpds-dimension-padding-lg, 16px);
+	color: var(--wpds-color-foreground-content-neutral-weak, #707070);
 }
 
 .updatronix-autoupdates-section {
-	margin-bottom: var(--wpds-dimension-gap-2xl);
+	margin-bottom: var(--wpds-dimension-gap-2xl, 32px);
 
 	&:last-child {
 		margin-bottom: 0;
 	}
 
 	> .components-notice {
-		margin-bottom: var(--wpds-dimension-gap-sm);
+		margin-bottom: var(--wpds-dimension-gap-sm, 8px);
 	}
 
 	.components-radio-control {
-		margin-bottom: var(--wpds-dimension-gap-md);
+		margin-bottom: var(--wpds-dimension-gap-md, 12px);
 	}
 
 	.components-base-control {
-		margin-bottom: var(--wpds-dimension-gap-sm);
+		margin-bottom: var(--wpds-dimension-gap-sm, 8px);
 	}
 
 	.dataviews-view-table {
@@ -59,13 +59,13 @@
 .updatronix-autoupdates-section-title {
 	display: flex;
 	align-items: center;
-	gap: var(--wpds-dimension-gap-xs);
+	gap: var(--wpds-dimension-gap-xs, 4px);
 	margin-top: 0;
-	margin-bottom: var(--wpds-dimension-gap-md);
-	padding-bottom: var(--wpds-dimension-gap-sm);
+	margin-bottom: var(--wpds-dimension-gap-md, 12px);
+	padding-bottom: var(--wpds-dimension-gap-sm, 8px);
 	border-bottom:
-		var(--wpds-border-width-xs) solid
-		var(--wpds-color-stroke-surface-neutral-weak);
+		var(--wpds-border-width-xs, 1px) solid
+		var(--wpds-color-stroke-surface-neutral-weak, #f0f0f0);
 
 	> svg {
 		fill: currentcolor;
@@ -76,8 +76,8 @@
 .updatronix-autoupdates {
 
 	&__unavailable {
-		color: var(--wpds-color-fg-content-neutral-weak);
-		font-size: var(--wpds-typography-font-size-md);
+		color: var(--wpds-color-foreground-content-neutral-weak, #707070);
+		font-size: var(--wpds-typography-font-size-md, 13px);
 		font-style: italic;
 	}
 

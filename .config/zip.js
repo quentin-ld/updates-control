@@ -28,17 +28,21 @@ archive.pipe(output);
 const ignore = [
 	'.agents/**',
 	'.cache/**',
+	'.claude/**',
 	'.config/**',
 	'.cursor/**',
 	'.github/**',
 	'.git/**',
 	'.phpunit.cache/**',
+	'.reasonix/**',
 	'.sublime/**',
 	'.vscode/**',
 	'.wordpress-org/**',
 	'assets/src/**',
 	'bin/**',
+	'build/**',
 	'docs/**',
+	'graft/**',
 	'node_modules/**',
 	'tests/**',
 	'vendor/**',
@@ -85,8 +89,12 @@ const ignore = [
 	'workflow.md',
 	'wp-cli.local.yml',
 	'yarn.lock',
+	'.ignore',
+	'.mcp.json',
 	'.phpactor.json',
 	'AGENTS.md',
+	'.ignore',
+	'reasonix.toml'
 ];
 
 function isIgnored(filePath, ignorePatterns) {

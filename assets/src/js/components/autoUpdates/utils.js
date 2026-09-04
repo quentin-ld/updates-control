@@ -9,11 +9,11 @@
  * @param {string} section   'core' | 'plugins' | 'themes' | 'translations'.
  * @return {boolean} True if the section is locked by a constant.
  */
-export function isSectionLocked(constants, section) {
-	if (!constants) {
+export function isSectionLocked( constants, section ) {
+	if ( ! constants ) {
 		return false;
 	}
-	return Object.values(constants).some(
-		(info) => info.locks && info.value && info.affects.includes(section)
+	return Object.values( constants ).some(
+		( info ) => info.locks && info.value && info.affects.includes( section )
 	);
 }

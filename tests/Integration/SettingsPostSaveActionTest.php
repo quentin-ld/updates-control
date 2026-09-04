@@ -4,7 +4,7 @@
  * {@see Updatronix_AutoUpdates::dismiss_constant()} and {@see Updatronix_AutoUpdates::set_translations()}
  * paths previously bypassing it.
  *
- * Companion to scenario R-01 in `.cursor/notes/2026-05-09-test-plan-opus-notifications-schedule-features.md`.
+ * Companion to scenario R-01 in `.agents/notes/archive/2026-05-09-test-plan-opus-notifications-schedule-features.md`.
  *
  * @package updatronix
  */
@@ -127,7 +127,6 @@ final class SettingsPostSaveActionTest extends WP_UnitTestCase {
 		$first = wp_next_scheduled( Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK );
 		self::assertIsInt( $first, 'Setup must register the unified update-check event.' );
 
-		sleep( 1 );
 		Updatronix_AutoUpdates::dismiss_constant( 'WP_AUTO_UPDATE_CORE' );
 
 		$after = wp_next_scheduled( Updatronix_Cron::HOOK_WP_CRON_CORE_VERSION_CHECK );
