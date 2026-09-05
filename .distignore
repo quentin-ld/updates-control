@@ -26,8 +26,8 @@ assets/src/
 assets/src
 bin/
 bin
-build/
-build
+/build/
+/build
 docs/
 docs
 graft/
